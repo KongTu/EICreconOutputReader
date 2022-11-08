@@ -44,6 +44,15 @@ auto getNtrk(const std::vector<edm4eic::ReconstructedParticleData>& parts)
   return mult;
 }
 
+auto momenta_from_particles(const std::vector<edm4eic::ReconstructedParticleData>& parts) {
+  std::vector<TVector3> momenta{parts.size()};
+  for(auto& i1 : parts){
+		TVector3 trk(i1.momentum.x,i1.momentum.y,i1.momentum.z);
+		momenta.push_back(trk);
+	}
+  return momenta;
+}
+
 auto getEta(const std::vector<edm4eic::ReconstructedParticleData>& parts)
 {
 	std::vector<double> eta;
