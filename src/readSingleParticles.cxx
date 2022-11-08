@@ -45,13 +45,6 @@ int readSingleParticles(TString inname="input/input.root",TString outname="test"
 	//pt resolution
 	h_pt_Res->Write();
 	h_pt_Res2D->Write();
-	//efficiency
-	TH1D* h_eta_eff=(TH1D*)h_eta_REC->Clone("h_eta_eff");
-	h_eta_eff->Divide(h_eta_MC);
-	h_eta_eff->Write();
-	TH1D* h_pt_eff=(TH1D*)h_pt_REC->Clone("h_pt_eff");
-	h_pt_eff->Divide(h_pt_MC);
-	h_pt_eff->Write();
 
 	output->Write();
   output->Close();
