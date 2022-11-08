@@ -6,7 +6,7 @@ int readSingleParticles(TString inname="input/input.root",TString outname="test"
 	ROOT::RDataFrame d("events", rec_file);
 
 	auto d1 = d.Define("mult",getNtrk,{"ReconstructedChargedParticles"})
-						 .Define("momentum",momenta_from_particles,{"ReconstructedChargedParticles"})
+						 .Define("momentum",momenta_from_chargedparticles,{"ReconstructedChargedParticles"})
 						 .Define("eta",getEta,"momentum")
 						 .Define("pt",getPt,"momentum")
 						 ;

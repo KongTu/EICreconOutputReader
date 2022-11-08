@@ -44,35 +44,29 @@ auto getNtrk(const std::vector<edm4eic::ReconstructedParticleData>& parts)
   return mult;
 }
 
-auto momenta_from_particles(const std::vector<edm4eic::ReconstructedParticleData>& parts) {
+auto momenta_from_chargedparticles(const std::vector<edm4eic::ReconstructedParticleData>& parts) {
   std::vector<TVector3> momenta{parts.size()};
   for(auto& i1 : parts){
 		TVector3 trk(i1.momentum.x,i1.momentum.y,i1.momentum.z);
-		momenta.push_back(trk);
+		if(i1.charge!=0) momenta.push_back(trk);
 	}
   return momenta;
 }
 auto getPt(const std::vector<TVector3>& tracks)
 {
 	std::vector<double> Pt;
-	for(auto& i1 : tracks){
-		if(i1.charge!=0) Pt.push_back(i1.Perp());
-	}
+	for(auto& i1 : tracks){Pt.push_back(i1.Perp());}
 	return Pt;
 }
 auto getEta(const std::vector<TVector3>& tracks)
 {
 	std::vector<double> eta;
-	for(auto& i1 : tracks){
-		if(i1.charge!=0) eta.push_back(i1.Eta());
-	}
+	for(auto& i1 : tracks){eta.push_back(i1.Eta());}
 	return eta;
 }
 auto getPhi(const std::vector<TVector3>& tracks)
 {
 	std::vector<double> Phi;
-	for(auto& i1 : tracks){
-		if(i1.charge!=0) Phi.push_back(i1.Phi());
-	}
+	for(auto& i1 : tracks){Phi.push_back(i1.Phi());}
 	return Phi;
 }
