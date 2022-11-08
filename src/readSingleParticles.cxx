@@ -28,7 +28,7 @@ int readSingleParticles(TString inname="input/input.root",TString outname="test"
 	auto h_pt_MC = d1.Histo1D({"h_pt_MC", "; p_{T} (GeV/c); counts", 100, 0, 5}, "ptMC");
 	auto h_phi_MC = d1.Histo1D({"h_phi_MC", "; #phi; counts; counts", 100, -PI, PI}, "phiMC");
 	auto h_pt_Res = d1.Histo1D({"h_pt_Res", "; Resolution; counts", 100, -1,1}, "ptRes");
-	auto h_pt_Res2D = d1.Histo2D({"h_pt_Res2D", "; MC p_{T} (GeV/c); Resolution",100,0,5,100,-1,1},"ptMC","ptRes");
+	auto h_pt_Res2D = d1.Histo2D({"h_pt_Res2D", "; p_{T} (GeV/c); Resolution",100,0,5,100,-1,1},"pt","ptRes");
 
 	h_mult_REC->Write();
 	h_eta_REC->Write();
