@@ -56,8 +56,7 @@ auto getPt(const std::vector<TVector3>& tracks)
 {
 	std::vector<double> Pt;
 	for(auto& i1 : tracks){
-		TVector3 trk(i1.momentum.x,i1.momentum.y,i1.momentum.z);
-		if(i1.charge!=0) Pt.push_back(trk.Perp());
+		if(i1.charge!=0) Pt.push_back(i1.Perp());
 	}
 	return Pt;
 }
@@ -65,8 +64,7 @@ auto getEta(const std::vector<TVector3>& tracks)
 {
 	std::vector<double> eta;
 	for(auto& i1 : tracks){
-		TVector3 trk(i1.momentum.x,i1.momentum.y,i1.momentum.z);
-		if(i1.charge!=0) eta.push_back(trk.Eta());
+		if(i1.charge!=0) eta.push_back(i1.Eta());
 	}
 	return eta;
 }
@@ -74,8 +72,7 @@ auto getPhi(const std::vector<TVector3>& tracks)
 {
 	std::vector<double> Phi;
 	for(auto& i1 : tracks){
-		TVector3 trk(i1.momentum.x,i1.momentum.y,i1.momentum.z);
-		if(i1.charge!=0) Phi.push_back(trk.Phi());
+		if(i1.charge!=0) Phi.push_back(i1.Phi());
 	}
 	return Phi;
 }
