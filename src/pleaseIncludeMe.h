@@ -34,6 +34,9 @@
 #define MASS_KAON     0.493667
 #define MASS_AU197    183.45406466643374
 
+auto ff = new TFile("/gpfs02/eic/ztu/EPIC/physics/Simulation_Campaign_Oct2022/testIRT/irt/delphes/scripts/pfRICH.root");
+auto dconfig = dynamic_cast<DelphesConfig*>(ff->Get("DelphesConfigRICH"));
+
 auto getNtrk(const std::vector<edm4eic::ReconstructedParticleData>& parts)
 {
   std::vector<int> mult;
@@ -54,7 +57,6 @@ auto getNtrkMC(const std::vector<edm4hep::MCParticleData>& parts)
   mult.push_back( n );
   return mult;
 }
-
 auto momenta_from_chargedparticles(const std::vector<edm4eic::ReconstructedParticleData>& parts) {
   std::vector<TVector3> momenta;
   for(auto& i1 : parts){
@@ -113,4 +115,23 @@ auto getPhi(const std::vector<TVector3>& tracks)
 	std::vector<double> Phi;
 	for(auto& i1 : tracks){Phi.push_back(i1.Phi());}
 	return Phi;
+}
+//pfRICH test
+auto getPIDprob(const std::vector<TVector3>& tracks, int hpid=0)
+{	//hpid==0,pion
+	//hpid==1,kaon
+	//hpod==2,proton
+	unsigned hdim = dconfig->GetMassHypothesisCount();
+	std::vector<double> prob;
+	for(auto& i1 : tracks){
+
+		double hmtx[hdim*hdim];
+    	int ret = dconfig->GetSmearingMatrix(i1, hmtx);
+    	if(ret!=0){prob.push_back(0.);}
+    	else{
+    		prob.push_back( hmtx[(hdim+1)*hpid] );
+    	}
+		
+	}
+	return prob;
 }
