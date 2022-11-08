@@ -79,7 +79,7 @@ auto momentum_resolution(const std::vector<edm4hep::MCParticleData>& mcs,
 				}
 			}
 		}
-		double res= (matchMCtrk.P()-trk.P()) / matchMCtrk.P();
+		double res= (matchMCtrk.Mag()-trk.Mag()) / matchMCtrk.Mag();
 		resolution.push_back( res );
 				
 	}
