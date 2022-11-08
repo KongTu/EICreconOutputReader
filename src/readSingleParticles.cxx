@@ -9,7 +9,7 @@ int readSingleParticles(TString inname="input/input.root",TString outname="test"
 						 .Define("momentum",momenta_from_chargedparticles,{"ReconstructedChargedParticles"})
 						 .Define("eta",getEta,{"momentum"})
 						 .Define("pt",getPt,{"momentum"})
-						 .Define("momentumMC",momenta_from_chargedparticles,{"MCParticles"})
+						 .Define("momentumMC",momenta_from_mcparticles,{"MCParticles"})
 						 .Define("etaMC",getEta,{"momentumMC"})
 						 .Define("ptMC",getPt,{"momentumMC"})
 						 ;
@@ -23,6 +23,12 @@ int readSingleParticles(TString inname="input/input.root",TString outname="test"
 	auto h_eta_MC = d1.Histo1D({"h_eta_MC", "; #eta; counts", 100, -5, 5}, "etaMC");
 	auto h_pt_MC = d1.Histo1D({"h_pt_MC", "; p_{T} (GeV/c); counts", 100, 0, 5}, "ptMC");
 	
+	h_mult_REC->Write();
+	h_eta_REC->Write();
+	h_pt_REC->Write();
+	h_eta_MC->Write();
+	h_pt_MC->Write();
+
 	output->Write();
   output->Close();
 

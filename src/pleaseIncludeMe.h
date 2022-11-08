@@ -52,6 +52,14 @@ auto momenta_from_chargedparticles(const std::vector<edm4eic::ReconstructedParti
 	}
   return momenta;
 }
+auto momenta_from_mcparticles(const std::vector<edm4hep::MCParticleData>& parts) {
+  std::vector<TVector3> momenta;
+  for(auto& i1 : parts){
+		TVector3 trk(i1.momentum.x,i1.momentum.y,i1.momentum.z);
+		if(i1.charge!=0) momenta.push_back(trk);
+	}
+  return momenta;
+}
 auto getPt(const std::vector<TVector3>& tracks)
 {
 	std::vector<double> Pt;
