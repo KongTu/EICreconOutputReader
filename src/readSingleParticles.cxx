@@ -6,6 +6,7 @@ int readSingleParticles(TString inname="input/input.root",TString outname="test"
 	ROOT::RDataFrame d("events", rec_file);
 
 	auto d1 = d.Define("mult",getNtrk,{"ReconstructedChargedParticles"})
+						 .Define("multMC",getNtrkMC,{"MCParticles"})
 						 .Define("momentum",momenta_from_chargedparticles,{"ReconstructedChargedParticles"})
 						 .Define("eta",getEta,{"momentum"})
 						 .Define("pt",getPt,{"momentum"})
@@ -21,6 +22,7 @@ int readSingleParticles(TString inname="input/input.root",TString outname="test"
   TFile* output = new TFile("output/"+output_name_dir+"-output.root","RECREATE");
 
 	auto h_mult_REC = d1.Histo1D({"h_mult_REC", "; N; counts", 10, -0.5, 9.5}, "mult");
+	auto h_mult_MC = d1.Histo1D({"h_mult_MC", "; N; counts", 10, -0.5, 9.5}, "multMC");
 	auto h_eta_REC = d1.Histo1D({"h_eta_REC", "; #eta; counts", 100, -5, 5}, "eta");
 	auto h_pt_REC = d1.Histo1D({"h_pt_REC", "; p_{T} (GeV/c); counts", 100, 0, 5}, "pt");
 	auto h_phi_REC = d1.Histo1D({"h_phi_REC", "; #phi; counts", 100, -PI, PI}, "phi");
@@ -30,13 +32,26 @@ int readSingleParticles(TString inname="input/input.root",TString outname="test"
 	auto h_pt_Res = d1.Histo1D({"h_pt_Res", "; Resolution; counts", 100, -1,1}, "ptRes");
 	auto h_pt_Res2D = d1.Histo2D({"h_pt_Res2D", "; p_{T} (GeV/c); Resolution",100,0,5,100,-1,1},"pt","ptRes");
 
+	//MC
+	h_mult_MC->Write();
+	h_eta_MC->Write();
+	h_pt_MC->Write();
+	h_phi_MC->Write();
+	//REC
 	h_mult_REC->Write();
 	h_eta_REC->Write();
 	h_pt_REC->Write();
-	h_eta_MC->Write();
-	h_pt_MC->Write();
+	h_phi_REC->Write();
+	//pt resolution
 	h_pt_Res->Write();
 	h_pt_Res2D->Write();
+	//efficiency
+	TH1D* h_eta_eff=(TH1D*)h_eta_REC->Clone("h_eta_eff");
+	h_eta_eff->Divide(h_eta_MC);
+	h_eta_eff->Write();
+	TH1D* h_pt_eff=(TH1D*)h_pt_REC->Clone("h_pt_eff");
+	h_pt_eff->Divide(h_pt_MC);
+	h_pt_eff->Write();
 
 	output->Write();
   output->Close();

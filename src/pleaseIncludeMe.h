@@ -44,6 +44,16 @@ auto getNtrk(const std::vector<edm4eic::ReconstructedParticleData>& parts)
   mult.push_back( n );
   return mult;
 }
+auto getNtrkMC(const std::vector<edm4hep::MCParticleData>& parts)
+{
+  std::vector<int> mult;
+  int n=0;
+  for(auto& i1 : parts){
+    if(i1.charge!=0) n++;
+  }
+  mult.push_back( n );
+  return mult;
+}
 
 auto momenta_from_chargedparticles(const std::vector<edm4eic::ReconstructedParticleData>& parts) {
   std::vector<TVector3> momenta;
