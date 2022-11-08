@@ -6,7 +6,7 @@ int readSingleParticles(TString inname="input/input.root",TString outname="test"
 	ROOT::RDataFrame d("events", rec_file);
 
 	auto d1 = d.Define("mult",getNtrk,{"ReconstructedChargedParticles"})
-						 .Define("eta",getEta,{"ReconstructedChargedParticles"})
+						 .Define("eta",getEta,{"ReconstructedChargedParticles"});
 	auto h_mult_REC = d1.Histo1D({"h_mult_REC", "; N; counts", 10, -0.5, 9.5}, "mult");
 	auto h_eta_REC = d1.Histo1D({"h_eta_REC", "; N; counts", 100, -5, 5}, "eta");
 
