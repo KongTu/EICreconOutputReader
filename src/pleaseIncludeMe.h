@@ -57,7 +57,7 @@ auto momenta_from_mcparticles(const std::vector<edm4hep::MCParticleData>& parts)
   std::vector<TVector3> momenta;
   for(auto& i1 : parts){
 		TVector3 trk(i1.momentum.x,i1.momentum.y,i1.momentum.z);
-		if(i1.charge!=0) momenta.push_back(trk);
+		if(i1.charge!=0 && i1.generatorStatus!=0) momenta.push_back(trk);
 	}
   return momenta;
 }
