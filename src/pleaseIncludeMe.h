@@ -47,8 +47,8 @@ auto getNtrk(const std::vector<edm4eic::ReconstructedParticleData>& parts)
 auto getEta(const std::vector<edm4eic::ReconstructedParticleData>& parts)
 {
 	std::vector<double> eta;
-	for(auto& i; parts){
-		TVector3 trk(i.momentum.x,i.momentum.y,i.momentum.z);
+	for(auto& i1 : parts){
+		TVector3 trk(i1.momentum.x,i1.momentum.y,i1.momentum.z);
 		if(i1.charge!=0) eta.push_back(trk.Eta());
 	}
 	return eta;
