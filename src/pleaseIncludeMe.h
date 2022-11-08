@@ -61,6 +61,31 @@ auto momenta_from_mcparticles(const std::vector<edm4hep::MCParticleData>& parts)
 	}
   return momenta;
 }
+auto momentum_resolution(const std::vector<edm4hep::MCParticleData>& mcs,
+							const std::vector<edm4eic::ReconstructedParticleData>& recos){
+
+	std::vector<double> resolution;
+	for(auto& i1: recos){
+		TVector3 trk(i1.momentum.x,i1.momentum.y,i1.momentum.z);
+		if(i1.charge==0) continue;
+		double minR=99;
+		TVector3 matchMCtrk(-99,-99,-99);
+		for(auto& i2 : mcs){
+			TVector3 trkMC(i2.momentum.x,i2.momentum.y,i2.momentum.z);
+			if(i2.charge!=0 && i2.generatorStatus!=0){
+				if(trk.DeltaR(trkMC) < minR ){
+					minR=trk.DeltaR(trkMC);
+					matchMCtrk=trkMC;
+				}
+			}
+		}
+		double res= (matchMCtrk.P()-trk.P()) / matchMCtrk.P();
+		resolution.push_back( res );
+				
+	}
+
+	return resolution;
+}
 auto getPt(const std::vector<TVector3>& tracks)
 {
 	std::vector<double> Pt;
