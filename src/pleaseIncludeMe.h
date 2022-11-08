@@ -52,13 +52,30 @@ auto momenta_from_particles(const std::vector<edm4eic::ReconstructedParticleData
 	}
   return momenta;
 }
-
-auto getEta(const std::vector<edm4eic::ReconstructedParticleData>& parts)
+auto getPt(const std::vector<TVector3>& tracks)
+{
+	std::vector<double> Pt;
+	for(auto& i1 : tracks){
+		TVector3 trk(i1.momentum.x,i1.momentum.y,i1.momentum.z);
+		if(i1.charge!=0) Pt.push_back(trk.Perp());
+	}
+	return Pt;
+}
+auto getEta(const std::vector<TVector3>& tracks)
 {
 	std::vector<double> eta;
-	for(auto& i1 : parts){
+	for(auto& i1 : tracks){
 		TVector3 trk(i1.momentum.x,i1.momentum.y,i1.momentum.z);
 		if(i1.charge!=0) eta.push_back(trk.Eta());
 	}
 	return eta;
+}
+auto getPhi(const std::vector<TVector3>& tracks)
+{
+	std::vector<double> Phi;
+	for(auto& i1 : tracks){
+		TVector3 trk(i1.momentum.x,i1.momentum.y,i1.momentum.z);
+		if(i1.charge!=0) Phi.push_back(trk.Phi());
+	}
+	return Phi;
 }
