@@ -45,7 +45,7 @@ auto getNtrk(const std::vector<edm4eic::ReconstructedParticleData>& parts)
 }
 
 auto momenta_from_chargedparticles(const std::vector<edm4eic::ReconstructedParticleData>& parts) {
-  std::vector<TVector3> momenta{parts.size()};
+  std::vector<TVector3> momenta;
   for(auto& i1 : parts){
 		TVector3 trk(i1.momentum.x,i1.momentum.y,i1.momentum.z);
 		if(i1.charge!=0) momenta.push_back(trk);
