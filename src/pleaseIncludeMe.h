@@ -61,7 +61,7 @@ auto momenta_from_mcparticles(const std::vector<edm4hep::MCParticleData>& parts)
 	}
   return momenta;
 }
-auto momentum_resolution(const std::vector<edm4hep::MCParticleData>& mcs,
+auto pt_resolution(const std::vector<edm4hep::MCParticleData>& mcs,
 							const std::vector<edm4eic::ReconstructedParticleData>& recos){
 
 	std::vector<double> resolution;
@@ -79,7 +79,7 @@ auto momentum_resolution(const std::vector<edm4hep::MCParticleData>& mcs,
 				}
 			}
 		}
-		double res= (matchMCtrk.Mag()-trk.Mag()) / matchMCtrk.Mag();
+		double res= (matchMCtrk.Perp()-trk.Perp()) / matchMCtrk.Perp();
 		resolution.push_back( res );
 				
 	}
