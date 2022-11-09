@@ -1,3 +1,7 @@
-## This is an output directory
+## This is an output log file
 
 One can use this README to document what output has been generated.
+
+1. pi-10GeV-backward-output.root, based on 22.10.0 Brycecanyon, single particle of pi- at 10 GeV in backward angle.
+
+2. ...
