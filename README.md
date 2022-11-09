@@ -67,4 +67,4 @@ For the time being, one can just leave it as it is.
 
 - Run the singleParticleReader:
 
-s```./runSingleParticleReader.sh input/INPUT_NAME.root OUTPUT_NAME```
+```./runSingleParticleReader.sh input/INPUT_NAME.root OUTPUT_NAME```
