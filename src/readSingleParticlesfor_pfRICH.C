@@ -17,7 +17,7 @@
 #include "TLorentzRotation.h"
 #include "TVector2.h"
 #include "TVector3.h"
-
+#include "edm4eic/ReconstructedParticleData.h"
 using namespace std;
 
 void readSingleParticlesfor_pfRICH(){
