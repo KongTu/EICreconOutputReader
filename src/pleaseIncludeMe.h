@@ -139,7 +139,7 @@ auto getPIDprob(const std::vector<TVector3>& tracks)
 	}
 	return prob;
 }
-auto getPIDprob(const std::vector<TVector3>& tracks,
+auto getPIDprobMC(const std::vector<TVector3>& tracks,
 									const std::vector<edm4hep::MCParticleData>& mcs )
 {	
 	/*
