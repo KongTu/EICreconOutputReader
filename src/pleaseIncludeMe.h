@@ -153,8 +153,8 @@ auto getPIDprobMC(const std::vector<TVector3>& tracks,
 	std::vector<double> prob;
 	for(auto& i1 : tracks){
 	//matching mc for now
-		double minR=99;
-		TVector3 matchMCtrk(-99,-99,-99);
+		double minR=1e7;
+		TVector3 matchMCtrk(0,0,0);
 		int matchPID=-99;
 		for(auto& i2 : mcs){
 			TVector3 trkMC(i2.momentum.x,i2.momentum.y,i2.momentum.z);
