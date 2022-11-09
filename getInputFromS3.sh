@@ -8,6 +8,7 @@ echo "************************************************"
 echo "Download from S3 successful."
 echo "Next step is to run reader on them, for example:"
 echo "************************************************"
-echo "./runSingleParticleReader.sh input/input-pi-10GeV-backward.root pi-10GeV-backward"
+echo "./runSingleParticleReader.sh input/input-eicrecon-pi-10GeV-backward.root eicrecon-pi-10GeV-backward"
+echo "./runSingleParticleReader.sh input/input-juggler-pi-10GeV-backward.root juggler-pi-10GeV-backward"
 echo "************************************************"
 
