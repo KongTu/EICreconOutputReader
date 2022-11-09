@@ -14,7 +14,7 @@ int readSingleParticles(TString inname="input/input.root",TString outname="test"
 						 .Define("eta",getEta,{"momentum"})
 						 .Define("pt",getPt,{"momentum"})
 						 .Define("phi",getPhi,{"momentum"})
-						 .Define("pidProb",getPIDprob,{"momentum","0"})
+						 .Define("pidProb",getPIDprob,{"momentum"})
 						 .Define("momentumMC",momenta_from_mcparticles,{"MCParticles"})
 						 .Define("etaMC",getEta,{"momentumMC"})
 						 .Define("ptMC",getPt,{"momentumMC"})
