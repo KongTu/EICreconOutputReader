@@ -1,9 +1,6 @@
 #include "pleaseIncludeMe.h"
 int readSingleParticles(TString inname="input/input.root",TString outname="test"){
 
-	auto hypo = dconfig->GetMassHypothesis(211);
-  printf("%d %f\n", hypo->PdgCode(), hypo->Mass());
-
  	TString rec_file=inname;
 	//ROOT::EnableImplicitMT(kNumThreads);
 	ROOT::RDataFrame d("events", rec_file);
@@ -36,6 +33,7 @@ int readSingleParticles(TString inname="input/input.root",TString outname="test"
 	auto h_phi_MC = d1.Histo1D({"h_phi_MC", "; #phi; counts; counts", 100, -PI, PI}, "phiMC");
 	auto h_pt_Res = d1.Histo1D({"h_pt_Res", "; Resolution; counts", 100, -1,1}, "ptRes");
 	auto h_pt_Res2D = d1.Histo2D({"h_pt_Res2D", "; p_{T} (GeV/c); Resolution",100,0,5,100,-1,1},"pt","ptRes");
+	auto h_etaVsPIDprob = d1.Histo2D({"h_etaVsPIDprob", "; #eta; PID probability",100,-5, 5,100,0,1},"eta","pidProb");
 
 	//MC
 	h_mult_MC->Write();
@@ -47,10 +45,12 @@ int readSingleParticles(TString inname="input/input.root",TString outname="test"
 	h_eta_REC->Write();
 	h_pt_REC->Write();
 	h_phi_REC->Write();
-	h_pidProb_REC->Write();
 	//pt resolution
 	h_pt_Res->Write();
 	h_pt_Res2D->Write();
+	//pid
+	h_pidProb_REC->Write();
+	h_etaVsPIDprob->Write();
 
 	output->Write();
   output->Close();

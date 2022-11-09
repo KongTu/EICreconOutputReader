@@ -135,9 +135,7 @@ auto getPIDprob(const std::vector<TVector3>& tracks)
     	if(ret!=0){prob.push_back(0.);}
     	else{
     		prob.push_back( hmtx[(hdim+1)*hpid] );
-    	}
-    	std::cout << hmtx[0] << std::endl;
-		
+    	}	
 	}
 	return prob;
 }
