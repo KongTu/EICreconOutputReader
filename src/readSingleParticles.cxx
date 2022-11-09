@@ -3,7 +3,7 @@ int readSingleParticles(TString inname="input/input.root",TString outname="test"
 
 	auto hypo = dconfig->GetMassHypothesis(211);
   printf("%d %f\n", hypo->PdgCode(), hypo->Mass());
-  
+
  	TString rec_file=inname;
 	//ROOT::EnableImplicitMT(kNumThreads);
 	ROOT::RDataFrame d("events", rec_file);
@@ -14,7 +14,7 @@ int readSingleParticles(TString inname="input/input.root",TString outname="test"
 						 .Define("eta",getEta,{"momentum"})
 						 .Define("pt",getPt,{"momentum"})
 						 .Define("phi",getPhi,{"momentum"})
-						 .Define("pidProb",getPIDprob,{"momentum",0})
+						 .Define("pidProb",getPIDprob,{"momentum","0"})
 						 .Define("momentumMC",momenta_from_mcparticles,{"MCParticles"})
 						 .Define("etaMC",getEta,{"momentumMC"})
 						 .Define("ptMC",getPt,{"momentumMC"})
