@@ -1,6 +1,12 @@
 #include "pleaseIncludeMe.h"
 int readSingleParticles(TString inname="input/input.root",TString outname="test"){
 	
+	auto ff = new TFile("/gpfs02/eic/ztu/EPIC/physics/Simulation_Campaign_Oct2022/testIRT/irt/delphes/scripts/pfRICH.root");
+	auto dconfig = dynamic_cast<DelphesConfig*>(ff->Get("DelphesConfigRICH"));
+
+	auto hypo = dconfig->GetMassHypothesis(211);
+	printf("%d %f\n", hypo->PdgCode(), hypo->Mass());
+	
  	TString rec_file=inname;
 	//ROOT::EnableImplicitMT(kNumThreads);
 	ROOT::RDataFrame d("events", rec_file);

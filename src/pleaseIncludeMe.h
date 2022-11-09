@@ -14,6 +14,7 @@
 
 #include "TFile.h"
 #include "TLorentzVector.h"
+
 #include "TLorentzRotation.h"
 #include "TVector2.h"
 #include "TVector3.h"
@@ -26,6 +27,9 @@
 #include "edm4eic/ReconstructedParticleData.h"
 #include "edm4hep/MCParticleData.h"
 // #include "edm4eic/ReconstructedParticleCollection.h"
+
+//for pf-RICH only
+#include "/tmp/EPIC-test/irt/delphes/include/DelphesConfig.h"
 
 #define PI            3.1415926
 #define MASS_ELECTRON 0.00051
