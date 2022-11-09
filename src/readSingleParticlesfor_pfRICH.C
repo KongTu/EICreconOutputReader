@@ -1,4 +1,25 @@
-#include "pleaseIncludeMe.h"
+#include <cmath>
+#include <fstream>
+#include <iostream>
+#include <string>
+#include <vector>
+#include <algorithm>
+#include <utility>
+
+#include "ROOT/RDataFrame.hxx"
+#include <TH1D.h>
+#include <TFitResult.h>
+#include <TRandom3.h>
+#include <TCanvas.h>
+
+#include "TFile.h"
+#include "TLorentzVector.h"
+#include "TLorentzRotation.h"
+#include "TVector2.h"
+#include "TVector3.h"
+
+using namespace std;
+
 void readSingleParticlesfor_pfRICH(){
 	
 	auto ff = new TFile("/gpfs02/eic/ztu/EPIC/physics/Simulation_Campaign_Oct2022/testIRT/irt/delphes/scripts/pfRICH.root");
