@@ -129,7 +129,7 @@ auto getPIDprob(const std::vector<TVector3>& tracks)
 	std::vector<double> prob;
 	for(auto& i1 : tracks){
 
-		int hpid=0
+		int hpid=0;
 		double hmtx[hdim*hdim];
     	int ret = dconfig->GetSmearingMatrix(i1, hmtx);
     	if(ret!=0){prob.push_back(0.);}
