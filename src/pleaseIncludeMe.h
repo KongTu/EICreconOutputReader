@@ -38,7 +38,7 @@
 #define MASS_KAON     0.493667
 #define MASS_AU197    183.45406466643374
 
-auto ff = new TFile("/gpfs02/eic/ztu/EPIC/physics/Simulation_Campaign_Oct2022/testIRT/irt/delphes/scripts/pfRICH.root");
+auto ff = new TFile("pfRICH-configs/pfRICH-default-Nov8.root");
 auto dconfig = dynamic_cast<DelphesConfig*>(ff->Get("DelphesConfigRICH"));
 
 auto getNtrk(const std::vector<edm4eic::ReconstructedParticleData>& parts)
