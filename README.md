@@ -10,11 +10,11 @@ One can use pfRICH-configs to study different designs/optimatizations of the bac
 
 Fresh start with installing eic_shell:
 
-	```
+```
 	wget --output-document install.sh http://get.epic-eic.org --no-check-certificate
 	
 	bash install.sh
-	```
+```
 
 Run it:
 
@@ -63,10 +63,11 @@ Note that under `src/pleaseIncludeMe.h`, there is a direct include:
 For the time being, one can just leave it as it is.
 
 ## Running samples:
-- look into getInputFromS3.sh to modify accordingly what to grab from S3:
+
+Look into getInputFromS3.sh to modify accordingly what to grab from S3:
 
 ```./getInputFromS3.sh```
 
-- Run the singleParticleReader:
+Run the singleParticleReader:
 
 ```./runSingleParticleReader.sh input/INPUT_NAME.root OUTPUT_NAME```
