@@ -139,3 +139,47 @@ auto getPIDprob(const std::vector<TVector3>& tracks)
 	}
 	return prob;
 }
+auto getPIDprob(const std::vector<TVector3>& tracks,
+									const std::vector<edm4hep::MCParticleData>& mcs )
+{	
+	/*
+	Need to write the association here. 
+	Basically, one should match rec to mc, and use mc pdg 
+	to determine which true PID is and set hpid; 
+	-->	hpid==0,pion; hpid==1,kaon; hpod==2,proton
+	*/
+
+	unsigned hdim = dconfig->GetMassHypothesisCount();
+	std::vector<double> prob;
+	for(auto& i1 : tracks){
+	//matching mc for now
+		double minR=99;
+		TVector3 matchMCtrk(-99,-99,-99);
+		int matchPID=-99;
+		for(auto& i2 : mcs){
+			TVector3 trkMC(i2.momentum.x,i2.momentum.y,i2.momentum.z);
+			if(i2.charge!=0 && i2.generatorStatus==1){
+				if(trk.DeltaR(trkMC) < minR ){
+					minR=trk.DeltaR(trkMC);
+					matchMCtrk=trkMC;
+					matchPID=i2.PDG;
+				}
+			}
+		}
+		int hpid=-99;
+		if(TMath::Abs(matchPID)==211) hpid=0;
+		else if(TMath::Abs(matchPID)==321) hpid=1;
+		else if(TMath::Abs(matchPID)==2212) hpid=2;
+		else hpid=-99;
+		
+		double hmtx[hdim*hdim];
+  	int ret = dconfig->GetSmearingMatrix(i1, hmtx);
+  	if(ret!=0 || hpid==-99){
+  		prob.push_back(0.);
+  	}
+  	else{
+  		prob.push_back( hmtx[(hdim+1)*hpid] );
+  	}	
+	}
+	return prob;
+}

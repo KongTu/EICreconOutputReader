@@ -16,7 +16,7 @@ int readSingleParticles(TString inname="input/input.root",TString outname="test"
 						 .Define("etaMC",getEta,{"momentumMC"})
 						 .Define("ptMC",getPt,{"momentumMC"})
 						 .Define("phiMC",getPhi,{"momentumMC"})
-						 .Define("pidProbMC",getPIDprob,{"momentumMC"})
+						 .Define("pidProbMC",getPIDprob,{"momentumMC","MCParticles"})
 						 .Define("ptRes",pt_resolution,{"MCParticles","ReconstructedChargedParticles"})
 						 ;
 
