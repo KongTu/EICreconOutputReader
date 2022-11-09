@@ -56,7 +56,7 @@ auto getNtrkMC(const std::vector<edm4hep::MCParticleData>& parts)
   std::vector<int> mult;
   int n=0;
   for(auto& i1 : parts){
-    if(i1.charge!=0) n++;
+    if(i1.charge!=0 && i1.generatorStatus==1) n++;
   }
   mult.push_back( n );
   return mult;
@@ -73,7 +73,7 @@ auto momenta_from_mcparticles(const std::vector<edm4hep::MCParticleData>& parts)
   std::vector<TVector3> momenta;
   for(auto& i1 : parts){
 		TVector3 trk(i1.momentum.x,i1.momentum.y,i1.momentum.z);
-		if(i1.charge!=0 && i1.generatorStatus!=0) momenta.push_back(trk);
+		if(i1.charge!=0 && i1.generatorStatus==1) momenta.push_back(trk);
 	}
   return momenta;
 }
@@ -88,7 +88,7 @@ auto pt_resolution(const std::vector<edm4hep::MCParticleData>& mcs,
 		TVector3 matchMCtrk(-99,-99,-99);
 		for(auto& i2 : mcs){
 			TVector3 trkMC(i2.momentum.x,i2.momentum.y,i2.momentum.z);
-			if(i2.charge!=0 && i2.generatorStatus!=0){
+			if(i2.charge!=0 && i2.generatorStatus==1){
 				if(trk.DeltaR(trkMC) < minR ){
 					minR=trk.DeltaR(trkMC);
 					matchMCtrk=trkMC;
