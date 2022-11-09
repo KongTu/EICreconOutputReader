@@ -1,6 +1,6 @@
 # EICreconOutputReader
 
-contact - Kong Tu (kongtu@bnl.gov)
+Contact - Kong Tu (kongtu@bnl.gov)
 
 This is a reader script to analyze EIC reconstructed data or MC. The input of this reader is the EICrecon Output, as the name suggested. Here I took the RDataFrame used previously in the physics benchmarks. 
 
