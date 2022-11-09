@@ -159,8 +159,8 @@ auto getPIDprob(const std::vector<TVector3>& tracks,
 		for(auto& i2 : mcs){
 			TVector3 trkMC(i2.momentum.x,i2.momentum.y,i2.momentum.z);
 			if(i2.charge!=0 && i2.generatorStatus==1){
-				if(trk.DeltaR(trkMC) < minR ){
-					minR=trk.DeltaR(trkMC);
+				if(i1.DeltaR(trkMC) < minR ){
+					minR=i1.DeltaR(trkMC);
 					matchMCtrk=trkMC;
 					matchPID=i2.PDG;
 				}
