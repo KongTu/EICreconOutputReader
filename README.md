@@ -8,49 +8,51 @@ One can use pfRICH-configs to study different designs/optimatizations of the bac
 
 ## Setting up the environment
 
-- Fresh start with installing eic_shell:
+Fresh start with installing eic_shell:
 
-```wget --output-document install.sh http://get.epic-eic.org --no-check-certificate```
+	```
+	wget --output-document install.sh http://get.epic-eic.org --no-check-certificate
+	
+	bash install.sh
+	```
 
-```bash install.sh```
+Run it:
 
-- Run it: ```./eic-shell```
+```./eic-shell```
 
-- Set your LD_LIBRARY_PATH	
+Set your LD_LIBRARY_PATH	
 
 ```export LD_LIBRARY_PATH=/tmp/EPIC-Kong/lib:${LD_LIBRARY_PATH}```
 
 ## Additional install/setup if one doesn't want to point to Kong's tmp dir...
 
-- For this example, I am going to set a soft link:
+For this example, I am going to set a soft link:
 
 ```cd /tmp```
 
 ```ln -s <your-directory-where-the-eic-shell-is> EPIC-Kong```
 
-- Install the data model - EDM4EIC with irt data model branch
+Install the data model - EDM4EIC with irt data model branch
 
-```git clone https://github.com/eic/EDM4eic.git --branch irt-data-model```
+```
+git clone https://github.com/eic/EDM4eic.git --branch irt-data-model
+cd EDM4eic && mkdir build && cd build
+cmake -DCMAKE_INSTALL_PREFIX=/tmp/EPIC-Kong ..
+make -j8 install
+```
 
-```cd EDM4eic && mkdir build && cd build```
+Install the IRT
 
-```cmake -DCMAKE_INSTALL_PREFIX=/tmp/EPIC-Kong ..```
-
-```make -j8 install```
-
-- Install the IRT
-
-```git clone https://github.com/eic/irt.git```
-
-```cd irt && mkdir build && cd build```
-
-```cmake -DCMAKE_INSTALL_PREFIX=/tmp/EPIC-Kong ..```
-
-```make -j8 install```
+```
+git clone https://github.com/eic/irt.git
+cd irt && mkdir build && cd build
+cmake -DCMAKE_INSTALL_PREFIX=/tmp/EPIC-Kong ..
+make -j8 install
+```
 
 ## EICrecon reader
 
-- Install EICreconOutputReader
+Install EICreconOutputReader
 
 ```git clone https://github.com/KongTu/EICreconOutputReader.git```
 
