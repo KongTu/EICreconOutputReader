@@ -12,9 +12,9 @@ This repo will be actively developed and added with more examples as we progress
 Fresh start with an eic_shell, if one hasn't done it yet:
 
 ```
-	wget --output-document install.sh http://get.epic-eic.org --no-check-certificate
+wget --output-document install.sh http://get.epic-eic.org --no-check-certificate
 	
-	bash install.sh
+bash install.sh
 ```
 
 Run it:
