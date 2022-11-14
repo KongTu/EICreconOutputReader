@@ -25,7 +25,7 @@ Run it:
 
 Install EICreconOutputReader
 
-```git clone https://github.com/KongTu/EICreconOutputReader.git```
+```git clone https://github.com/KongTu/EICreconOutputReader.git --branch simple-branch```
 
 ## Running samples:
 
