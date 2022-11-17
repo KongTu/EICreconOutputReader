@@ -13,9 +13,9 @@ In addition, currently this code can utilize pfRICH-configs to study different d
 Fresh start with an eic_shell, if one hasn't done it yet:
 
 ```
-	wget --output-document install.sh http://get.epic-eic.org --no-check-certificate
+wget --output-document install.sh http://get.epic-eic.org --no-check-certificate
 	
-	bash install.sh
+bash install.sh
 ```
 
 Run it:
