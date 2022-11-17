@@ -29,7 +29,7 @@
 // #include "edm4eic/ReconstructedParticleCollection.h"
 
 //for pf-RICH only
-#include "/tmp/EPIC-Kong/irt/delphes/include/DelphesConfig.h"
+#include "/gpfs02/eic/ztu/EPIC/software_tutorial/analysis/irt/delphes/include/DelphesConfig.h"
 
 #define PI            3.1415926
 #define MASS_ELECTRON 0.00051
