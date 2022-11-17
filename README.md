@@ -24,7 +24,7 @@ Run it:
 
 Set your LD_LIBRARY_PATH	
 
-```export LD_LIBRARY_PATH=/tmp/EPIC-Kong/lib:${LD_LIBRARY_PATH}```
+```export LD_LIBRARY_PATH=/gpfs02/eic/ztu/EPIC/software_tutorial/analysis/lib:${LD_LIBRARY_PATH}```
 
 ## Additional install/setup if one doesn't want to point to Kong's tmp directory...
 
@@ -60,7 +60,7 @@ Install EICreconOutputReader
 
 Note that under `src/pleaseIncludeMe.h`, there is a direct include: 
 
-`#include "/tmp/EPIC-Kong/irt/delphes/include/DelphesConfig.h"`. 
+`#include "/gpfs02/eic/ztu/EPIC/software_tutorial/analysis/irt/delphes/include/DelphesConfig.h"`. 
 
 For the time being, one can just leave it as it is.
 
