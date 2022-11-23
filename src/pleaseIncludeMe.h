@@ -49,8 +49,8 @@ auto findScatElecMC(const std::vector<edm4hep::MCParticleData>& parts)
     if(i1.generatorStatus==1&&i1.PDG==11) {
     	trk.SetXYZ(i1.momentum.x,i1.momentum.y,i1.momentum.z);
     }
+    momenta.push_back(trk);
   }
-  momenta.push_back(trk);
   return momenta;
 }
 auto getNtrk(const std::vector<edm4eic::ReconstructedParticleData>& parts)
