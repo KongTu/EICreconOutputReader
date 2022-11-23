@@ -110,7 +110,7 @@ auto findScatElecREC(const std::vector<edm4eic::ClusterData>& clusters,
   escat.SetPtEtaPhiM(pt,eta,phi,MASS_ELECTRON);
   
   Epz += escat.E()-escat.Pz();
-  if( escat.Eta()>0. ) {
+  if( escat.Eta()< 0. ) {
   	// escat.SetPxPyPzE(0,0,-1E10,-1E10);
   	momenta.push_back(escat.Vect());
   }
