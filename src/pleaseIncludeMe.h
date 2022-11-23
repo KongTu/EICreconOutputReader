@@ -101,7 +101,7 @@ auto findScatElecREC(const std::vector<edm4eic::ClusterData>& clusters,
   	Epz += sqrt(trk.Mag2()+MASS_PION*MASS_PION) - trk.Pz();
   }
   //3-second calibration.
-  maxEnergy+=0.8;
+  maxEnergy+=0.9;
   //electron hypothesis;
   double p = sqrt(maxEnergy*maxEnergy- MASS_ELECTRON*MASS_ELECTRON );
   double eta=maxtrk.Eta();
@@ -110,7 +110,7 @@ auto findScatElecREC(const std::vector<edm4eic::ClusterData>& clusters,
   escat.SetPtEtaPhiM(pt,eta,phi,MASS_ELECTRON);
   
   Epz += escat.E()-escat.Pz();
-  if( Epz < 25 || Epz > 40 || escat.Eta()>0. ) {
+  if( escat.Eta()>0. ) {
   	// escat.SetPxPyPzE(0,0,-1E10,-1E10);
   	momenta.push_back(escat.Vect());
   }
@@ -154,7 +154,7 @@ auto getEpzREC(const std::vector<edm4eic::ClusterData>& clusters,
   	Epz += sqrt(trk.Mag2()+MASS_PION*MASS_PION) - trk.Pz();
   }
   //3-second calibration.
-  maxEnergy+=0.8;
+  maxEnergy+=0.9;
   //electron hypothesis;
   double p = sqrt(maxEnergy*maxEnergy- MASS_ELECTRON*MASS_ELECTRON );
   double eta=maxtrk.Eta();
@@ -163,7 +163,6 @@ auto getEpzREC(const std::vector<edm4eic::ClusterData>& clusters,
   escat.SetPtEtaPhiM(pt,eta,phi,MASS_ELECTRON);
   
   Epz += escat.E()-escat.Pz();
-
   EmPz.push_back(Epz);
   return EmPz;
 }
