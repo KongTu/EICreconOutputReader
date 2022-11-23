@@ -67,7 +67,7 @@ auto findScatElecREC(const std::vector<edm4eic::ClusterData>& clusters,
 											const std::vector<edm4eic::ReconstructedParticleData>& parts) 
 {
 	std::vector<TVector3> momenta;
-  TLorentzVector escat(-1e10, -1e10, -1e10, -1e10);
+  TLorentzVector escat(-1E10, -1E10, -1E10, -1E10);
   //EEMC
   double maxEnergy=0;
   for(auto& i1 : clusters){
@@ -79,14 +79,28 @@ auto findScatElecREC(const std::vector<edm4eic::ClusterData>& clusters,
   }
   double maxMom=0.;
   TVector3 maxtrk(-1E10,-1E10,-1E10);
+  int elec_index=0;
+  int index=-1;
   for(auto& i2 : parts){
+  	index++;
   	TVector3 trk(i2.momentum.x,i2.momentum.y,i2.momentum.z);
   	if(i2.charge>0) continue;
   	if(trk.Mag()>maxMom){
   		maxMom=trk.Mag();
   		maxtrk=trk;
+  		elec_index=index;
   	}
   }
+
+  double Epz=0.;
+  index=-1;
+  for(auto& i2 : parts){
+  	index++;
+  	if(elec_index==index) continue;
+  	TVector3 trk(i2.momentum.x,i2.momentum.y,i2.momentum.z);
+  	Epz += sqrt(trk.Mag2()+MASS_PION*MASS_PION) - trk.Pz();
+  }
+
   //electron hypothesis;
   double p = sqrt(maxEnergy*maxEnergy- MASS_ELECTRON*MASS_ELECTRON );
   double eta=maxtrk.Eta();
@@ -94,6 +108,10 @@ auto findScatElecREC(const std::vector<edm4eic::ClusterData>& clusters,
   double pt = TMath::Sin(maxtrk.Theta())*p;
   escat.SetPtEtaPhiM(pt,eta,phi,MASS_ELECTRON);
   
+  Epz += escat.E()-escat.Pz();
+  if( Epz < 20 || Epz > 40 ) {
+  	escat.SetPxPyPzE(-1E10,-1E10,-1E10,-1E10);
+  }
   momenta.push_back(escat.Vect());
   return momenta;
 }
