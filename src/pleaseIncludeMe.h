@@ -72,6 +72,40 @@ auto getQ2elec(const std::vector<TVector3>& elec){
 	}
 	return Q2elec;
 }
+auto getYelec(const std::vector<TVector3>& elec){
+
+	std::vector<double> Yelec;
+	TLorentzVector ein(0,0,-5,5);//need to read from file;
+	TLorentzVector pin(0,0,41,sqrt(41*41+MASS_PROTON*MASS_PROTON));
+	TLorentzVector scat;
+	TLorentzVector q;
+	for(auto& i1 : elec){
+		scat.SetPtEtaPhiM(i1.Pt(),i1.Eta(),i1.Phi(),MASS_ELECTRON);
+		q=ein-scat;
+		double Q2= -q.Mag2();
+		double pq=pin.Dot(q);
+		double y= pq/pin.Dot(ein);
+		Yelec.push_back( y );
+	}
+	return Yelec;
+}
+auto getXelec(const std::vector<TVector3>& elec){
+
+	std::vector<double> Xelec;
+	TLorentzVector ein(0,0,-5,5);//need to read from file;
+	TLorentzVector pin(0,0,41,sqrt(41*41+MASS_PROTON*MASS_PROTON));
+	TLorentzVector scat;
+	TLorentzVector q;
+	for(auto& i1 : elec){
+		scat.SetPtEtaPhiM(i1.Pt(),i1.Eta(),i1.Phi(),MASS_ELECTRON);
+		q=ein-scat;
+		double Q2= -q.Mag2();
+		double pq=pin.Dot(q);
+		double x= Q2/(2.*pq);
+		Xelec.push_back( x );
+	}
+	return Xelec;
+}
 
 auto getNtrk(const std::vector<edm4eic::ReconstructedParticleData>& parts)
 {
