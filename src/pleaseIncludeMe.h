@@ -25,6 +25,7 @@
 #include "nlohmann/json.hpp"
 #include "edm4eic/InclusiveKinematicsData.h"
 #include "edm4eic/ReconstructedParticleData.h"
+#include "edm4eic/ClusterData.h"
 #include "edm4hep/MCParticleData.h"
 
 //for pf-RICH only
