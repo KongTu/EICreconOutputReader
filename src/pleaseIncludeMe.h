@@ -162,7 +162,7 @@ auto getEpzREC(const std::vector<edm4eic::ClusterData>& clusters,
   
   Epz += escat.E()-escat.Pz();
 
-  EmPz.push_back(EPz);
+  EmPz.push_back(Epz);
   return EmPz;
 }
 auto getQ2elec(const std::vector<TVector3>& elec){
