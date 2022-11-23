@@ -42,7 +42,7 @@ int readSingleParticles(TString inname="input/input.root",TString outname="test"
 			   .Define("etaElecMC",getEta,{"scatMC"})
 			   .Define("Q2elecMC",getQ2elec,{"scatMC"}).Define("YelecMC",getYelec,{"scatMC"}).Define("XelecMC",getXelec,{"scatMC"})
 			   .Define("scatREC",findScatElecREC,{"EcalEndcapNClusters","ReconstructedChargedParticles"})
-			   .Define("etaElecREC",getEta,{"scatREC"})
+			   .Define("etaElecREC",getEta,{"scatREC"}).Define("EpzREC",getEpzREC,{"EcalEndcapNClusters","ReconstructedChargedParticles"})
 			   .Define("Q2elecREC",getQ2elec,{"scatREC"}).Define("YelecREC",getYelec,{"scatREC"}).Define("XelecREC",getXelec,{"scatREC"})
 			   ;
 
@@ -54,6 +54,7 @@ int readSingleParticles(TString inname="input/input.root",TString outname="test"
 	auto h_Q2elec_REC = d2.Histo1D({"h_Q2elec_REC", "; Q^{2}_{e}; counts", 100, 0,100}, "Q2elecREC");
 	auto h_Yelec_REC = d2.Histo1D({"h_Yelec_REC", "; y_{e}; counts", 100, 0,1}, "YelecREC");
 	auto h_Xelec_REC = d2.Histo1D({"h_Xelec_REC", "; x_{e}; counts", 1000, 0,1}, "XelecREC");
+	auto h_Epz_REC = d2.Histo1D({"h_Epz_REC", "; E - P_{z} (GeV); counts", 200, 0,70}, "EpzREC");
 
 	//MC
 	h_mult_MC->Write();
@@ -82,6 +83,7 @@ int readSingleParticles(TString inname="input/input.root",TString outname="test"
 	h_Q2elec_REC->Write();
 	h_Yelec_REC->Write();
 	h_Xelec_REC->Write();
+	h_Epz_REC->Write();
 
 	output->Write();
   	output->Close();
