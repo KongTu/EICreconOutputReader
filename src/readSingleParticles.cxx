@@ -41,7 +41,7 @@ int readSingleParticles(TString inname="input/input.root",TString outname="test"
 	auto kineCut = [](const std::vector<double>& qsq, const std::vector<double>& y_elec) { 
 		if(qsq.size()<1||y_elec.size()<1) return 0;
 		if(qsq[0] > 1. && qsq[0] < 10. 
-			y_elec[0] > 0.01 && y_elec[0] < 0.95) return 1;
+			&& y_elec[0] > 0.01 && y_elec[0] < 0.95) return 1;
 		else return 0;
 	};
 
