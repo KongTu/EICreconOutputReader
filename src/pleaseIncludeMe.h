@@ -60,6 +60,41 @@ auto findScatElecMC(const std::vector<edm4hep::MCParticleData>& parts)
   momenta.push_back(leadingTrk);
   return momenta;
 }
+auto findScatElecREC(const std::vector<edm4eic::ClusterData>& clusters,
+											const std::vector<edm4eic::ReconstructedParticleData>& parts) 
+{
+  std::vector<ROOT::Math::PxPyPzMVector> momenta;
+  TLorentzVector escat(-1e10, -1e10, -1e10, -1e10);
+  //EEMC
+  double maxEnergy=0;
+  for(auto& i1 : clusters){
+    //need some projection, or matching the cluster here.
+    auto energy=i1.energy;
+    if(energy>maxEnergy){
+    	maxEnergy=energy;
+    }
+  }
+  double maxMom=0.;
+  TVector3 maxtrk(-1E10,-1E10,-1E10);
+  for(auto& i2 : parts){
+  	TVector3 trk(i2.momentum.x,i2.momentum.y,i2.momentum.z);
+  	if(trk.Mag()>maxMom){
+  		maxMom=trk.Mag();
+  		maxtrk=trk;
+  	}
+  }
+
+  //electron hypothesis;
+  double p = sqrt(maxEnergy*maxEnergy- MASS_ELECTRON*MASS_ELECTRON );
+  double eta=maxtrk.Eta();
+  double phi=maxtrk.Phi();
+  double pt = TMath::Sin(maxtrk.Theta())*p;
+  escat.SetPtEtaPhiM(pt,eta,phi,MASS_ELECTRON);
+  
+  momenta.push_back(ROOT::Math::PxPyPzMVector{escat.Px(),escat.Py(),escat.Pz(),MASS_ELECTRON});
+  return momenta;
+}
+
 auto getQ2elec(const std::vector<TVector3>& elec){
 
 	std::vector<double> Q2elec;

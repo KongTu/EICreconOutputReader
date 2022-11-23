@@ -37,16 +37,23 @@ int readSingleParticles(TString inname="input/input.root",TString outname="test"
 	auto h_etaVsPIDprob = d1.Histo2D({"h_etaVsPIDprob", "; #eta; PID probability",100,-5, 5,100,0,1},"eta","pidProb");
 	auto h_etaVsPIDprobMC = d1.Histo2D({"h_etaVsPIDprobMC", "; #eta; PID probability",100,-5, 5,100,0,1},"etaMC","pidProbMC");
 
-	//MC dis kinematics
+	//MC & REC dis kinematics
 	auto d2 = d.Define("scatMC",findScatElecMC,{"MCParticles"})
 			   .Define("etaElecMC",getEta,{"scatMC"})
 			   .Define("Q2elecMC",getQ2elec,{"scatMC"}).Define("YelecMC",getYelec,{"scatMC"}).Define("XelecMC",getXelec,{"scatMC"})
+			   .Define("scatREC",findScatElecREC,{"EcalEndcapNClusters","ReconstructedChargedParticles"})
+			   .Define("etaElecREC",getEta,{"scatREC"})
+			   .Define("Q2elecREC",getQ2elec,{"scatREC"}).Define("YelecREC",getYelec,{"scatREC"}).Define("XelecREC",getXelec,{"scatREC"})
 			   ;
 
 	auto h_Eta_Elect_MC = d2.Histo1D({"h_Eta_Elect_MC", "; #eta; counts", 150, -5, 10}, "etaElecMC");
 	auto h_Q2elec_MC = d2.Histo1D({"h_Q2elec_MC", "; Q^{2}_{e}; counts", 100, 0,100}, "Q2elecMC");
 	auto h_Yelec_MC = d2.Histo1D({"h_Yelec_MC", "; y_{e}; counts", 100, 0,1}, "YelecMC");
 	auto h_Xelec_MC = d2.Histo1D({"h_Xelec_MC", "; x_{e}; counts", 1000, 0,1}, "XelecMC");
+	auto h_Eta_Elect_REC = d2.Histo1D({"h_Eta_Elect_REC", "; #eta; counts", 150, -5, 10}, "etaElecREC");
+	auto h_Q2elec_REC = d2.Histo1D({"h_Q2elec_REC", "; Q^{2}_{e}; counts", 100, 0,100}, "Q2elecREC");
+	auto h_Yelec_REC = d2.Histo1D({"h_Yelec_REC", "; y_{e}; counts", 100, 0,1}, "YelecREC");
+	auto h_Xelec_REC = d2.Histo1D({"h_Xelec_REC", "; x_{e}; counts", 1000, 0,1}, "XelecREC");
 
 	//MC
 	h_mult_MC->Write();
@@ -71,6 +78,10 @@ int readSingleParticles(TString inname="input/input.root",TString outname="test"
 	h_Q2elec_MC->Write();
 	h_Yelec_MC->Write();
 	h_Xelec_MC->Write();
+	h_Eta_Elect_REC->Write();
+	h_Q2elec_REC->Write();
+	h_Yelec_REC->Write();
+	h_Xelec_REC->Write();
 
 	output->Write();
   	output->Close();
