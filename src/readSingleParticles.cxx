@@ -37,6 +37,13 @@ int readSingleParticles(TString inname="input/input.root",TString outname="test"
 	auto h_etaVsPIDprob = d1.Histo2D({"h_etaVsPIDprob", "; #eta; PID probability",100,-5, 5,100,0,1},"eta","pidProb");
 	auto h_etaVsPIDprobMC = d1.Histo2D({"h_etaVsPIDprobMC", "; #eta; PID probability",100,-5, 5,100,0,1},"etaMC","pidProbMC");
 
+	//Q2,x_v cuts
+	auto kineCut = [](const std::vector<double>& qsq) { 
+		if(qsq.size()<1) return 0;
+		if(qsq[0] > 1. && qsq[0] < 10. ) return 1;
+		else return 0;
+	};
+
 	//MC & REC dis kinematics
 	auto d2 = d.Define("scatMC",findScatElecMC,{"MCParticles"})
 			   .Define("etaElecMC",getEta,{"scatMC"})
@@ -44,6 +51,7 @@ int readSingleParticles(TString inname="input/input.root",TString outname="test"
 			   .Define("scatREC",findScatElecREC,{"EcalEndcapNClusters","ReconstructedChargedParticles"})
 			   .Define("etaElecREC",getEta,{"scatREC"}).Define("EpzREC",getEpzREC,{"EcalEndcapNClusters","ReconstructedChargedParticles"})
 			   .Define("Q2elecREC",getQ2elec,{"scatREC"}).Define("YelecREC",getYelec,{"scatREC"}).Define("XelecREC",getXelec,{"scatREC"})
+			   .Filter(kineCut,{"Q2elecMC"}); 
 			   ;
 
 	auto h_Eta_Elect_MC = d2.Histo1D({"h_Eta_Elect_MC", "; #eta; counts", 150, -5, 10}, "etaElecMC");
