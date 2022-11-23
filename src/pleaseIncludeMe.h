@@ -66,7 +66,7 @@ auto findScatElecMC(const std::vector<edm4hep::MCParticleData>& parts)
 auto findScatElecREC(const std::vector<edm4eic::ClusterData>& clusters,
 											const std::vector<edm4eic::ReconstructedParticleData>& parts) 
 {
-  std::vector<ROOT::Math::PxPyPzMVector> momenta;
+	std::vector<TVector3> momenta;
   TLorentzVector escat(-1e10, -1e10, -1e10, -1e10);
   //EEMC
   double maxEnergy=0;
@@ -94,7 +94,7 @@ auto findScatElecREC(const std::vector<edm4eic::ClusterData>& clusters,
   double pt = TMath::Sin(maxtrk.Theta())*p;
   escat.SetPtEtaPhiM(pt,eta,phi,MASS_ELECTRON);
   
-  momenta.push_back(ROOT::Math::PxPyPzMVector{escat.Px(),escat.Py(),escat.Pz(),MASS_ELECTRON});
+  momenta.push_back(escat.Vect());
   return momenta;
 }
 
