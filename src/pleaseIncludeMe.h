@@ -43,13 +43,14 @@ auto dconfig = dynamic_cast<DelphesConfig*>(ff->Get("DelphesConfigRICH"));
 
 auto findScatElecMC(const std::vector<edm4hep::MCParticleData>& parts)
 {
-  std::vector<ROOT::Math::PxPyPzMVector> momenta;
+  std::vector<TVector3> momenta;
   for(auto& i1 : parts){
+  	TVector3 trk(-1E10,-1E10,-1E10);
     if(i1.generatorStatus==1&&i1.PDG==11) {
-      momenta.push_back(ROOT::Math::PxPyPzMVector{i1.momentum.x,i1.momentum.y,i1.momentum.z,i1.mass});
+    	trk.SetXYZ(i1.momentum.x,i1.momentum.y,i1.momentum.z);
     }
-    else {momenta.push_back(ROOT::Math::PxPyPzMVector{-1e10, -1e10, -1e10, -1e10});}
   }
+  momenta.push_back(trk);
   return momenta;
 }
 auto getNtrk(const std::vector<edm4eic::ReconstructedParticleData>& parts)

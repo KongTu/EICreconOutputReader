@@ -39,7 +39,7 @@ int readSingleParticles(TString inname="input/input.root",TString outname="test"
 
 	//MC dis kinematics
 	auto d2 = d.Define("scatMC",findScatElecMC,{"MCParticles"})
-			   .Define("etaElecMC","scatMC.Eta")
+			   .Define("etaElecMC",getEta,{"scatMC.Eta"})
 			   ;
 
 	auto h_Eta_Elect_MC = d2.Histo1D({"h_Eta_Elect_MC", "; #eta; counts", 100, -5, 5}, "etaElecMC");
