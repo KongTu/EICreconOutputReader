@@ -6,6 +6,8 @@
 #include <algorithm>
 #include <utility>
 
+#include <Math/Vector4D.h>
+
 #include "ROOT/RDataFrame.hxx"
 #include <TH1D.h>
 #include <TFitResult.h>
@@ -40,8 +42,6 @@
 
 auto ff = new TFile("pfRICH-configs/pfRICH-default-Nov8.root");
 auto dconfig = dynamic_cast<DelphesConfig*>(ff->Get("DelphesConfigRICH"));
-
-using namespace ROOT;
 
 auto findScatElecMC(const std::vector<edm4hep::MCParticleData>& parts)
 {
