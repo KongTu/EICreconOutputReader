@@ -63,7 +63,7 @@ auto findScatElecMC(const std::vector<edm4hep::MCParticleData>& parts)
 auto getQ2elec(const std::vector<TVector3>& elec){
 
 	std::vector<double> Q2elec;
-	TLorentzVector ein(0,0,-5,5);//need to read from file;
+	TLorentzVector ein(0,0,-18,18);//need to read from file;
 	TLorentzVector scat;
 	for(auto& i1 : elec){
 		scat.SetPtEtaPhiM(i1.Pt(),i1.Eta(),i1.Phi(),MASS_ELECTRON);
@@ -74,8 +74,8 @@ auto getQ2elec(const std::vector<TVector3>& elec){
 auto getYelec(const std::vector<TVector3>& elec){
 
 	std::vector<double> Yelec;
-	TLorentzVector ein(0,0,-5,5);//need to read from file;
-	TLorentzVector pin(0,0,41,sqrt(41*41+MASS_PROTON*MASS_PROTON));//need to read from file;
+	TLorentzVector ein(0,0,-18,18);//need to read from file;
+	TLorentzVector pin(0,0,275,sqrt(275*275+MASS_PROTON*MASS_PROTON));//need to read from file;
 	TLorentzVector scat;
 	TLorentzVector q;
 	for(auto& i1 : elec){
@@ -91,8 +91,8 @@ auto getYelec(const std::vector<TVector3>& elec){
 auto getXelec(const std::vector<TVector3>& elec){
 
 	std::vector<double> Xelec;
-	TLorentzVector ein(0,0,-5,5);//need to read from file;
-	TLorentzVector pin(0,0,41,sqrt(41*41+MASS_PROTON*MASS_PROTON));
+	TLorentzVector ein(0,0,-18,18);//need to read from file;
+	TLorentzVector pin(0,0,275,sqrt(275*275+MASS_PROTON*MASS_PROTON));
 	TLorentzVector scat;
 	TLorentzVector q;
 	for(auto& i1 : elec){

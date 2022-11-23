@@ -43,8 +43,8 @@ int readSingleParticles(TString inname="input/input.root",TString outname="test"
 			   .Define("Q2elecMC",getQ2elec,{"scatMC"}).Define("YelecMC",getYelec,{"scatMC"}).Define("XelecMC",getXelec,{"scatMC"})
 			   ;
 
-	auto h_Eta_Elect_MC = d2.Histo1D({"h_Eta_Elect_MC", "; #eta; counts", 100, -5, 5}, "etaElecMC");
-	auto h_Q2elec_MC = d2.Histo1D({"h_Q2elec_MC", "; Q^{2}_{e}; counts", 1000, 0,1000}, "Q2elecMC");
+	auto h_Eta_Elect_MC = d2.Histo1D({"h_Eta_Elect_MC", "; #eta; counts", 150, -5, 10}, "etaElecMC");
+	auto h_Q2elec_MC = d2.Histo1D({"h_Q2elec_MC", "; Q^{2}_{e}; counts", 100, 0,100}, "Q2elecMC");
 	auto h_Yelec_MC = d2.Histo1D({"h_Yelec_MC", "; y_{e}; counts", 100, 0,1}, "YelecMC");
 	auto h_Xelec_MC = d2.Histo1D({"h_Xelec_MC", "; x_{e}; counts", 1000, 0,1}, "XelecMC");
 
