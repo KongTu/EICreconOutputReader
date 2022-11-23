@@ -61,6 +61,18 @@ auto findScatElecMC(const std::vector<edm4hep::MCParticleData>& parts)
   momenta.push_back(leadingTrk);
   return momenta;
 }
+auto getQ2elec(const std::vector<TVector3>& elec){
+
+	std::vector<double> Q2elec;
+	TLorentzVector ein(0,0,-5,5);//need to read from file;
+	TLorentzVector scat;
+	for(auto& i1 : elec){
+		scat.SetPtEtaPhiM(i1.Pt(),i1.Eta(),i1.Phi(),MASS_ELECTRON);
+		Q2elec.push_back(- (ein-scat).Mag2() );
+	}
+	return Q2elec;
+}
+
 auto getNtrk(const std::vector<edm4eic::ReconstructedParticleData>& parts)
 {
   std::vector<int> mult;

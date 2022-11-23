@@ -40,9 +40,11 @@ int readSingleParticles(TString inname="input/input.root",TString outname="test"
 	//MC dis kinematics
 	auto d2 = d.Define("scatMC",findScatElecMC,{"MCParticles"})
 			   .Define("etaElecMC",getEta,{"scatMC"})
+			   .Define("Q2elecMC",getQ2elec,{"scatMC"})
 			   ;
 
 	auto h_Eta_Elect_MC = d2.Histo1D({"h_Eta_Elect_MC", "; #eta; counts", 100, -5, 5}, "etaElecMC");
+	auto h_Q2elec_MC = d2.Histo1D({"h_Q2elec_MC", "; Q^{2}; counts", 1000, 0,1000}, "Q2elecMC");
 
 	//MC
 	h_mult_MC->Write();
@@ -64,6 +66,7 @@ int readSingleParticles(TString inname="input/input.root",TString outname="test"
 
 	//DIS
 	h_Eta_Elect_MC->Write();
+	h_Q2elec_MC->Write();
 
 	output->Write();
   	output->Close();
