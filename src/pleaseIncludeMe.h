@@ -81,12 +81,12 @@ auto findScatElecREC(const std::vector<edm4eic::ClusterData>& clusters,
   TVector3 maxtrk(-1E10,-1E10,-1E10);
   for(auto& i2 : parts){
   	TVector3 trk(i2.momentum.x,i2.momentum.y,i2.momentum.z);
+  	if(i2.charge>0) continue;
   	if(trk.Mag()>maxMom){
   		maxMom=trk.Mag();
   		maxtrk=trk;
   	}
   }
-
   //electron hypothesis;
   double p = sqrt(maxEnergy*maxEnergy- MASS_ELECTRON*MASS_ELECTRON );
   double eta=maxtrk.Eta();
