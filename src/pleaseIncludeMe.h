@@ -75,7 +75,7 @@ auto getYelec(const std::vector<TVector3>& elec){
 
 	std::vector<double> Yelec;
 	TLorentzVector ein(0,0,-18,18);//need to read from file;
-	TLorentzVector pin(0,0,275,sqrt(275*275+MASS_PROTON*MASS_PROTON));//need to read from file;
+	TLorentzVector pin(-6.8742,0,274.9141,sqrt(275*275+MASS_PROTON*MASS_PROTON));
 	TLorentzVector scat;
 	TLorentzVector q;
 	for(auto& i1 : elec){
@@ -92,7 +92,7 @@ auto getXelec(const std::vector<TVector3>& elec){
 
 	std::vector<double> Xelec;
 	TLorentzVector ein(0,0,-18,18);//need to read from file;
-	TLorentzVector pin(0,0,275,sqrt(275*275+MASS_PROTON*MASS_PROTON));
+	TLorentzVector pin(-6.8742,0,274.9141,sqrt(275*275+MASS_PROTON*MASS_PROTON));
 	TLorentzVector scat;
 	TLorentzVector q;
 	for(auto& i1 : elec){
