@@ -41,6 +41,8 @@
 auto ff = new TFile("pfRICH-configs/pfRICH-default-Nov8.root");
 auto dconfig = dynamic_cast<DelphesConfig*>(ff->Get("DelphesConfigRICH"));
 
+using namespace ROOT;
+
 auto findScatElecMC(const std::vector<edm4hep::MCParticleData>& parts)
 {
   std::vector<TVector3> momenta;
