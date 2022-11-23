@@ -22,11 +22,10 @@
 #include "fmt/color.h"
 #include "fmt/core.h"
 
-// #include "nlohmann/json.hpp"
+#include "nlohmann/json.hpp"
 #include "edm4eic/InclusiveKinematicsData.h"
 #include "edm4eic/ReconstructedParticleData.h"
 #include "edm4hep/MCParticleData.h"
-// #include "edm4eic/ReconstructedParticleCollection.h"
 
 //for pf-RICH only
 #include "/gpfs02/eic/ztu/EPIC/software_tutorial/analysis/irt/delphes/include/DelphesConfig.h"
@@ -76,7 +75,7 @@ auto getYelec(const std::vector<TVector3>& elec){
 
 	std::vector<double> Yelec;
 	TLorentzVector ein(0,0,-5,5);//need to read from file;
-	TLorentzVector pin(0,0,41,sqrt(41*41+MASS_PROTON*MASS_PROTON));
+	TLorentzVector pin(0,0,41,sqrt(41*41+MASS_PROTON*MASS_PROTON));//need to read from file;
 	TLorentzVector scat;
 	TLorentzVector q;
 	for(auto& i1 : elec){
@@ -106,7 +105,6 @@ auto getXelec(const std::vector<TVector3>& elec){
 	}
 	return Xelec;
 }
-
 auto getNtrk(const std::vector<edm4eic::ReconstructedParticleData>& parts)
 {
   std::vector<int> mult;
