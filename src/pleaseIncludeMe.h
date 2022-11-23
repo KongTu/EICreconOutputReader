@@ -41,6 +41,17 @@
 auto ff = new TFile("pfRICH-configs/pfRICH-default-Nov8.root");
 auto dconfig = dynamic_cast<DelphesConfig*>(ff->Get("DelphesConfigRICH"));
 
+auto findScatElecMC(const std::vector<edm4hep::MCParticleData>& parts)
+{
+  std::vector<ROOT::Math::PxPyPzMVector> momenta;
+  for(auto& i1 : parts){
+    if(i1.generatorStatus==1&&i1.PDG==11) {
+      momenta.push_back(ROOT::Math::PxPyPzMVector{i1.momentum.x,i1.momentum.y,i1.momentum.z,i1.mass});
+    }
+    else {momenta.push_back(ROOT::Math::PxPyPzMVector{-1e10, -1e10, -1e10, -1e10});}
+  }
+  return momenta;
+}
 auto getNtrk(const std::vector<edm4eic::ReconstructedParticleData>& parts)
 {
   std::vector<int> mult;

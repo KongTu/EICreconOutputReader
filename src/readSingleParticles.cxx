@@ -37,6 +37,13 @@ int readSingleParticles(TString inname="input/input.root",TString outname="test"
 	auto h_etaVsPIDprob = d1.Histo2D({"h_etaVsPIDprob", "; #eta; PID probability",100,-5, 5,100,0,1},"eta","pidProb");
 	auto h_etaVsPIDprobMC = d1.Histo2D({"h_etaVsPIDprobMC", "; #eta; PID probability",100,-5, 5,100,0,1},"etaMC","pidProbMC");
 
+	//MC dis kinematics
+	auto d2 = d.Define("scatMC",findScatElecMC,{"MCParticles"})
+			   .Define("etaElecMC","scatMC.Eta")
+			   ;
+
+	auto h_Eta_Elect_MC = d2.Histo1D({"h_Eta_Elect_MC", "; #eta; counts", 100, -5, 5}, "etaElecMC");
+
 	//MC
 	h_mult_MC->Write();
 	h_eta_MC->Write();
@@ -54,6 +61,9 @@ int readSingleParticles(TString inname="input/input.root",TString outname="test"
 	h_pidProb_REC->Write();
 	h_etaVsPIDprob->Write();
 	h_etaVsPIDprobMC->Write();
+
+	//DIS
+	h_Eta_Elect_MC->Write();
 
 	output->Write();
   	output->Close();
