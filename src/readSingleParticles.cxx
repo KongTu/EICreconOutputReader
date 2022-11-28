@@ -78,7 +78,7 @@ int readSingleParticles(TString inname="input/input.root",TString outname="test"
 			   ;
 
 	auto h_Eta_Elect_REC_bkg = d3.Histo1D({"h_Eta_Elect_REC_bkg", "; #eta; counts", 150, -5, 10}, "etaElecRECbkg");
-	auto h_Mass_Elect_REC_bkg = d3.Histo1D({"h_Mass_Elect_REC_bkg", "; mass; counts", 200, 0, 2}, "bkgMass");
+	auto h_Mass_Elect_REC_bkg = d3.Histo1D({"h_Mass_Elect_REC_bkg", "; mass; counts", 2000, -1, 19}, "bkgMass");
 	auto h_etaVsPIDprob_bkg = d3.Histo2D({"h_etaVsPIDprob_bkg", "; #eta; PID probability",100,-5, 5,100,0,1},"etaElecRECbkg","bkgProb");
 
 	//MC
