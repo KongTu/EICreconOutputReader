@@ -28,6 +28,7 @@
 #include "edm4eic/InclusiveKinematicsData.h"
 #include "edm4eic/ReconstructedParticleData.h"
 #include "edm4eic/ClusterData.h"
+#include "edm4eic/MCRecoParticleAssociationData.h"
 #include "edm4hep/MCParticleData.h"
 
 //for pf-RICH only
@@ -159,10 +160,6 @@ auto findScatElecRECBkg(const std::vector<edm4hep::MCParticleData>& mcs,
 
   if(PDG!=11){
   	momenta.push_back(maxtrk);
-  }
-  else{
-  	TVector3 sig(0,0,-1E10);
-  	momenta.push_back(sig);
   }
 
   return momenta;
