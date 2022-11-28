@@ -77,10 +77,12 @@ int readSingleParticles(TString inname="input/input.root",TString outname="test"
 			   .Define("scatRECbkg",findScatElecRECBkg,{"MCParticles","ReconstructedChargedParticles","ReconstructedChargedParticlesAssociations"})
 			   .Define("scatRECbkg3Vect",tlorentzvector_to_tvector3,{"scatRECbkg"})
 			   .Define("etaElecRECbkg",getEta,{"scatRECbkg3Vect"})
+			   .Define("bkgProb",getPIDprob_pfRICH,{"scatRECbkg"})
 			   .Filter(kineCut,{"Q2elecMC","YelecMC"}); 
 			   ;
 
 	auto h_Eta_Elect_REC_bkg = d3.Histo1D({"h_Eta_Elect_REC_bkg", "; #eta; counts", 150, -5, 10}, "etaElecRECbkg");
+	auto h_etaVsPIDprob_bkg = d3.Histo2D({"h_etaVsPIDprob_bkg", "; #eta; PID probability",100,-5, 5,100,0,1},"etaElecRECbkg","bkgProb");
 
 	//MC
 	h_mult_MC->Write();
@@ -113,6 +115,7 @@ int readSingleParticles(TString inname="input/input.root",TString outname="test"
 
 	//bkg
 	h_Eta_Elect_REC_bkg->Write();
+	h_etaVsPIDprob_bkg->Write();
 
 	output->Write();
   	output->Close();

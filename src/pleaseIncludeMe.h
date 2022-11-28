@@ -370,27 +370,27 @@ auto getPIDprob(const std::vector<TVector3>& tracks)
 	}
 	return prob;
 }
-// auto getPIDprob(const std::vector<TLorentzVector>& tracks)
-// {	//hpid==0,pion
-// 	//hpid==1,kaon
-// 	//hpod==2,proton
-// 	unsigned hdim = dconfig->GetMassHypothesisCount();
-// 	std::vector<double> prob;
-// 	for(auto& i1 : tracks){
-// 		int hpid=0;
-// 		if( fabs(i1.M()-MASS_PION)<1e-5) hpid=0;
-// 		if( fabs(i1.M()-MASS_KAON)<1e-5) hpid=1;
-// 		if( fabs(i1.M()-MASS_PROTON)<1e-5) hpid=2;
+auto getPIDprob_pfRICH(const std::vector<TLorentzVector>& tracks)
+{	//hpid==0,pion
+	//hpid==1,kaon
+	//hpod==2,proton
+	unsigned hdim = dconfig->GetMassHypothesisCount();
+	std::vector<double> prob;
+	for(auto& i1 : tracks){
+		int hpid=0;
+		if( fabs(i1.M()-MASS_PION)<1e-5) hpid=0;
+		if( fabs(i1.M()-MASS_KAON)<1e-5) hpid=1;
+		if( fabs(i1.M()-MASS_PROTON)<1e-5) hpid=2;
 
-// 		double hmtx[hdim*hdim];
-//     	int ret = dconfig->GetSmearingMatrix(i1, hmtx);
-//     	if(ret!=0){prob.push_back(0.);}
-//     	else{
-//     		prob.push_back( hmtx[(hdim+1)*hpid] );
-//     	}	
-// 	}
-// 	return prob;
-// }
+		double hmtx[hdim*hdim];
+    	int ret = dconfig->GetSmearingMatrix(i1, hmtx);
+    	if(ret!=0){prob.push_back(0.);}
+    	else{
+    		prob.push_back( hmtx[(hdim+1)*hpid] );
+    	}	
+	}
+	return prob;
+}
 auto getPIDprobMC(const std::vector<TVector3>& tracks,
 									const std::vector<edm4hep::MCParticleData>& mcs )
 {	
