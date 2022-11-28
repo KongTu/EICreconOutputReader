@@ -144,6 +144,7 @@ auto findScatElecRECBkg(const std::vector<edm4hep::MCParticleData>& mcs,
   	int rec_id = i3.recID;
   		std::cout << "rec_id = "<< rec_id << std::endl;
   	int sim_id = i3.simID;
+  		std::cout << "sim_id = "<< sim_id << std::endl;
   	if (rec_id == elec_index) mc_elect_index=sim_id;
   }
 
@@ -153,7 +154,7 @@ auto findScatElecRECBkg(const std::vector<edm4hep::MCParticleData>& mcs,
   double mass=-0.1;
   for(auto& i1 : mcs){
   	index++;
-  	if(index == mc_elect_index && i1.generatorStatus==1){
+  	if(index == mc_elect_index){
   		PDG=i1.PDG;
   		mass=i1.mass;
   	}
