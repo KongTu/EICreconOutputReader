@@ -118,7 +118,7 @@ auto findScatElecREC(const std::vector<edm4eic::ClusterData>& clusters,
 }
 auto findScatElecRECBkg(const std::vector<edm4hep::MCParticleData>& mcs,
 											const std::vector<edm4eic::ReconstructedParticleData>& parts,
-												const std::vector<edm4eic::edm4eic::MCRecoParticleAssociationData>& assocs) 
+												const std::vector<edm4eic::MCRecoParticleAssociationData>& assocs) 
 {
 	std::vector<TVector3> momenta;
 	//finding REC scat e'
