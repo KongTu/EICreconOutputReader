@@ -75,8 +75,7 @@ int readSingleParticles(TString inname="input/input.root",TString outname="test"
 			   .Define("etaElecMC",getEta,{"scatMC"})
 			   .Define("Q2elecMC",getQ2elec,{"scatMC"}).Define("YelecMC",getYelec,{"scatMC"}).Define("XelecMC",getXelec,{"scatMC"})
 			   .Define("scatRECbkg",findScatElecRECBkg,{"MCParticles","ReconstructedChargedParticles","ReconstructedChargedParticlesAssociations"})
-			   .Define("scatRECbkg3vect",tlorentzvector_to_tvector3,{"scatRECbkg"})
-			   .Define("etaElecRECbkg",getEta,{"scatRECbkg3vect"})
+			   .Define("etaElecRECbkg",getEta4vect,{"scatRECbkg"})
 			   .Filter(kineCut,{"Q2elecMC","YelecMC"}); 
 			   ;
 
