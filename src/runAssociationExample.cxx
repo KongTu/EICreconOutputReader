@@ -57,7 +57,7 @@ void reco_particles_track_matching(const char *file_name) {
 
 
 int runAssociationExample() {
-    std::string input_file("../input/input-eicrecon-DIS_18x275_Q2-1_0001.root");
+    std::string input_file("input/input-eicrecon-DIS_18x275_Q2-1_0001.root");
     reco_particles_track_matching(input_file.c_str());
     return 0;
 }
