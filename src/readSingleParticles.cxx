@@ -54,7 +54,11 @@ int readSingleParticles(TString inname="input/input.root",TString outname="test"
 			   .Define("Q2elecREC",getQ2elec,{"scatREC"}).Define("YelecREC",getYelec,{"scatREC"}).Define("XelecREC",getXelec,{"scatREC"})
 			   .Filter(kineCut,{"Q2elecMC","YelecMC"}); 
 			   ;
-
+	/*
+	TODO: 
+	1. NEED to add an association between rec and mc scat elec and plot background;
+	2. NEED to reject those background based on pfRICH parametrization.
+	*/
 	auto h_Eta_Elect_MC = d2.Histo1D({"h_Eta_Elect_MC", "; #eta; counts", 150, -5, 10}, "etaElecMC");
 	auto h_Q2elec_MC = d2.Histo1D({"h_Q2elec_MC", "; Q^{2}_{e}; counts", 100, 0,100}, "Q2elecMC");
 	auto h_Yelec_MC = d2.Histo1D({"h_Yelec_MC", "; y_{e}; counts", 100, 0,1}, "YelecMC");
