@@ -112,16 +112,15 @@ auto findScatElecREC(const std::vector<edm4eic::ClusterData>& clusters,
   
   Epz += escat.E()-escat.Pz();
   if( escat.Eta()< 0. ) {
-  	// escat.SetPxPyPzE(0,0,-1E10,-1E10);
   	momenta.push_back(escat.Vect());
   }
   return momenta;
 }
 auto findScatElecRECBkg(const std::vector<edm4hep::MCParticleData>& mcs,
-											const std::vector<edm4eic::ReconstructedParticleData>& parts,
-												const std::vector<edm4eic::MCRecoParticleAssociationData>& assocs) 
-{
-	std::vector<TVector3> momenta;
+													const std::vector<edm4eic::ReconstructedParticleData>& parts,
+															const std::vector<edm4eic::MCRecoParticleAssociationData>& assocs) 
+{	
+	std::vector<TLorentzVector> momenta;
 	//finding REC scat e'
 	double maxMom=0.;
   TVector3 maxtrk(-1E10,-1E10,-1E10);
@@ -149,17 +148,20 @@ auto findScatElecRECBkg(const std::vector<edm4hep::MCParticleData>& mcs,
   //finding what truth particle PID
   index=-1;
   int PDG=-99;
-  int charge=0;
   for(auto& i1 : mcs){
   	index++;
   	if(index == mc_elect_index && i1.generatorStatus==1){
   		PDG=i1.PDG;
-  		charge=i1.charge;
   	}
   }
 
-  if(PDG!=11){
-  	momenta.push_back(maxtrk);
+  TLorentzVector maxtrk_4vect;
+  if(fabs(PDG)==211) maxtrk_4vect.SetVectM(maxtrk,MASS_PION);
+  if(fabs(PDG)==321) maxtrk_4vect.SetVectM(maxtrk,MASS_KAON);
+  if(fabs(PDG)==2212) maxtrk_4vect.SetVectM(maxtrk,MASS_PROTON);
+
+  if(PDG!=11 && maxtrk.Eta()<0){
+  	momenta.push_back(maxtrk_4vect);
   }
 
   return momenta;
@@ -332,6 +334,12 @@ auto getEta(const std::vector<TVector3>& tracks)
 	for(auto& i1 : tracks){eta.push_back(i1.Eta());}
 	return eta;
 }
+auto getEta(const std::vector<TLorentzVector>& tracks)
+{
+	std::vector<double> eta;
+	for(auto& i1 : tracks){eta.push_back(i1.Eta());}
+	return eta;
+}
 auto getPhi(const std::vector<TVector3>& tracks)
 {
 	std::vector<double> Phi;
@@ -348,6 +356,27 @@ auto getPIDprob(const std::vector<TVector3>& tracks)
 	for(auto& i1 : tracks){
 
 		int hpid=0;
+		double hmtx[hdim*hdim];
+    	int ret = dconfig->GetSmearingMatrix(i1, hmtx);
+    	if(ret!=0){prob.push_back(0.);}
+    	else{
+    		prob.push_back( hmtx[(hdim+1)*hpid] );
+    	}	
+	}
+	return prob;
+}
+auto getPIDprob(const std::vector<TLorentzVector>& tracks)
+{	//hpid==0,pion
+	//hpid==1,kaon
+	//hpod==2,proton
+	unsigned hdim = dconfig->GetMassHypothesisCount();
+	std::vector<double> prob;
+	for(auto& i1 : tracks){
+		int hpid=0;
+		if( fabs(i1.M()-MASS_PION)<1e-5) hpid=0;
+		if( fabs(i1.M()-MASS_KAON)<1e-5) hpid=1;
+		if( fabs(i1.M()-MASS_PROTON)<1e-5) hpid=2;
+
 		double hmtx[hdim*hdim];
     	int ret = dconfig->GetSmearingMatrix(i1, hmtx);
     	if(ret!=0){prob.push_back(0.);}
