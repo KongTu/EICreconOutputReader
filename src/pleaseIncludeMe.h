@@ -137,10 +137,12 @@ auto findScatElecRECBkg(const std::vector<edm4hep::MCParticleData>& mcs,
   	}
   }
 
+  std::cout << "elec_index = "<< elec_index << std::endl;
   //finding what truth particle ID
   int mc_elect_index=-1;
   for(auto& i3 : assocs){
   	int rec_id = i3.recID;
+  		std::cout << "rec_id = "<< rec_id << std::endl;
   	int sim_id = i3.simID;
   	if (rec_id == elec_index) mc_elect_index=sim_id;
   }
@@ -148,7 +150,7 @@ auto findScatElecRECBkg(const std::vector<edm4hep::MCParticleData>& mcs,
   //finding what truth particle PID
   index=-1;
   int PDG=-99;
-  double mass=-99;
+  double mass=-0.1;
   for(auto& i1 : mcs){
   	index++;
   	if(index == mc_elect_index && i1.generatorStatus==1){
@@ -161,7 +163,7 @@ auto findScatElecRECBkg(const std::vector<edm4hep::MCParticleData>& mcs,
   TLorentzVector maxtrk_4vect;
   maxtrk_4vect.SetVectM(maxtrk,mass);
   
-  if(PDG!=11 && maxtrk.Eta()<0){
+  if(PDG!=11 && mass >= 0. && maxtrk.Eta()<0){
   	momenta.push_back(maxtrk_4vect);
   }
 
