@@ -322,6 +322,15 @@ auto pt_resolution(const std::vector<edm4hep::MCParticleData>& mcs,
 
 	return resolution;
 }
+
+auto tlorentzvector_to_tvector3(const std::vector<TLorentzVector>& tracks)
+{
+	std::vector<TVector3> momenta;
+	for(auto& i1 : tracks){
+		momenta.push_back( i1.Vect() );
+	}
+	return momenta;
+}
 auto getPt(const std::vector<TVector3>& tracks)
 {
 	std::vector<double> Pt;
@@ -329,12 +338,6 @@ auto getPt(const std::vector<TVector3>& tracks)
 	return Pt;
 }
 auto getEta(const std::vector<TVector3>& tracks)
-{
-	std::vector<double> eta;
-	for(auto& i1 : tracks){eta.push_back(i1.Eta());}
-	return eta;
-}
-auto getEta(const std::vector<TLorentzVector>& tracks)
 {
 	std::vector<double> eta;
 	for(auto& i1 : tracks){eta.push_back(i1.Eta());}
