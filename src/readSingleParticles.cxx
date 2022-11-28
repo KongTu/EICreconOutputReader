@@ -54,11 +54,7 @@ int readSingleParticles(TString inname="input/input.root",TString outname="test"
 			   .Define("Q2elecREC",getQ2elec,{"scatREC"}).Define("YelecREC",getYelec,{"scatREC"}).Define("XelecREC",getXelec,{"scatREC"})
 			   .Filter(kineCut,{"Q2elecMC","YelecMC"}); 
 			   ;
-	/*
-	TODO: 
-	1. NEED to add an association between rec and mc scat elec and plot background;
-	2. NEED to reject those background based on pfRICH parametrization.
-	*/
+
 	auto h_Eta_Elect_MC = d2.Histo1D({"h_Eta_Elect_MC", "; #eta; counts", 150, -5, 10}, "etaElecMC");
 	auto h_Q2elec_MC = d2.Histo1D({"h_Q2elec_MC", "; Q^{2}_{e}; counts", 100, 0,100}, "Q2elecMC");
 	auto h_Yelec_MC = d2.Histo1D({"h_Yelec_MC", "; y_{e}; counts", 100, 0,1}, "YelecMC");
@@ -68,6 +64,22 @@ int readSingleParticles(TString inname="input/input.root",TString outname="test"
 	auto h_Yelec_REC = d2.Histo1D({"h_Yelec_REC", "; y_{e}; counts", 100, 0,1}, "YelecREC");
 	auto h_Xelec_REC = d2.Histo1D({"h_Xelec_REC", "; x_{e}; counts", 1000, 0,1}, "XelecREC");
 	auto h_Epz_REC = d2.Histo1D({"h_Epz_REC", "; E - P_{z} (GeV); counts", 200, 0,70}, "EpzREC");
+	
+	/*
+	TODO: 
+	1. NEED to add an association between rec and mc scat elec and plot background;
+	2. NEED to reject those background based on pfRICH parametrization.
+	*/
+
+	auto d3 = d.Define("scatMC",findScatElecMC,{"MCParticles"})
+			   .Define("etaElecMC",getEta,{"scatMC"})
+			   .Define("Q2elecMC",getQ2elec,{"scatMC"}).Define("YelecMC",getYelec,{"scatMC"}).Define("XelecMC",getXelec,{"scatMC"})
+			   .Define("scatRECbkg",findScatElecRECBkg,{"MCParticles","ReconstructedChargedParticles","ReconstructedChargedParticlesAssociations"})
+			   .Define("etaElecRECbkg",getEta,{"scatRECbkg"})
+			   .Filter(kineCut,{"Q2elecMC","YelecMC"}); 
+			   ;
+
+	auto h_Eta_Elect_REC_bkg = d3.Histo1D({"h_Eta_Elect_REC_bkg", "; #eta; counts", 150, -5, 10}, "etaElecRECbkg");
 
 	//MC
 	h_mult_MC->Write();
@@ -97,6 +109,9 @@ int readSingleParticles(TString inname="input/input.root",TString outname="test"
 	h_Yelec_REC->Write();
 	h_Xelec_REC->Write();
 	h_Epz_REC->Write();
+
+	//bkg
+	h_Eta_Elect_REC_bkg->Write();
 
 	output->Write();
   	output->Close();

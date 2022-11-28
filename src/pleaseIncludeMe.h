@@ -116,6 +116,55 @@ auto findScatElecREC(const std::vector<edm4eic::ClusterData>& clusters,
   }
   return momenta;
 }
+auto findScatElecRECBkg(const std::vector<edm4hep::MCParticleData>& mcs,
+											const std::vector<edm4eic::ReconstructedParticleData>& parts,
+												const std::vector<edm4eic::edm4eic::MCRecoParticleAssociationData>& assocs) 
+{
+	std::vector<TVector3> momenta;
+	//finding REC scat e'
+	double maxMom=0.;
+  TVector3 maxtrk(-1E10,-1E10,-1E10);
+  int elec_index=0;
+  int index=-1;
+  for(auto& i2 : parts){
+  	index++;
+  	TVector3 trk(i2.momentum.x,i2.momentum.y,i2.momentum.z);
+  	if(i2.charge>0) continue;
+  	if(trk.Mag()>maxMom){
+  		maxMom=trk.Mag();
+  		maxtrk=trk;
+  		elec_index=index;
+  	}
+  }
+
+  //finding what truth particle ID
+  int mc_elect_index=-1;
+  for(auto& i3 : assocs){
+  	int rec_id = i3.recID;
+  	int sim_id = i3.simID;
+  	if (rec_id == elec_index) mc_elect_index=sim_id;
+  }
+
+  //finding what truth particle PID
+  int index=-1;
+  int PDG=-99;
+  int charge=0;
+  double energy=-99.;
+  for(auto& i1 : mcs){
+  	index++;
+  	if(index == mc_elect_index && i1.generatorStatus==1){
+  		PDG=i1.PDG;
+  		charge=i1.charge;
+  		energy=i1.energy;
+  	}
+  }
+
+  if(PDG!=11){
+  	momenta.push_back(maxtrk);
+  }
+
+  return momenta;
+}
 auto getEpzREC(const std::vector<edm4eic::ClusterData>& clusters,
 											const std::vector<edm4eic::ReconstructedParticleData>& parts) 
 {
