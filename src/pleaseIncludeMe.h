@@ -124,7 +124,7 @@ auto findScatElecRECBkg(const std::vector<edm4hep::MCParticleData>& mcs,
 	//finding REC scat e'
 	double maxMom=0.;
   TVector3 maxtrk(-1E10,-1E10,-1E10);
-  int elec_index=0;
+  int elec_index=-1;
   int index=-1;
   for(auto& i2 : parts){
   	index++;
