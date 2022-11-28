@@ -383,11 +383,12 @@ auto getPIDprob_pfRICH(const std::vector<TLorentzVector>& tracks)
 		if( fabs(i1.M()-MASS_PROTON)<1e-5) hpid=2;
 
 		double hmtx[hdim*hdim];
-    	int ret = dconfig->GetSmearingMatrix(i1, hmtx);
-    	if(ret!=0){prob.push_back(0.);}
-    	else{
-    		prob.push_back( hmtx[(hdim+1)*hpid] );
-    	}	
+		TVector3 track = i1.Vect();
+  	int ret = dconfig->GetSmearingMatrix(track, hmtx);
+  	if(ret!=0){prob.push_back(0.);}
+  	else{
+  		prob.push_back( hmtx[(hdim+1)*hpid] );
+  	}	
 	}
 	return prob;
 }
