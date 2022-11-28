@@ -352,24 +352,6 @@ auto getPhi(const std::vector<TVector3>& tracks)
 	return Phi;
 }
 //pfRICH test
-auto getPIDprob(const std::vector<TVector3>& tracks)
-{	//hpid==0,pion
-	//hpid==1,kaon
-	//hpod==2,proton
-	unsigned hdim = dconfig->GetMassHypothesisCount();
-	std::vector<double> prob;
-	for(auto& i1 : tracks){
-
-		int hpid=0;
-		double hmtx[hdim*hdim];
-    	int ret = dconfig->GetSmearingMatrix(i1, hmtx);
-    	if(ret!=0){prob.push_back(0.);}
-    	else{
-    		prob.push_back( hmtx[(hdim+1)*hpid] );
-    	}	
-	}
-	return prob;
-}
 auto getPIDprob_pfRICH(const std::vector<TLorentzVector>& tracks)
 {	//hpid==0,pion
 	//hpid==1,kaon
@@ -377,7 +359,7 @@ auto getPIDprob_pfRICH(const std::vector<TLorentzVector>& tracks)
 	unsigned hdim = dconfig->GetMassHypothesisCount();
 	std::vector<double> prob;
 	for(auto& i1 : tracks){
-		int hpid=0;
+		int hpid=-1;
 		if( fabs(i1.M()-MASS_PION)<1e-5) hpid=0;
 		if( fabs(i1.M()-MASS_KAON)<1e-5) hpid=1;
 		if( fabs(i1.M()-MASS_PROTON)<1e-5) hpid=2;
@@ -385,51 +367,7 @@ auto getPIDprob_pfRICH(const std::vector<TLorentzVector>& tracks)
 		double hmtx[hdim*hdim];
 		TVector3 track = i1.Vect();
   	int ret = dconfig->GetSmearingMatrix(track, hmtx);
-  	if(ret!=0){prob.push_back(0.);}
-  	else{
-  		prob.push_back( hmtx[(hdim+1)*hpid] );
-  	}	
-	}
-	return prob;
-}
-auto getPIDprobMC(const std::vector<TVector3>& tracks,
-									const std::vector<edm4hep::MCParticleData>& mcs )
-{	
-	/*
-	Need to write the association here. 
-	Basically, one should match rec to mc, and use mc pdg 
-	to determine which true PID is and set hpid; 
-	-->	hpid==0,pion; hpid==1,kaon; hpod==2,proton
-	*/
-
-	unsigned hdim = dconfig->GetMassHypothesisCount();
-	std::vector<double> prob;
-	for(auto& i1 : tracks){
-	//matching mc for now
-		double minR=1e7;
-		TVector3 matchMCtrk(0,0,0);
-		int matchPID=-99;
-		for(auto& i2 : mcs){
-			TVector3 trkMC(i2.momentum.x,i2.momentum.y,i2.momentum.z);
-			if(i2.charge!=0 && i2.generatorStatus==1){
-				if(i1.DeltaR(trkMC) < minR ){
-					minR=i1.DeltaR(trkMC);
-					matchMCtrk=trkMC;
-					matchPID=i2.PDG;
-				}
-			}
-		}
-		int hpid=-99;
-		if(TMath::Abs(matchPID)==211) hpid=0;
-		else if(TMath::Abs(matchPID)==321) hpid=1;
-		else if(TMath::Abs(matchPID)==2212) hpid=2;
-		else hpid=-99;
-		
-		double hmtx[hdim*hdim];
-  	int ret = dconfig->GetSmearingMatrix(i1, hmtx);
-  	if(ret!=0 || hpid==-99){
-  		prob.push_back(0.);
-  	}
+  	if(ret!=0 || hpid==-1){prob.push_back(0.);}
   	else{
   		prob.push_back( hmtx[(hdim+1)*hpid] );
   	}	

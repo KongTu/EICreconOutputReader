@@ -11,12 +11,10 @@ int readSingleParticles(TString inname="input/input.root",TString outname="test"
 						 .Define("eta",getEta,{"momentum"})
 						 .Define("pt",getPt,{"momentum"})
 						 .Define("phi",getPhi,{"momentum"})
-						 .Define("pidProb",getPIDprob,{"momentum"})
 						 .Define("momentumMC",momenta_from_mcparticles,{"MCParticles"})
 						 .Define("etaMC",getEta,{"momentumMC"})
 						 .Define("ptMC",getPt,{"momentumMC"})
 						 .Define("phiMC",getPhi,{"momentumMC"})
-						 .Define("pidProbMC",getPIDprobMC,{"momentumMC","MCParticles"})
 						 .Define("ptRes",pt_resolution,{"MCParticles","ReconstructedChargedParticles"})
 						 ;
 
@@ -28,14 +26,11 @@ int readSingleParticles(TString inname="input/input.root",TString outname="test"
 	auto h_eta_REC = d1.Histo1D({"h_eta_REC", "; #eta; counts", 100, -5, 5}, "eta");
 	auto h_pt_REC = d1.Histo1D({"h_pt_REC", "; p_{T} (GeV/c); counts", 100, 0, 5}, "pt");
 	auto h_phi_REC = d1.Histo1D({"h_phi_REC", "; #phi; counts", 100, -PI, PI}, "phi");
-	auto h_pidProb_REC = d1.Histo1D({"h_pidProb_REC", "; PID probability; counts", 100, 0, 1}, "pidProb");
 	auto h_eta_MC = d1.Histo1D({"h_eta_MC", "; #eta; counts", 100, -5, 5}, "etaMC");
 	auto h_pt_MC = d1.Histo1D({"h_pt_MC", "; p_{T} (GeV/c); counts", 100, 0, 5}, "ptMC");
 	auto h_phi_MC = d1.Histo1D({"h_phi_MC", "; #phi; counts; counts", 100, -PI, PI}, "phiMC");
 	auto h_pt_Res = d1.Histo1D({"h_pt_Res", "; Resolution; counts", 100, -1,1}, "ptRes");
 	auto h_pt_Res2D = d1.Histo2D({"h_pt_Res2D", "; p_{T} (GeV/c); Resolution",100,0,5,100,-1,1},"pt","ptRes");
-	auto h_etaVsPIDprob = d1.Histo2D({"h_etaVsPIDprob", "; #eta; PID probability",100,-5, 5,100,0,1},"eta","pidProb");
-	auto h_etaVsPIDprobMC = d1.Histo2D({"h_etaVsPIDprobMC", "; #eta; PID probability",100,-5, 5,100,0,1},"etaMC","pidProbMC");
 
 	//Q2,x_v cuts
 	auto kineCut = [](const std::vector<double>& qsq, const std::vector<double>& y_elec) { 
@@ -97,10 +92,6 @@ int readSingleParticles(TString inname="input/input.root",TString outname="test"
 	//pt resolution
 	h_pt_Res->Write();
 	h_pt_Res2D->Write();
-	//pid
-	h_pidProb_REC->Write();
-	h_etaVsPIDprob->Write();
-	h_etaVsPIDprobMC->Write();
 
 	//DIS
 	h_Eta_Elect_MC->Write();
