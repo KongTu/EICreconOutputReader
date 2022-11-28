@@ -345,12 +345,6 @@ auto getEta(const std::vector<TVector3>& tracks)
 	for(auto& i1 : tracks){eta.push_back(i1.Eta());}
 	return eta;
 }
-auto getEta4vect(const std::vector<TLorentzVector>& tracks)
-{
-	std::vector<double> eta;
-	for(auto& i1 : tracks){eta.push_back(i1.Eta());}
-	return eta;
-}
 auto getPhi(const std::vector<TVector3>& tracks)
 {
 	std::vector<double> Phi;
