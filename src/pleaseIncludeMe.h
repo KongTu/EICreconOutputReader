@@ -327,7 +327,8 @@ auto tlorentzvector_to_tvector3(const std::vector<TLorentzVector>& tracks)
 {
 	std::vector<TVector3> momenta;
 	for(auto& i1 : tracks){
-		momenta.push_back( i1.Vect() );
+		TVector3 tmp = i1.Vect();
+		momenta.push_back( tmp );
 	}
 	return momenta;
 }
