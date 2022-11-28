@@ -146,21 +146,23 @@ auto findScatElecRECBkg(const std::vector<edm4hep::MCParticleData>& mcs,
   }
 
   //finding what truth particle PID
-  int index=-1;
+  index=-1;
   int PDG=-99;
   int charge=0;
-  double energy=-99.;
   for(auto& i1 : mcs){
   	index++;
   	if(index == mc_elect_index && i1.generatorStatus==1){
   		PDG=i1.PDG;
   		charge=i1.charge;
-  		energy=i1.energy;
   	}
   }
 
   if(PDG!=11){
   	momenta.push_back(maxtrk);
+  }
+  else{
+  	TVector3 sig(0,0,-1E10);
+  	momenta.push_back(sig);
   }
 
   return momenta;
