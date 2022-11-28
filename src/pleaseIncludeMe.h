@@ -333,6 +333,12 @@ auto tlorentzvector_to_tvector3(const std::vector<TLorentzVector>& tracks)
 	}
 	return momenta;
 }
+auto getMass(const std::vector<TLorentzVector>& tracks)
+{
+	for(auto& i1 : tracks){
+		momenta.push_back( i1.M() );
+	}
+}
 auto getPt(const std::vector<TVector3>& tracks)
 {
 	std::vector<double> Pt;
