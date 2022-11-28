@@ -335,9 +335,11 @@ auto tlorentzvector_to_tvector3(const std::vector<TLorentzVector>& tracks)
 }
 auto getMass(const std::vector<TLorentzVector>& tracks)
 {
+	std::vector<double> Mass;
 	for(auto& i1 : tracks){
-		momenta.push_back( i1.M() );
+		Mass.push_back( i1.M() );
 	}
+	return Mass;
 }
 auto getPt(const std::vector<TVector3>& tracks)
 {
