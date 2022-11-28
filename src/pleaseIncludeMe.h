@@ -148,18 +148,19 @@ auto findScatElecRECBkg(const std::vector<edm4hep::MCParticleData>& mcs,
   //finding what truth particle PID
   index=-1;
   int PDG=-99;
+  double mass=-99;
   for(auto& i1 : mcs){
   	index++;
   	if(index == mc_elect_index && i1.generatorStatus==1){
   		PDG=i1.PDG;
+  		mass=i1.mass;
   	}
   }
 
+  //assigning the true MC mass;
   TLorentzVector maxtrk_4vect;
-  if(fabs(PDG)==211) maxtrk_4vect.SetVectM(maxtrk,MASS_PION);
-  if(fabs(PDG)==321) maxtrk_4vect.SetVectM(maxtrk,MASS_KAON);
-  if(fabs(PDG)==2212) maxtrk_4vect.SetVectM(maxtrk,MASS_PROTON);
-
+  maxtrk_4vect.SetVectM(maxtrk,mass);
+  
   if(PDG!=11 && maxtrk.Eta()<0){
   	momenta.push_back(maxtrk_4vect);
   }
