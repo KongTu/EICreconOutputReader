@@ -148,6 +148,7 @@ auto findScatElecRECBkg(const std::vector<edm4hep::MCParticleData>& mcs,
   	if (rec_id == elec_index) mc_elect_index=sim_id;
   }
 
+  std::cout <<"size of mc collection = " << mcs.size() << std::endl;
   //finding what truth particle PID
   index=-1;
   int PDG=-99;
@@ -155,8 +156,10 @@ auto findScatElecRECBkg(const std::vector<edm4hep::MCParticleData>& mcs,
   for(auto& i1 : mcs){
   	index++;
   	if(index == mc_elect_index){
+  		
   		PDG=i1.PDG;
   		mass=i1.mass;
+  		std::cout << "PDG = " << PDG << std::endl;
   	}
   }
 
