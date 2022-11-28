@@ -334,7 +334,7 @@ auto getEta(const std::vector<TVector3>& tracks)
 	for(auto& i1 : tracks){eta.push_back(i1.Eta());}
 	return eta;
 }
-auto getEtaBkg(const std::vector<TLorentzVector>& tracks)
+auto getEta(const std::vector<TLorentzVector>& tracks)
 {
 	std::vector<double> eta;
 	for(auto& i1 : tracks){eta.push_back(i1.Eta());}
