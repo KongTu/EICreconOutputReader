@@ -110,10 +110,15 @@ int readSingleParticles(TString inname="input/input.root",TString outname="test"
 
 	//quick analysis;
 	TH1D* h_Eta_Elect_REC_bkg_pfRICH = (TH1D*) h_Eta_Elect_REC_bkg->Clone("h_Eta_Elect_REC_bkg_pfRICH");
-	TH1D* tmp = (TH1D*) h_Eta_Elect_REC_bkg->Clone("tmp");
 	TH1D* pid_prob = (TH1D*) h_etaVsPIDprob_bkg->ProfileX("pid_prob",1,100);
-	tmp->Multiply(pid_prob);
-	h_Eta_Elect_REC_bkg_pfRICH->Add(tmp, -1);
+	for(int bin=0;bin<h_Eta_Elect_REC_bkg_pfRICH->GetNbinsX();bin++){
+		double bincenter=h_Eta_Elect_REC_bkg_pfRICH->GetBinCenter(bin+1);
+		double value = pid_prob->GetBinContent(pid_prob->FindBin(bincenter));
+		if(value > 0 && value < 1){
+			h_Eta_Elect_REC_bkg_pfRICH->SetBinContent(bin+1, (1.-value)*h_Eta_Elect_REC_bkg_pfRICH->GetBinContent(bin+1))
+			h_Eta_Elect_REC_bkg_pfRICH->SetBinError(bin+1, (1.-value)*h_Eta_Elect_REC_bkg_pfRICH->GetBinError(bin+1))
+		}
+	}
 	h_Eta_Elect_REC_bkg_pfRICH->Write();
 
 	output->Write();
