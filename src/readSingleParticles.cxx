@@ -66,6 +66,7 @@ int readSingleParticles(TString inname="input/input.root",TString outname="test"
 			   .Define("scatRECbkg",findScatElecRECBkg,{"MCParticles","ReconstructedChargedParticles","ReconstructedChargedParticlesAssociations"})
 			   .Define("scatRECbkg3Vect",tlorentzvector_to_tvector3,{"scatRECbkg"})
 			   .Define("etaElecRECbkg",getEta,{"scatRECbkg3Vect"})
+			   .Define("ptElecRECbkg",getPt,{"scatRECbkg3Vect"})
 			   .Define("bkgProb",getPIDprob_pfRICH,{"scatRECbkg"})
 			   .Define("bkgMass",getMass,{"scatRECbkg"})
 			   .Filter(kineCut,{"Q2elecMC","YelecMC"})
@@ -74,6 +75,7 @@ int readSingleParticles(TString inname="input/input.root",TString outname="test"
 	auto h_Eta_Elect_REC_bkg = d3.Histo1D({"h_Eta_Elect_REC_bkg", "; #eta; counts", 150, -5, 10}, "etaElecRECbkg");
 	auto h_Mass_Elect_REC_bkg = d3.Histo1D({"h_Mass_Elect_REC_bkg", "; mass; counts", 2000, -1, 19}, "bkgMass");
 	auto h_etaVsPIDprob_bkg = d3.Histo2D({"h_etaVsPIDprob_bkg", "; #eta; PID probability",100,-5, 5,100,0,1},"etaElecRECbkg","bkgProb");
+	auto h_etaVsPt_bkg = d3.Histo2D({"h_etaVsPt_bkg", "; #eta; pt",100,-5, 5,100,0,18},"etaElecRECbkg","ptElecRECbkg");
 
 	//MC
 	h_mult_MC->Write();
@@ -104,6 +106,15 @@ int readSingleParticles(TString inname="input/input.root",TString outname="test"
 	h_Eta_Elect_REC_bkg->Write();
 	h_Mass_Elect_REC_bkg->Write();
 	h_etaVsPIDprob_bkg->Write();
+	h_etaVsPt_bkg->Write();
+
+	//quick analysis;
+	TH1D* h_Eta_Elect_REC_bkg_pfRICH = (TH1D*) h_Eta_Elect_REC_bkg->Clone("h_Eta_Elect_REC_bkg_pfRICH");
+	TH1D* tmp = (TH1D*) h_Eta_Elect_REC_bkg->Clone("tmp");
+	TH1D* pid_prob = (TH1D*) h_etaVsPt_bkg->ProfileX("pid_prob",1,100);
+	tmp->Multiply(pid_prob);
+	h_Eta_Elect_REC_bkg_pfRICH->Add(tmp, -1);
+	h_Eta_Elect_REC_bkg_pfRICH->Write();
 
 	output->Write();
   	output->Close();
