@@ -111,7 +111,7 @@ int readSingleParticles(TString inname="input/input.root",TString outname="test"
 	//quick analysis;
 	TH1D* h_Eta_Elect_REC_bkg_pfRICH = (TH1D*) h_Eta_Elect_REC_bkg->Clone("h_Eta_Elect_REC_bkg_pfRICH");
 	TH1D* tmp = (TH1D*) h_Eta_Elect_REC_bkg->Clone("tmp");
-	TH1D* pid_prob = (TH1D*) h_etaVsPt_bkg->ProfileX("pid_prob",1,100);
+	TH1D* pid_prob = (TH1D*) h_etaVsPIDprob_bkg->ProfileX("pid_prob",1,100);
 	tmp->Multiply(pid_prob);
 	h_Eta_Elect_REC_bkg_pfRICH->Add(tmp, -1);
 	h_Eta_Elect_REC_bkg_pfRICH->Write();
