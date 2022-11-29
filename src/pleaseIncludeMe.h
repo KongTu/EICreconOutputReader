@@ -167,7 +167,7 @@ auto findScatElecRECBkg(const std::vector<edm4hep::MCParticleData>& mcs,
   			mass=i1.mass;
   		}
   	}
-  	std::cout << "mass of kinematic match = " << mass << std::endl;
+  	//finding the smallest deltaR as the MC particle
   }
 
   //assigning the true MC mass;
