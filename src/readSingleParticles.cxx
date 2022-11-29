@@ -119,7 +119,6 @@ int readSingleParticles(TString inname="input/input.root",TString outname="test"
 			h_Eta_Elect_REC_bkg_pfRICH->SetBinError(bin+1, (1.-value)*h_Eta_Elect_REC_bkg_pfRICH->GetBinError(bin+1));
 		}
 	}
-	h_Eta_Elect_REC_bkg_pfRICH->Write();
 
 	output->Write();
   	output->Close();
