@@ -32,8 +32,8 @@
 #include "edm4hep/MCParticleData.h"
 
 auto findScatElecRECAssociation(const std::vector<edm4hep::MCParticleData>& mcs,
-							const std::vector<edm4eic::ReconstructedParticleData>& parts,
-								const std::vector<edm4eic::MCRecoParticleAssociationData>& assocs) 
+									const std::vector<edm4eic::ReconstructedParticleData>& parts,
+										const std::vector<edm4eic::MCRecoParticleAssociationData>& assocs) 
 {	
 std::vector<TLorentzVector> momenta;
 //simplest algo to find REC scat e'
@@ -52,16 +52,14 @@ for(auto& i2 : parts){
 	}
 }
 
-//finding what truth particle ID
+//finding what sim ID this track corresponds to
 int mc_elect_index=-1;
-std::cout << "****** A new event ****** " << std::endl;
-std::cout << "reco level electron candidate index = " << elec_index << std::endl;
-std::cout << "List of association of rec and sim id: "<< std::endl;
+// std::cout << "List of association of rec and sim id: "<< std::endl;
 for(auto& i3 : assocs){
 	int rec_id = i3.recID;
-		std::cout << "rec id = " << rec_id << std::endl;
+		// std::cout << "rec id = " << rec_id << std::endl;
 	int sim_id = i3.simID;
-		std::cout << "sim id = " << sim_id << std::endl;
+		// std::cout << "sim id = " << sim_id << std::endl;
 	if (rec_id == elec_index) mc_elect_index=sim_id;
 }
 
@@ -78,13 +76,16 @@ for(auto& i1 : mcs){
 }
 
 if(mass<0) {
+	std::cout << "****** A new event ****** " << std::endl;
+	std::cout << "reco level electron candidate index = " << elec_index << std::endl;
 	std::cout << "No rec association found. " << std::endl;
 }
 
-//assigning the true MC mass;
+//assigning the true MC mass; 
 TLorentzVector maxtrk_4vect;
 maxtrk_4vect.SetVectM(maxtrk,mass);
 
+//only to save those electron candidate that doesn't have association.
 if(mass<0.){
 	momenta.push_back(maxtrk_4vect);
 }
