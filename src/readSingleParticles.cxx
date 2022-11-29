@@ -60,12 +60,6 @@ int readSingleParticles(TString inname="input/input.root",TString outname="test"
 	auto h_Xelec_REC = d2.Histo1D({"h_Xelec_REC", "; x_{e}; counts", 1000, 0,1}, "XelecREC");
 	auto h_Epz_REC = d2.Histo1D({"h_Epz_REC", "; E - P_{z} (GeV); counts", 200, 0,70}, "EpzREC");
 	
-	/*
-	TODO: 
-	1. NEED to add an association between rec and mc scat elec and plot background;
-	2. NEED to reject those background based on pfRICH parametrization.
-	*/
-
 	auto d3 = d.Define("scatMC",findScatElecMC,{"MCParticles"})
 			   .Define("etaElecMC",getEta,{"scatMC"})
 			   .Define("Q2elecMC",getQ2elec,{"scatMC"}).Define("YelecMC",getYelec,{"scatMC"}).Define("XelecMC",getXelec,{"scatMC"})

@@ -137,18 +137,14 @@ auto findScatElecRECBkg(const std::vector<edm4hep::MCParticleData>& mcs,
   	}
   }
 
-  std::cout << "elec_index = "<< elec_index << std::endl;
   //finding what truth particle ID
   int mc_elect_index=-1;
   for(auto& i3 : assocs){
   	int rec_id = i3.recID;
-  		std::cout << "rec_id = "<< rec_id << std::endl;
   	int sim_id = i3.simID;
-  		std::cout << "sim_id = "<< sim_id << std::endl;
   	if (rec_id == elec_index) mc_elect_index=sim_id;
   }
 
-  std::cout <<"size of mc collection = " << mcs.size() << std::endl;
   //finding what truth particle PID
   index=-1;
   int PDG=-99;
@@ -156,18 +152,29 @@ auto findScatElecRECBkg(const std::vector<edm4hep::MCParticleData>& mcs,
   for(auto& i1 : mcs){
   	index++;
   	if(index == mc_elect_index){
-  		
   		PDG=i1.PDG;
   		mass=i1.mass;
-  		std::cout << "PDG = " << PDG << std::endl;
   	}
+  }
+  if(mass<0){
+  	//let's do kinematic match for now.
+  	double minR=999.;
+  	for(auto& i1 : mcs){
+  		TVector3 mcTrk(i1.momentum.x,i1.momentum.y,i1.momentum.z);
+  		if(mcTrk.DeltaR(maxtrk)<minR){
+  			minR=mcTrk.DeltaR(maxtrk);
+  			PDG=i1.PDG;
+  			mass=i1.mass;
+  		}
+  	}
+  	std::cout << "mass of kinematic match = " << mass << std::endl;
   }
 
   //assigning the true MC mass;
   TLorentzVector maxtrk_4vect;
   maxtrk_4vect.SetVectM(maxtrk,mass);
   
-  if(PDG!=11 && mass >= 0. && maxtrk.Eta()<0){
+  if(PDG!=11 && maxtrk.Eta()<0){
   	momenta.push_back(maxtrk_4vect);
   }
 
