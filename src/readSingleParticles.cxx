@@ -47,7 +47,7 @@ int readSingleParticles(TString inname="input/input.root",TString outname="test"
 			   .Define("scatREC",findScatElecREC,{"EcalEndcapNClusters","ReconstructedChargedParticles"})
 			   .Define("etaElecREC",getEta,{"scatREC"}).Define("EpzREC",getEpzREC,{"EcalEndcapNClusters","ReconstructedChargedParticles"})
 			   .Define("Q2elecREC",getQ2elec,{"scatREC"}).Define("YelecREC",getYelec,{"scatREC"}).Define("XelecREC",getXelec,{"scatREC"})
-			   .Filter(kineCut,{"Q2elecMC","YelecMC"}); 
+			   .Filter(kineCut,{"Q2elecMC","YelecMC"}) 
 			   ;
 
 	auto h_Eta_Elect_MC = d2.Histo1D({"h_Eta_Elect_MC", "; #eta; counts", 150, -5, 10}, "etaElecMC");
@@ -74,7 +74,7 @@ int readSingleParticles(TString inname="input/input.root",TString outname="test"
 			   .Define("etaElecRECbkg",getEta,{"scatRECbkg3Vect"})
 			   .Define("bkgProb",getPIDprob_pfRICH,{"scatRECbkg"})
 			   .Define("bkgMass",getMass,{"scatRECbkg"})
-			   .Filter(kineCut,{"Q2elecMC","YelecMC"}); 
+			   .Filter(kineCut,{"Q2elecMC","YelecMC"})
 			   ;
 
 	auto h_Eta_Elect_REC_bkg = d3.Histo1D({"h_Eta_Elect_REC_bkg", "; #eta; counts", 150, -5, 10}, "etaElecRECbkg");
