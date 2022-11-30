@@ -333,7 +333,7 @@ auto pt_resolution(const std::vector<edm4hep::MCParticleData>& mcs,
 		index++;//start counting;
 		if(i1.charge==0) continue;//only charged particles
 		//find the matching sim_ID;
-		int sim_id=-1
+		int sim_id=-1;
 		for(auto& i3 : assocs){
 			 if(index==i3.recID){
   		 		sim_id = i3.simID;
