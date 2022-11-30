@@ -70,6 +70,11 @@ Look into getInputFromS3.sh to modify accordingly what to grab from S3:
 
 ```./getInputFromS3.sh```
 
+For example, for DIS events from the Oct Simulation Campaign. 
+
+```./getInputFromS3-DIS.sh 18 275```
+the 1st and 2nd arguments are energy configuration of DIS.
+
 Run the singleParticleReader:
 
 ```./runSingleParticleReader.sh input/INPUT_NAME.root OUTPUT_NAME```
