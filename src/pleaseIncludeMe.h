@@ -339,9 +339,8 @@ auto pt_resolution(const std::vector<edm4hep::MCParticleData>& mcs,
   		 		sim_id = i3.simID;
   		 }
 		}
-		//skip tracks now without matching; 
-		//should be considered as fake rates;
-		if(sim_id==-1) continue;
+		//sim_id=-1 should be considered as fake rates;
+		//we kept it to match the histogram bins for 2D plots
 		
 		//reco track 3 momentum
 		TVector3 trk(i1.momentum.x,i1.momentum.y,i1.momentum.z);
@@ -361,6 +360,9 @@ auto pt_resolution(const std::vector<edm4hep::MCParticleData>& mcs,
 			double res= (matchMCtrk.Perp()-trk.Perp()) / matchMCtrk.Perp();
 			resolution.push_back( res );
 		}
+		else {
+			resolution.push_back( -99. );
+		}//-99 means it can be not matched to MC.
 	}
 
 	return resolution;
