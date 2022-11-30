@@ -15,7 +15,7 @@ int readSingleParticles(TString inname="input/input.root",TString outname="test"
 						 .Define("etaMC",getEta,{"momentumMC"})
 						 .Define("ptMC",getPt,{"momentumMC"})
 						 .Define("phiMC",getPhi,{"momentumMC"})
-						 .Define("ptRes",pt_resolution,{"MCParticles","ReconstructedChargedParticles"})
+						 .Define("ptRes",pt_resolution,{"MCParticles","ReconstructedChargedParticles","ReconstructedChargedParticlesAssociations"})
 						 ;
 
 	TString output_name_dir = outname;

@@ -46,6 +46,13 @@ auto dconfig = dynamic_cast<DelphesConfig*>(ff->Get("DelphesConfigRICH"));
 
 auto findScatElecMC(const std::vector<edm4hep::MCParticleData>& parts)
 {
+	/*
+	Comment - Things to think about:
+		- how can we make sure the MC scat' e? 
+		- we need to find a way to have this 
+		information at the MC level directl
+		from the generator, e.g., PYTHIA. 
+	*/
   std::vector<TVector3> momenta;
   double maxPt=0.;
   TVector3 leadingTrk(-1E10,-1E10,-1E10);
@@ -67,12 +74,17 @@ auto findScatElecMC(const std::vector<edm4hep::MCParticleData>& parts)
 auto findScatElecREC(const std::vector<edm4eic::ClusterData>& clusters,
 											const std::vector<edm4eic::ReconstructedParticleData>& parts) 
 {
+	/*
+	Comment - Things to think about:
+		- We need to have some matching/projection
+		code to match between tracks and clusters.
+		Now, everything below is just for now. 
+	*/
 	std::vector<TVector3> momenta;
   TLorentzVector escat(-1E10, -1E10, -1E10, -1E10);
   //EEMC
   double maxEnergy=0;
   for(auto& i1 : clusters){
-    //need some projection, or matching the cluster here.
     auto energy=i1.energy;
     if(energy>maxEnergy){
     	maxEnergy=energy;
@@ -312,31 +324,49 @@ auto momenta_from_mcparticles(const std::vector<edm4hep::MCParticleData>& parts)
   return momenta;
 }
 auto pt_resolution(const std::vector<edm4hep::MCParticleData>& mcs,
-							const std::vector<edm4eic::ReconstructedParticleData>& recos){
+										const std::vector<edm4eic::ReconstructedParticleData>& recos,
+											const std::vector<edm4eic::MCRecoParticleAssociationData>& assocs){
 
 	std::vector<double> resolution;
+	int index=-1;
 	for(auto& i1: recos){
+		index++;//start counting;
+		if(i1.charge==0) continue;//only charged particles
+		//find the matching sim_ID;
+		int sim_id=-1
+		for(auto& i3 : assocs){
+			 if(index==i3.recID){
+  		 		sim_id = i3.simID;
+  		 }
+		}
+		//skip tracks now without matching; 
+		//should be considered as fake rates;
+		if(sim_id==-1) continue;
+		
+		//reco track 3 momentum
 		TVector3 trk(i1.momentum.x,i1.momentum.y,i1.momentum.z);
-		if(i1.charge==0) continue;
-		double minR=99;
+		
 		TVector3 matchMCtrk(-99,-99,-99);
+		index=-1;
 		for(auto& i2 : mcs){
-			TVector3 trkMC(i2.momentum.x,i2.momentum.y,i2.momentum.z);
-			if(i2.charge!=0 && i2.generatorStatus==1){
-				if(trk.DeltaR(trkMC) < minR ){
-					minR=trk.DeltaR(trkMC);
-					matchMCtrk=trkMC;
-				}
+			index++;
+			if(index==sim_id
+				&& i2.charge!=0 
+					&& i2.generatorStatus==1)
+			{
+				matchMCtrk.SetXYZ(i2.momentum.x,i2.momentum.y,i2.momentum.z);
 			}
 		}
-		double res= (matchMCtrk.Perp()-trk.Perp()) / matchMCtrk.Perp();
-		resolution.push_back( res );
-				
+		if(matchMCtrk.X()!=-99){
+			double res= (matchMCtrk.Perp()-trk.Perp()) / matchMCtrk.Perp();
+			resolution.push_back( res );
+		}
 	}
 
 	return resolution;
 }
-
+//if use this function to convert to TVector3 for other basic functions, 
+//e.g., getPt,getEta,getPhi;
 auto tlorentzvector_to_tvector3(const std::vector<TLorentzVector>& tracks)
 {
 	std::vector<TVector3> momenta;
