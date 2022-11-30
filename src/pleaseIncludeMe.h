@@ -386,6 +386,12 @@ auto getMass(const std::vector<TLorentzVector>& tracks)
 	}
 	return Mass;
 }
+auto getP(const std::vector<TVector3>& tracks)
+{
+	std::vector<double> Pmag;
+	for(auto& i1 : tracks){Pmag.push_back(i1.Mag());}
+	return Pmag;
+}
 auto getPt(const std::vector<TVector3>& tracks)
 {
 	std::vector<double> Pt;
