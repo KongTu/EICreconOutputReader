@@ -33,6 +33,10 @@ Look into getInputFromS3.sh to modify accordingly what to grab from S3:
 
 ```./getInputFromS3.sh```
 
-Run the singleParticleReader:
+Run with RDataFrame:
 
 ```./runSingleParticleReader.sh input/INPUT_NAME.root OUTPUT_NAME```
+
+Or Run with TTreeReader:
+
+```./runSingleParticleSimpleReader.sh input/INPUT_NAME.root OUTPUT_NAME```
