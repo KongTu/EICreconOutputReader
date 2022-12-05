@@ -1,10 +1,10 @@
 #include "pleaseIncludeMe.h"
 
-int runSingleParticles_simple(TString inname="input/input.root",TString outname="test")
+int electronPionSeparation(TString inname="input/input.root",TString outname="test")
 {	
-
-	TString name_of_input = (TString) inname;	
-	auto file=new TFile(name_of_input);
+	
+	auto file = new TFile(inname);
+	
 	auto tree = (TTree *) file->Get("events");
   TTreeReader tree_reader(tree);       // !the tree reader
   
@@ -48,7 +48,7 @@ int runSingleParticles_simple(TString inname="input/input.root",TString outname=
   {
 
   	//MCParticles
-      //finding the scattering electron;
+    //finding the scattering electron;
   	TLorentzVector scatMC(0,0,0,0);
   	int mc_elect_index=-1;
   	double maxPt=-99.;
