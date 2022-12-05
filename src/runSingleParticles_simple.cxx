@@ -32,8 +32,8 @@ int runSingleParticles_simple(TString inname="input/input.root",TString outname=
     TTreeReaderArray<unsigned int> rec_id = {tree_reader, "ReconstructedChargedParticlesAssociations.recID"};
     TTreeReaderArray<unsigned int> sim_id = {tree_reader, "ReconstructedChargedParticlesAssociations.simID"};
 
-    TString output_name_dir = output_prefix.c_str();
-  	TFile* output = new TFile(output_name_dir+"_output.root","RECREATE");
+    TString output_name_dir = outname;
+  	TFile* output = new TFile("output/"+output_name_dir+"-output.root","RECREATE");
 
     TH1D* h_eta = new TH1D("h_eta",";#eta",100,-5,5);
     TH1D* h_energy_MC = new TH1D("h_energy_MC",";E (GeV)",100,0,20);
