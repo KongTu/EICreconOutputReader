@@ -1,5 +1,5 @@
 #include "pleaseIncludeMe.h"
-int runSingleParticles_simple(TString inname="input/input.root",TString outname="test")
+int readSingleParticles_simple(TString inname="input/input.root",TString outname="test")
 {	
 
 	TString name_of_input = (TString) inname;	
