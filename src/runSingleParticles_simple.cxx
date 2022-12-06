@@ -9,6 +9,8 @@ int runSingleParticles_simple(TString inname="input/input.root",TString outname=
     tree->Add(name_of_input);
     TTreeReader tree_reader(tree);       // !the tree reader
     
+    TTreeReaderArray<int> mc_genStatus_array = {tree_reader, "MCParticles.generatorStatus"};
+    
     // MC particle pz array for each MC particle
     TTreeReaderArray<float> mc_px_array = {tree_reader, "MCParticles.momentum.x"};
     TTreeReaderArray<float> mc_py_array = {tree_reader, "MCParticles.momentum.y"};
@@ -45,12 +47,22 @@ int runSingleParticles_simple(TString inname="input/input.root",TString outname=
 	tree_reader.SetEntriesRange(0, tree->GetEntries());
     while (tree_reader.Next()) {
 
+        /*
+        Beam particles
+        */
+        TLorentzVector ebeam(0,0,0,0);
+        TLorentzVector pbeam(0,0,0,0);
+
     	//MCParticles
     	TLorentzVector scatMC(0,0,0,0);
     	int mc_elect_index=-1;
     	double maxPt=-99.;
     	for(int imc=0;imc<mc_px_array.GetSize();imc++){
     		TVector3 mctrk(mc_px_array[imc],mc_py_array[imc],mc_pz_array[imc]);	
+            if(mc_genStatus_array[imc]==4){
+                if(mc_pdg_array[imc]==11) ebeam.SetVectM(mctrk, MASS_ELECTRON);
+                if(mc_pdg_array[imc]==2212) pbeam.SetVectM(mctrk, MASS_PROTON);
+            }
     		if(mc_pdg_array[imc]==11 	
     			&& mctrk.Perp()>maxPt){
     			maxPt=mctrk.Perp();
@@ -60,13 +72,14 @@ int runSingleParticles_simple(TString inname="input/input.root",TString outname=
     	}
     	h_energy_MC->Fill(scatMC.E());
 
-    	//association to mc;
-    	// int rec_cluster_id=-1;
-    	// for(int iasso=0;iasso<em_rec_id_array.GetSize();iasso++){
-    	// 	if(em_sim_id_array[iasso]==mc_elect_index){
-    	// 		rec_cluster_id = em_rec_id_array[iasso];
-    	// 	}
-    	// }
+        TLorentzVector qbeam=ebeam-scatMC;
+        double Q2=-(qbeam).Mag2();  
+        double pq=pbeam.Dot(qbeam);
+        double y= pq/pbeam.Dot(ebeam);
+        
+        //MC level phase space cut
+        if(Q2<1.||Q2>10.) continue;
+        if(y<0.01||y>0.95) continue;
 
     	double maxEnergy=-99.;
     	double xpos=-999.;
@@ -79,7 +92,7 @@ int runSingleParticles_simple(TString inname="input/input.root",TString outname=
     		}
     	}
 
-    	maxEnergy *= 1.04;
+    	maxEnergy *= 1.037;
 		h_energy_calibration_REC->Fill( maxEnergy / scatMC.E() );
 
         double res= (scatMC.E()-maxEnergy)/scatMC.E();
