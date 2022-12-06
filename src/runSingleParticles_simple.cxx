@@ -22,6 +22,8 @@ int runSingleParticles_simple(TString inname="input/input.root",TString outname=
     TTreeReaderArray<float> em_energy_array = {tree_reader, "EcalEndcapNClusters.energy"};
     TTreeReaderArray<float> em_x_array = {tree_reader, "EcalEndcapNClusters.position.x"};
     TTreeReaderArray<float> em_y_array = {tree_reader, "EcalEndcapNClusters.position.y"};
+    TTreeReaderArray<float> emhits_x_array = {tree_reader, "EcalEndcapNRecHits.position.x"};
+    TTreeReaderArray<float> emhits_y_array = {tree_reader, "EcalEndcapNRecHits.position.y"};
 
     TTreeReaderArray<unsigned int> em_rec_id_array = {tree_reader, "EcalEndcapNClustersAssociations.recID"};
     TTreeReaderArray<unsigned int> em_sim_id_array = {tree_reader, "EcalEndcapNClustersAssociations.simID"};
@@ -41,6 +43,7 @@ int runSingleParticles_simple(TString inname="input/input.root",TString outname=
     TH1D* h_energy_MC = new TH1D("h_energy_MC",";E_{MC} (GeV)",100,0,20);
     TH1D* h_energy_REC = new TH1D("h_energy_REC",";E_{REC} (GeV)",100,0,20);
     TH2D* h_emClus_position_REC = new TH2D("h_emClus_position_REC",";x (cm);y (cm)",400,-800,800,400,-800,800);
+    TH2D* h_emHits_position_REC = new TH2D("h_emHits_position_REC",";x (cm);y (cm)",400,-800,800,400,-800,800);
     TH2D* h_energy_res = new TH2D("h_energy_res",";E_{MC} (GeV); E_{MC}-E_{REC}/E_{MC} emcal",100,0,20,1000,-1,1);
     TH1D* h_energy_calibration_REC = new TH1D("h_energy_calibration_REC",";E (GeV)",200,0,2);
 
@@ -84,11 +87,15 @@ int runSingleParticles_simple(TString inname="input/input.root",TString outname=
     	double maxEnergy=-99.;
     	double xpos=-999.;
     	double ypos=-999.;
+        double xhitpos=-999.;
+        double yhitpos=-999.;
     	for(int iclus=0;iclus<em_energy_array.GetSize();iclus++){
     		if(em_energy_array[iclus]>maxEnergy){
     			maxEnergy=em_energy_array[iclus];
     			xpos=em_x_array[iclus];
     			ypos=em_y_array[iclus];
+                xhitpos=emhits_x_array[iclus];
+                yhitpos=emhits_y_array[iclus];
     		}
     	}
 
@@ -100,7 +107,8 @@ int runSingleParticles_simple(TString inname="input/input.root",TString outname=
         h_energy_res->Fill(scatMC.E(), res);
         h_energy_REC->Fill(maxEnergy);
         h_emClus_position_REC->Fill(xpos,ypos);
-	    
+        h_emHits_position_REC->Fill(xhitpos,yhitpos);
+
     	for(int itrk=0;itrk<reco_pz_array.GetSize();itrk++){
     		TVector3 trk(reco_px_array[itrk],reco_py_array[itrk],reco_pz_array[itrk]);
     		h_eta->Fill(trk.Eta());
