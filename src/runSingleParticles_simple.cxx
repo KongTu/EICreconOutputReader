@@ -94,8 +94,8 @@ int runSingleParticles_simple(TString inname="input/input.root",TString outname=
 
     	maxEnergy *= 1.037;
 		h_energy_calibration_REC->Fill( maxEnergy / scatMC.E() );
-        if(fabs(xpos)<100. || fabs(ypos)<100.) continue; //100mm square hole.
-        
+        if(fabs(xpos)<100. && fabs(ypos)<100.) continue; //100mm square hole.
+
         double res= (scatMC.E()-maxEnergy)/scatMC.E();
         h_energy_res->Fill(scatMC.E(), res);
         h_energy_REC->Fill(maxEnergy);
