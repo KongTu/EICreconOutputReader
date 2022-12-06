@@ -78,8 +78,8 @@ int runSingleParticles_simple(TString inname="input/input.root",TString outname=
     			ypos=em_y_array[iclus];
     		}
     	}
-        
-    	maxEnergy *= 1.045;
+
+    	maxEnergy *= 1.04;
 		h_energy_calibration_REC->Fill( maxEnergy / scatMC.E() );
 
         double res= (scatMC.E()-maxEnergy)/scatMC.E();
