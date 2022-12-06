@@ -3,10 +3,10 @@ int runSingleParticles_simple(TString inname="input/input.root",TString outname=
 {	
 
 	TString name_of_input = (TString) inname;
-	std::cout << "what is this rec_file = " << inname << endl;
+	std::cout << "what is this rec_file = " << name_of_input << endl;
 	
-	auto file=new TFile(name_of_input);
-	auto tree = (TTree *) file->Get("events");
+    auto tree = new TChain("events");
+    tree->Add(name_of_input);
     TTreeReader tree_reader(tree);       // !the tree reader
     
     // MC particle pz array for each MC particle
