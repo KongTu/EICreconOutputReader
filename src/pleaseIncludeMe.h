@@ -44,6 +44,8 @@ auto getNtrk(const std::vector<edm4eic::ReconstructedParticleData>& parts)
   mult.push_back( n );
   return mult;
 }
+//___________________________________________________________________________
+
 auto getNtrkMC(const std::vector<edm4hep::MCParticleData>& parts)
 {
   std::vector<int> mult;
@@ -62,6 +64,8 @@ auto momenta_from_chargedparticles(const std::vector<edm4eic::ReconstructedParti
 	}
   return momenta;
 }
+//___________________________________________________________________________
+
 auto momenta_from_mcparticles(const std::vector<edm4hep::MCParticleData>& parts) {
   std::vector<TVector3> momenta;
   for(auto& i1 : parts){
@@ -95,21 +99,47 @@ auto pt_resolution(const std::vector<edm4hep::MCParticleData>& mcs,
 
 	return resolution;
 }
+//___________________________________________________________________________
+
 auto getPt(const std::vector<TVector3>& tracks)
 {
 	std::vector<double> Pt;
 	for(auto& i1 : tracks){Pt.push_back(i1.Perp());}
 	return Pt;
 }
+//___________________________________________________________________________
+
 auto getEta(const std::vector<TVector3>& tracks)
 {
 	std::vector<double> eta;
 	for(auto& i1 : tracks){eta.push_back(i1.Eta());}
 	return eta;
 }
+//___________________________________________________________________________
+
 auto getPhi(const std::vector<TVector3>& tracks)
 {
 	std::vector<double> Phi;
 	for(auto& i1 : tracks){Phi.push_back(i1.Phi());}
 	return Phi;
 }
+//___________________________________________________________________________
+
+auto getQ2elec(float electronEnergyInit, const TVector3 elec)
+{
+	TLorentzVector ein(0,0,-electronEnergyInit, electronEnergyInit);//need to read from file;
+	
+	TLorentzVector scat;
+	scat.SetPtEtaPhiM(elec.Pt(),elec.Eta(),elec.Phi(),MASS_ELECTRON);
+	
+	double Q2elec = -(ein-scat).Mag2();
+	
+	return Q2elec;
+}
+//___________________________________________________________________________
+
+auto getInelParamElectron(float electronEnergyInit, float electronEnergyFinal)
+{
+  return (electronEnergyInit - electronEnergyFinal)/electronEnergyInit;
+}
+
