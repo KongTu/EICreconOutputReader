@@ -1,17 +1,59 @@
+#include<iostream>
+#include<fstream>
+#include<sstream>
+#include<string>
+#include<vector>
 #include "pleaseIncludeMe.h"
 
-int electronPionSeparation(TString inname="input/input.root",TString outname="test")
-{	
+//int electronPionSeparation(TString inname="input/input.root",TString outname="test")
+int electronPionSeparation(TString inname="./fileLists/flieList.list", TString outname="test", float e_energy = 18, float p_energy = 275)
+{
+  if( !(e_energy == 18 && p_energy == 275) && !(e_energy == 10 && p_energy == 100) && !(e_energy == 5 && p_energy == 41))
+  {
+    cout<<"Invalid beam energies."<<endl;
+    
+    return 0;  
+  }
+/*	
+  //old binnig for first testing
   const int nQ2bins = 2;
   float const Q2_bins[nQ2bins+1] = { 1., 2., 4. };
   
   const int nyInelParBins = 2;
   float const y_bins[nQ2bins+1] = { 0., 0.001, 0.002 };
+*/
+
+  const int nQ2bins = 4;
+  float const Q2_bins[nQ2bins+1] = { 1,3,5,10,20 };
+  
+  const int nyInelParBins = 4;
+  float const y_bins[nyInelParBins+1] = { 0.01,0.05,0.1,0.5,0.95 };
+  
+  const int nMomBins = 5;
+  float const mom_bins[nMomBins+1] = { 0,1,3,7,10, 18 };
+
+  
+  
+  
+  
+  //load files to TChain
+  ifstream fileList;
+  fileList.open(inname.Data());
+  
+  string fileFromList;
+  
+  auto myChain = new TChain("events");
+  
+  while(getline(fileList, fileFromList))
+  {
+    myChain->Add(fileFromList.c_str());
+  }
 	
-	auto file = new TFile(inname);
+	//auto file = new TFile(inname);
 	
-	auto tree = (TTree *) file->Get("events");
-  TTreeReader tree_reader(tree);       // !the tree reader
+
+  //TTreeReader tree_reader(tree);       // !the tree reader
+  TTreeReader tree_reader(myChain);       // !the tree reader
   
   // MC particle pz array for each MC particle
   TTreeReaderArray<float> mc_px_array = {tree_reader, "MCParticles.momentum.x"};
@@ -19,6 +61,7 @@ int electronPionSeparation(TString inname="input/input.root",TString outname="te
   TTreeReaderArray<float> mc_pz_array = {tree_reader, "MCParticles.momentum.z"};
   TTreeReaderArray<double> mc_mass_array = {tree_reader, "MCParticles.mass"};
   TTreeReaderArray<int> mc_pdg_array = {tree_reader, "MCParticles.PDG"};
+  TTreeReaderArray<int> mc_generatorStatus_array = {tree_reader, "MCParticles.generatorStatus"};
 
 
   // Reconstructed particles pz array for each reconstructed particle
@@ -36,8 +79,10 @@ int electronPionSeparation(TString inname="input/input.root",TString outname="te
 	TFile* output = new TFile("output/"+output_name_dir+"-output.root","RECREATE");
 
   
-  TH1D* h_energy_MC = new TH1D("h_energy_MC",";E_{MC} (GeV)",100,0,20);
-  TH1D* h_energy_18_MC = new TH1D("h_energy_18_MC",";E_{MC} (GeV)",20,17,19);
+  TH1D* h_energy_MC = new TH1D("h_energy_MC","E_{MC} (GeV)",100,0,20);
+  TH1D* h_energy_zoom_MC = new TH1D("h_energy_zoom_MC","E_{MC} (GeV)",20,e_energy-2,e_energy+2);
+  
+  TH1D* h_momentum_MC = new TH1D("h_momentum_MC","p_{MC} (GeV/c)",100,0,20);
   
   TH1D* h_Q2_MC = new TH1D("h_Q2_MC",";Q^{2}",100,0,20);
   TH1D* h_Q2_zoom_MC = new TH1D("h_Q2_zoom_MC",";Q^{2}",100,0,4);
@@ -46,23 +91,37 @@ int electronPionSeparation(TString inname="input/input.root",TString outname="te
   TH1D *h_y_inelPar_zoom_MC = new TH1D("h_y_inelPar_zoom_MC", "h_y_inelPar_zoom_MC", 100, 0, 0.01);
   
   //eta distributions in multiple Q^2 and inelasticity bins
-  TH1D *h_eta_scat_ele[nQ2bins+1][nyInelParBins+1];
-  TH1D *h_eta_ele[nQ2bins+1][nyInelParBins+1];
-  TH1D *h_eta_pi[nQ2bins+1][nyInelParBins+1];
-  TH1D *h_eta_K[nQ2bins+1][nyInelParBins+1];
-  TH1D *h_eta_proton[nQ2bins+1][nyInelParBins+1];
+  TH1D *h_eta_scat_ele[nMomBins+1][nQ2bins][nyInelParBins];
   
-  for(unsigned int Q2bin = 0; Q2bin < nQ2bins+1; Q2bin++)
+  TH1D *h_eta_ele[nMomBins+1][nQ2bins][nyInelParBins];
+  TH1D *h_eta_pi_plus[nMomBins+1][nQ2bins][nyInelParBins];
+  TH1D *h_eta_K_plus[nMomBins+1][nQ2bins][nyInelParBins];
+  TH1D *h_eta_proton[nMomBins+1][nQ2bins][nyInelParBins];
+  
+  TH1D *h_eta_positron[nMomBins+1][nQ2bins][nyInelParBins];
+  TH1D *h_eta_pi_minus[nMomBins+1][nQ2bins][nyInelParBins];
+  TH1D *h_eta_K_minus[nMomBins+1][nQ2bins][nyInelParBins];
+  TH1D *h_eta_anti_proton[nMomBins+1][nQ2bins][nyInelParBins];
+  
+  for(unsigned int mom_bin = 0; mom_bin < nMomBins+1; mom_bin++)
   {
-    for(unsigned int y_bin = 0; y_bin < nyInelParBins+1; y_bin++)
+    for(unsigned int Q2bin = 0; Q2bin < nQ2bins; Q2bin++)
     {
-      h_eta_scat_ele[Q2bin][y_bin] = new TH1D(Form("h_eta_scat_ele_Q2_%i_y_%i", Q2bin, y_bin), Form("h_eta_scat_ele_Q2_%i_y_%i", Q2bin, y_bin), 200, -4, 4);
-      h_eta_ele[Q2bin][y_bin] = new TH1D(Form("h_eta_ele_Q2_%i_y_%i", Q2bin, y_bin), Form("h_eta_ele_Q2_%i_y_%i", Q2bin, y_bin), 200, -4, 4);
-      h_eta_pi[Q2bin][y_bin] = new TH1D(Form("h_eta_pi_Q2_%i_y_%i", Q2bin, y_bin), Form("h_eta_pi_Q2_%i_y_%i", Q2bin, y_bin), 200, -4, 4);
-      h_eta_K[Q2bin][y_bin] = new TH1D(Form("h_eta_K_Q2_%i_y_%i", Q2bin, y_bin), Form("h_eta_K_Q2_%i_y_%i", Q2bin, y_bin), 200, -4, 4);
-      h_eta_proton[Q2bin][y_bin] = new TH1D(Form("h_eta_proton_Q2_%i_y_%i", Q2bin, y_bin), Form("h_eta_proton_Q2_%i_y_%i", Q2bin, y_bin), 200, -4, 4);
+      for(unsigned int y_bin = 0; y_bin < nyInelParBins; y_bin++)
+      {
+        h_eta_scat_ele[mom_bin][Q2bin][y_bin] = new TH1D(Form("h_eta_scat_ele_mom_%i_Q2_%i_y_%i" , mom_bin, Q2bin, y_bin), Form("h_eta_scat_ele_mom_%i_Q2_%i_y_%i" , mom_bin, Q2bin, y_bin), 200, -4, 4);
+        h_eta_ele[mom_bin][Q2bin][y_bin] = new TH1D(Form("h_eta_ele_mom_%i_Q2_%i_y_%i" , mom_bin, Q2bin, y_bin), Form("h_eta_ele_mom_%i_Q2_%i_y_%i" , mom_bin, Q2bin, y_bin), 200, -4, 4);
+        h_eta_pi_plus[mom_bin][Q2bin][y_bin] = new TH1D(Form("h_eta_pi_plus_mom_%i_Q2_%i_y_%i" , mom_bin, Q2bin, y_bin), Form("h_eta_pi_plus_mom_%i_Q2_%i_y_%i" , mom_bin, Q2bin, y_bin), 200, -4, 4);
+        h_eta_K_plus[mom_bin][Q2bin][y_bin] = new TH1D(Form("h_eta_K_plus_mom_%i_Q2_%i_y_%i" , mom_bin, Q2bin, y_bin), Form("h_eta_K_plus_mom_%i_Q2_%i_y_%i" , mom_bin, Q2bin, y_bin), 200, -4, 4);
+        h_eta_proton[mom_bin][Q2bin][y_bin] = new TH1D(Form("h_eta_proton_mom_%i_Q2_%i_y_%i" , mom_bin, Q2bin, y_bin), Form("h_eta_proton_mom_%i_Q2_%i_y_%i" , mom_bin, Q2bin, y_bin), 200, -4, 4);
+        
+        h_eta_positron[mom_bin][Q2bin][y_bin] = new TH1D(Form("h_eta_positron_mom_%i_Q2_%i_y_%i" , mom_bin, Q2bin, y_bin), Form("h_eta_positron_mom_%i_Q2_%i_y_%i" , mom_bin, Q2bin, y_bin), 200, -4, 4);
+        h_eta_pi_minus[mom_bin][Q2bin][y_bin] = new TH1D(Form("h_eta_pi_minus_mom_%i_Q2_%i_y_%i" , mom_bin, Q2bin, y_bin), Form("h_eta_pi_minus_mom_%i_Q2_%i_y_%i" , mom_bin, Q2bin, y_bin), 200, -4, 4);
+        h_eta_K_minus[mom_bin][Q2bin][y_bin] = new TH1D(Form("h_eta_K_minus_mom_%i_Q2_%i_y_%i" , mom_bin, Q2bin, y_bin), Form("h_eta_K_minus_mom_%i_Q2_%i_y_%i" , mom_bin, Q2bin, y_bin), 200, -4, 4);
+        h_eta_anti_proton[mom_bin][Q2bin][y_bin] = new TH1D(Form("h_eta_anti_proton_mom_%i_Q2_%i_y_%i" , mom_bin, Q2bin, y_bin), Form("h_eta_anti_proton_mom_%i_Q2_%i_y_%i" , mom_bin, Q2bin, y_bin), 200, -4, 4);
+      }
+    
     }
-  
   }
   
   //TH1D* h_eta = new TH1D("h_eta",";#eta",100,-5,5);
@@ -72,7 +131,7 @@ int electronPionSeparation(TString inname="input/input.root",TString outname="te
   
   
 
-	tree_reader.SetEntriesRange(0, tree->GetEntries());
+	tree_reader.SetEntriesRange(0, myChain->GetEntries());
 	
   while (tree_reader.Next())
   {
@@ -81,98 +140,140 @@ int electronPionSeparation(TString inname="input/input.root",TString outname="te
     //finding the scattering electron
   	TLorentzVector scatMC(0,0,0,0);
   	int mc_elect_index = -1;
-  	double maxPt = -99.;
+  	double maxP = -99.;
   	
   	
   	for(int imc = 0; imc < mc_px_array.GetSize(); imc++)
   	{
-  		TVector3 mctrk(mc_px_array[imc],mc_py_array[imc],mc_pz_array[imc]);	
+  	  if( mc_generatorStatus_array[imc] != 1 ) continue;
+  	
+  		TVector3 mctrk(mc_px_array[imc], mc_py_array[imc], mc_pz_array[imc]);	
   		
-  		if(mc_pdg_array[imc] == 11 && mctrk.Mag() > maxPt)
-  		//if(mc_pdg_array[imc] == 11 && mctrk.Perp() > maxPt)
+  		//if(mc_pdg_array[imc] == 11 && mctrk.Mag() > maxP)
+  		if(mc_pdg_array[imc] == 11 && mctrk.Perp() > maxP)
   		{
-  			maxPt = mctrk.Mag();
-  			//maxPt = mctrk.Perp();
+  			//maxP = mctrk.Mag();
+  			maxP = mctrk.Perp();
   			mc_elect_index = imc;
   			scatMC.SetVectM(mctrk,mc_mass_array[imc]);  			
   		}
   	} 	
-  	
+  	 	
+  	//charge proton and electron energy loading - for now hard coded
+    double y_inelPar_e = getInelParamElectron_2(p_energy, e_energy, scatMC.Vect() );
+    
+    double Q2_electron = getQ2elec( e_energy, scatMC.Vect());
+    
+    if(Q2_electron< 1. || Q2_electron > 20.) continue;
+    if(y_inelPar_e < 0.01 ||y_inelPar_e > 0.95) continue;
+    
     //fill truth scattered electron energy
-  	h_energy_MC->Fill(scatMC.E());
+    if(Q2_electron < 10.)
+    {
+      h_energy_MC->Fill(scatMC.E());
+    	h_energy_zoom_MC->Fill(scatMC.E());
+    	
+    	h_momentum_MC->Fill(scatMC.P());
+      
+      h_y_inelPar_MC->Fill(y_inelPar_e);
+      h_y_inelPar_zoom_MC->Fill(y_inelPar_e);
+      
+      h_Q2_MC->Fill(Q2_electron);
+      h_Q2_zoom_MC->Fill(Q2_electron);   
+    
+    }
   	
-    double y_inelPar_e = getInelParamElectron( 18, scatMC.E() );
-    double Q2_electron = getQ2elec( 18, scatMC.Vect());
-    
-    h_y_inelPar_MC->Fill(y_inelPar_e);
-    h_y_inelPar_zoom_MC->Fill(y_inelPar_e);
-    
-    h_Q2_MC->Fill(Q2_electron);
-    h_Q2_zoom_MC->Fill(Q2_electron);
     
     //find bins
     int Q2_bin = -1;
 
-    for(int j = 0; j < nQ2bins; j++) //loop over pT bins
+    for(int j = 0; j < nQ2bins; j++) 
     {
       if(Q2_electron > Q2_bins[j] && Q2_electron <= Q2_bins[j+1])
       {
         Q2_bin = j;
       }
-      else if( Q2_electron > Q2_bins[nQ2bins] )
-      {
-        Q2_bin = nQ2bins;      
-      }
-    }
+     }
         
     
     int y_bin = -1;
 
-    for(int j = 0; j < nyInelParBins; j++) //loop over pT bins
+    for(int j = 0; j < nyInelParBins; j++) 
     {
       if(y_inelPar_e > y_bins[j] && y_inelPar_e <= y_bins[j+1])
       {
         y_bin = j;
       }
-      else if( y_inelPar_e > y_bins[nyInelParBins] )
-      {
-        y_bin = nyInelParBins;      
-      }
     }
     
-    if(Q2_bin < 0 || y_bin < 0) continue;
     
-    h_eta_scat_ele[Q2_bin][y_bin]->Fill(scatMC.Eta());
+    int mom_bin = -1;
+
+    for(int j = 0; j < nMomBins; j++) //loop over pT bins
+    {
+      if(scatMC.P() > mom_bins[j] && scatMC.P() <= mom_bins[j+1])
+      {
+        mom_bin = j;
+      }
+      
+    }
+    
+    if(Q2_bin < 0 || y_bin < 0 || mom_bin < 0) continue;
+    
+    h_eta_scat_ele[mom_bin][Q2_bin][y_bin]->Fill(scatMC.Eta());
     
      
     //loop ove MC particles to fill distributions of produced particles
     for(int imc=0; imc < mc_px_array.GetSize(); imc++)
   	{
+  	  if( mc_generatorStatus_array[imc] != 1 ) continue;
+  	
   		TVector3 mc_mom(mc_px_array[imc], mc_py_array[imc], mc_pz_array[imc]);	
   		
   		//all electrons except the scattered one (one with highest pT)
-  		//if(mc_pdg_array[imc] == 11 && mc_mom.Perp() < maxPt)
-  		if(mc_pdg_array[imc] == 11 && mc_mom.Mag() < maxPt)
+  		if(mc_pdg_array[imc] == 11 &&  mc_mom.Pt() < scatMC.Pt())
+  		//if(mc_pdg_array[imc] == 11 && mc_mom.Mag() < maxP)
   		{
-  			h_eta_ele[Q2_bin][y_bin]->Fill(mc_mom.Eta());  			
+  			h_eta_ele[mom_bin][Q2_bin][y_bin]->Fill(mc_mom.Eta());  			
+  		}
+  		//positrons
+  		if(mc_pdg_array[imc] == -11 )
+  		//if(mc_pdg_array[imc] == 11 && mc_mom.Mag() < maxP)
+  		{
+  			h_eta_positron[mom_bin][Q2_bin][y_bin]->Fill(mc_mom.Eta());  			
   		}
   		
   		//pi+
   		if(mc_pdg_array[imc] == 211)
   		{
-  		   h_eta_pi[Q2_bin][y_bin]->Fill(mc_mom.Eta());  		
+  		   h_eta_pi_plus[mom_bin][Q2_bin][y_bin]->Fill(mc_mom.Eta());  		
+  		}
+  		//pi-
+  		if(mc_pdg_array[imc] == -211)
+  		{
+  		   h_eta_pi_minus[mom_bin][Q2_bin][y_bin]->Fill(mc_mom.Eta());  		
   		}
   		
   		//K+
   		if(mc_pdg_array[imc] == 321)
   		{
-  		   h_eta_K[Q2_bin][y_bin]->Fill(mc_mom.Eta());  		
+  		   h_eta_K_plus[mom_bin][Q2_bin][y_bin]->Fill(mc_mom.Eta());  		
+  		}
+  		//K-
+  		if(mc_pdg_array[imc] == -321)
+  		{
+  		   h_eta_K_minus[mom_bin][Q2_bin][y_bin]->Fill(mc_mom.Eta());  		
   		}
   		
   		//proton
   		if(mc_pdg_array[imc] == 2212)
   		{
-  		   h_eta_pi[Q2_bin][y_bin]->Fill(mc_mom.Eta());  		
+  		   h_eta_proton[mom_bin][Q2_bin][y_bin]->Fill(mc_mom.Eta());  		
+  		}
+  		//anti-proton
+  		if(mc_pdg_array[imc] == -2212)
+  		{
+  		   h_eta_anti_proton[mom_bin][Q2_bin][y_bin]->Fill(mc_mom.Eta());  		
   		}
   		
   	}//end secon particle loop

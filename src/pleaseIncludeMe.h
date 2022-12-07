@@ -138,8 +138,39 @@ auto getQ2elec(float electronEnergyInit, const TVector3 elec)
 }
 //___________________________________________________________________________
 
-auto getInelParamElectron(float electronEnergyInit, float electronEnergyFinal)
+auto getInelParamElectron_1(float protonEnergyInit, float electronEnergyInit, const TVector3 elec)
 {
-  return (electronEnergyInit - electronEnergyFinal)/electronEnergyInit;
+  //reverse fourmomentum of proton - for boost of electron to rest frame of proton
+  TLorentzVector pFourMom_reverse(0, 0, -sqrt(electronEnergyInit*electronEnergyInit-MASS_PROTON*MASS_PROTON), electronEnergyInit);
+  //pFourMom_reverse.SetXYZM(6.8742,0,-274.9141,sqrt(275*275+MASS_PROTON*MASS_PROTON));
+  
+  TLorentzVector e_init(0,0,-electronEnergyInit, electronEnergyInit);//need to read from file;
+	
+	TLorentzVector e_scat;
+	e_scat.SetPtEtaPhiM(elec.Pt(),elec.Eta(),elec.Phi(),MASS_ELECTRON);
+	
+	e_init.Boost(pFourMom_reverse.BoostVector());
+	e_scat.Boost(pFourMom_reverse.BoostVector());
+
+  return (e_init.E() - e_scat.E())/e_scat.E();
+}
+
+auto getInelParamElectron_2(float protonEnergyInit, float electronEnergyInit, const TVector3 elec)
+{
+
+	TLorentzVector ein(0,0,-electronEnergyInit,electronEnergyInit);//need to read from file;
+	TLorentzVector pin(0, 0, sqrt(electronEnergyInit*electronEnergyInit-MASS_PROTON*MASS_PROTON), electronEnergyInit);
+	//TLorentzVector pin(-6.8742,0,274.9141,sqrt(275*275+MASS_PROTON*MASS_PROTON));
+	TLorentzVector scat;
+	TLorentzVector q;
+	
+	scat.SetPtEtaPhiM(elec.Pt(),elec.Eta(),elec.Phi(),MASS_ELECTRON);
+	
+	q=ein-scat;
+	double Q2= -q.Mag2();
+	double pq=pin.Dot(q);
+	double Yelec = pq/pin.Dot(ein);
+		
+	return Yelec;
 }
 
