@@ -39,6 +39,8 @@ int runSingleParticles_simple(TString inname="input/input.root",TString outname=
     TString output_name_dir = outname;
   	TFile* output = new TFile("output/"+output_name_dir+"-output.root","RECREATE");
 
+    TH1D* h_Q2_e = new TH1D("h_Q2_e",";Q^{2}_{e,MC}",100,0,20);
+    TH1D* h_y_e = new TH1D("h_y_e",";y_{e,MC}",100,0,1);
     TH1D* h_eta = new TH1D("h_eta",";#eta",100,-5,5);
     TH1D* h_energy_MC = new TH1D("h_energy_MC",";E_{MC} (GeV)",100,0,20);
     TH1D* h_energy_REC = new TH1D("h_energy_REC",";E_{REC} (GeV)",100,0,20);
@@ -66,15 +68,14 @@ int runSingleParticles_simple(TString inname="input/input.root",TString outname=
                 if(mc_pdg_array[imc]==11) ebeam.SetVectM(mctrk, MASS_ELECTRON);
                 if(mc_pdg_array[imc]==2212) pbeam.SetVectM(mctrk, MASS_PROTON);
             }
-    		if(mc_pdg_array[imc]==11 	
-    			&& mctrk.Perp()>maxPt){
-    			maxPt=mctrk.Perp();
-    			mc_elect_index=imc;
-    			scatMC.SetVectM(mctrk,mc_mass_array[imc]);
-    		}
+            if(mc_genStatus_array[imc]!=1) continue;
+            if(mc_pdg_array[imc]==11    
+                && mctrk.Perp()>maxPt){
+                maxPt=mctrk.Perp();
+                mc_elect_index=imc;
+                scatMC.SetVectM(mctrk,mc_mass_array[imc]);
+            }
     	}
-    	h_energy_MC->Fill(scatMC.E());
-
         TLorentzVector qbeam=ebeam-scatMC;
         double Q2=-(qbeam).Mag2();  
         double pq=pbeam.Dot(qbeam);
@@ -83,6 +84,10 @@ int runSingleParticles_simple(TString inname="input/input.root",TString outname=
         //MC level phase space cut
         if(Q2<1.||Q2>10.) continue;
         if(y<0.01||y>0.95) continue;
+
+        h_Q2_e->Fill(Q2);
+        h_y_e->Fill(y);
+        h_energy_MC->Fill(scatMC.E());
 
     	double maxEnergy=-99.;
     	double xpos=-999.;
