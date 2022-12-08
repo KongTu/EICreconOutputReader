@@ -149,11 +149,11 @@ int electronPionSeparation(TString inname="./fileLists/flieList.list", TString o
   	
   		TVector3 mctrk(mc_px_array[imc], mc_py_array[imc], mc_pz_array[imc]);	
   		
-  		//if(mc_pdg_array[imc] == 11 && mctrk.Mag() > maxP)
-  		if(mc_pdg_array[imc] == 11 && mctrk.Perp() > maxP)
+  		if(mc_pdg_array[imc] == 11 && mctrk.Mag() > maxP)
+  		//if(mc_pdg_array[imc] == 11 && mctrk.Perp() > maxP)
   		{
-  			//maxP = mctrk.Mag();
-  			maxP = mctrk.Perp();
+  			maxP = mctrk.Mag();
+  			//maxP = mctrk.Perp();
   			mc_elect_index = imc;
   			scatMC.SetVectM(mctrk,mc_mass_array[imc]);  			
   		}
@@ -207,32 +207,47 @@ int electronPionSeparation(TString inname="./fileLists/flieList.list", TString o
     }
     
     
-    int mom_bin = -1;
+    int mom_bin_scat_e = -1;
 
     for(int j = 0; j < nMomBins; j++) //loop over pT bins
     {
       if(scatMC.P() > mom_bins[j] && scatMC.P() <= mom_bins[j+1])
       {
-        mom_bin = j;
+        mom_bin_scat_e = j;
       }
       
     }
     
-    if(Q2_bin < 0 || y_bin < 0 || mom_bin < 0) continue;
+    if(Q2_bin < 0 || y_bin < 0 || mom_bin_scat_e < 0) continue;
     
-    h_eta_scat_ele[mom_bin][Q2_bin][y_bin]->Fill(scatMC.Eta());
+    
+    h_eta_scat_ele[mom_bin_scat_e][Q2_bin][y_bin]->Fill(scatMC.Eta());
     
      
     //loop ove MC particles to fill distributions of produced particles
     for(int imc=0; imc < mc_px_array.GetSize(); imc++)
   	{
-  	  if( mc_generatorStatus_array[imc] != 1 ) continue;
+  	  if( mc_generatorStatus_array[imc] != 1 ) continue; 
   	
-  		TVector3 mc_mom(mc_px_array[imc], mc_py_array[imc], mc_pz_array[imc]);	
+  		TVector3 mc_mom(mc_px_array[imc], mc_py_array[imc], mc_pz_array[imc]);
+  		
+  		//determine momentum bin of particles in event
+  		int mom_bin = -1;
+
+      for(int j = 0; j < nMomBins; j++) //loop over pT bins
+      {
+        if(mc_mom.Mag() > mom_bins[j] && mc_mom.Mag() <= mom_bins[j+1])
+        {
+          mom_bin = j;
+        }
+        
+      }
+      
+      if(mom_bin < 0) continue;
   		
   		//all electrons except the scattered one (one with highest pT)
-  		if(mc_pdg_array[imc] == 11 &&  mc_mom.Pt() < scatMC.Pt())
-  		//if(mc_pdg_array[imc] == 11 && mc_mom.Mag() < maxP)
+  		//if(mc_pdg_array[imc] == 11 &&  mc_mom.Pt() < maxP)
+  		if(mc_pdg_array[imc] == 11 && mc_mom.Mag() < maxP)
   		{
   			h_eta_ele[mom_bin][Q2_bin][y_bin]->Fill(mc_mom.Eta());  			
   		}
