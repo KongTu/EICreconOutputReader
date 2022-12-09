@@ -34,6 +34,11 @@
 #define MASS_KAON     0.493667
 #define MASS_AU197    183.45406466643374
 
+//pfRICH info input file
+auto ff = new TFile("pfRICH-configs/pfRICH-default-Nov8.root", "read");
+auto dconfig = dynamic_cast<DelphesConfig*>(ff->Get("DelphesConfigRICH"));
+//_________________________________________________________________________
+
 auto getNtrk(const std::vector<edm4eic::ReconstructedParticleData>& parts)
 {
   std::vector<int> mult;
@@ -172,5 +177,66 @@ auto getInelParamElectron_2(float protonEnergyInit, float electronEnergyInit, co
 	double Yelec = pq/pin.Dot(ein);
 		
 	return Yelec;
+}
+
+//pfRICH test
+auto getPIDprob_pfRICH(const std::vector<TLorentzVector>& tracks)
+{	//hpid==0,pion
+	//hpid==1,kaon
+	//hpod==2,proton
+	unsigned int hdim = dconfig->GetMassHypothesisCount();
+	std::vector<double> prob;
+	
+	for(auto& i1 : tracks)
+	{
+		int hpid=-1;
+		if( fabs(i1.M()-MASS_PION)<1e-5) hpid=0;
+		if( fabs(i1.M()-MASS_KAON)<1e-5) hpid=1;
+		if( fabs(i1.M()-MASS_PROTON)<1e-5) hpid=2;
+
+		double hmtx[hdim*hdim];
+		TVector3 track = i1.Vect();
+  	int ret = dconfig->GetSmearingMatrix(track, hmtx);
+  	
+  	if(ret!=0 || hpid==-1)
+  	{
+  	  prob.push_back(0.);
+  	}
+  	else
+  	{
+  		prob.push_back( hmtx[(hdim+1)*hpid] );
+  	}	
+	}
+	
+	return prob;
+}
+
+auto getPIDprob_pfRICH_single(TLorentzVector track)
+{	//hpid==0,pion
+	//hpid==1,kaon
+	//hpod==2,proton
+	
+	unsigned int hdim = dconfig->GetMassHypothesisCount();
+	double prob;
+	
+	int hpid=-1;
+	if( fabs(track.M()-MASS_PION)<1e-5) hpid=0;
+	if( fabs(track.M()-MASS_KAON)<1e-5) hpid=1;
+	if( fabs(track.M()-MASS_PROTON)<1e-5) hpid=2;
+
+	double hmtx[hdim*hdim];
+	TVector3 track = track.Vect();
+	int ret = dconfig->GetSmearingMatrix(track, hmtx);
+	
+	if(ret!=0 || hpid==-1)
+	{
+	  prob = 0.;
+	}
+	else
+	{
+		prob = hmtx[(hdim+1)*hpid];
+	}	
+	
+	return prob;
 }
 
