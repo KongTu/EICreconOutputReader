@@ -31,10 +31,21 @@ int electronPionSeparation(TString inname="./fileLists/flieList.list", TString o
   
   const int nMomBins = 5;
   float const mom_bins[nMomBins+1] = { 0,1,3,7,10, 18 };
+  
+  //____________________________________________________
+  //pi rejection
+  //values from Dimitry Kalinkin
 
-  
-  
-  
+  double array_mom_bins[8] = {0.1, 0.2, 0.5, 1., 2., 5., 10., 20.};
+  double array_pi_false_rate_85[8] = {0.6332832672698294, 0.7495818158985306, 0.00930384575910461, 0.001692827694491846, 0.0001898238241173789, 0.00020018016214593134, 0.000536412900269677, 0.0006430092230696459};
+  double array_pi_false_rate_95[8] = {0.8838860654090215, 0.9228366502089709, 0.02228665375203912, 0.0036237053948322794, 0.00048096291971113834, 0.0006523112180272588, 0.0022770026949322946, 0.0018829746368912276};
+
+
+  TGraph *g_pi_false_rate_85 = new TGraph(8, array_mom_bins, array_pi_false_rate_85);
+
+  TGraph *g_pi_false_rate_95 = new TGraph(8, array_mom_bins, array_pi_false_rate_95);
+  //___________________________________________________
+
   
   //load files to TChain
   ifstream fileList;
@@ -100,6 +111,8 @@ int electronPionSeparation(TString inname="./fileLists/flieList.list", TString o
   
   TH1D *h_eta_positron[nMomBins+1][nQ2bins][nyInelParBins];
   TH1D *h_eta_pi_minus[nMomBins+1][nQ2bins][nyInelParBins];
+  TH1D *h_eta_pi_minus_reject_85[nMomBins+1][nQ2bins][nyInelParBins];
+  TH1D *h_eta_pi_minus_reject_95[nMomBins+1][nQ2bins][nyInelParBins];
   TH1D *h_eta_K_minus[nMomBins+1][nQ2bins][nyInelParBins];
   TH1D *h_eta_anti_proton[nMomBins+1][nQ2bins][nyInelParBins];
   
@@ -117,6 +130,8 @@ int electronPionSeparation(TString inname="./fileLists/flieList.list", TString o
         
         h_eta_positron[mom_bin][Q2bin][y_bin] = new TH1D(Form("h_eta_positron_mom_%i_Q2_%i_y_%i" , mom_bin, Q2bin, y_bin), Form("h_eta_positron_mom_%i_Q2_%i_y_%i" , mom_bin, Q2bin, y_bin), 200, -4, 4);
         h_eta_pi_minus[mom_bin][Q2bin][y_bin] = new TH1D(Form("h_eta_pi_minus_mom_%i_Q2_%i_y_%i" , mom_bin, Q2bin, y_bin), Form("h_eta_pi_minus_mom_%i_Q2_%i_y_%i" , mom_bin, Q2bin, y_bin), 200, -4, 4);
+        h_eta_pi_minus_reject_85[mom_bin][Q2bin][y_bin] = new TH1D(Form("h_eta_pi_minus_reject_85_mom_%i_Q2_%i_y_%i" , mom_bin, Q2bin, y_bin), Form("h_eta_pi_minus_reject_85_mom_%i_Q2_%i_y_%i" , mom_bin, Q2bin, y_bin), 200, -4, 4);
+        h_eta_pi_minus_reject_95[mom_bin][Q2bin][y_bin] = new TH1D(Form("h_eta_pi_minus_reject_95_mom_%i_Q2_%i_y_%i" , mom_bin, Q2bin, y_bin), Form("h_eta_pi_minus_reject_95_mom_%i_Q2_%i_y_%i" , mom_bin, Q2bin, y_bin), 200, -4, 4);
         h_eta_K_minus[mom_bin][Q2bin][y_bin] = new TH1D(Form("h_eta_K_minus_mom_%i_Q2_%i_y_%i" , mom_bin, Q2bin, y_bin), Form("h_eta_K_minus_mom_%i_Q2_%i_y_%i" , mom_bin, Q2bin, y_bin), 200, -4, 4);
         h_eta_anti_proton[mom_bin][Q2bin][y_bin] = new TH1D(Form("h_eta_anti_proton_mom_%i_Q2_%i_y_%i" , mom_bin, Q2bin, y_bin), Form("h_eta_anti_proton_mom_%i_Q2_%i_y_%i" , mom_bin, Q2bin, y_bin), 200, -4, 4);
       }
@@ -266,7 +281,10 @@ int electronPionSeparation(TString inname="./fileLists/flieList.list", TString o
   		//pi-
   		if(mc_pdg_array[imc] == -211)
   		{
-  		   h_eta_pi_minus[mom_bin][Q2_bin][y_bin]->Fill(mc_mom.Eta());  		
+  		   h_eta_pi_minus[mom_bin][Q2_bin][y_bin]->Fill(mc_mom.Eta());
+  		   
+  		   h_eta_pi_minus_reject_85[mom_bin][Q2_bin][y_bin]->Fill(mc_mom.Eta(), g_pi_false_rate_85->Eval(mc_mom.Mag()));
+  		   h_eta_pi_minus_reject_95[mom_bin][Q2_bin][y_bin]->Fill(mc_mom.Eta(), g_pi_false_rate_95->Eval(mc_mom.Mag()));
   		}
   		
   		//K+
