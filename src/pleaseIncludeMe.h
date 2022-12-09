@@ -6,6 +6,8 @@
 #include <algorithm>
 #include <utility>
 
+#include <Math/Vector4D.h>
+
 #include "ROOT/RDataFrame.hxx"
 #include <TH1D.h>
 #include <TFitResult.h>
@@ -22,10 +24,15 @@
 #include "fmt/color.h"
 #include "fmt/core.h"
 
-// #include "nlohmann/json.hpp"
+#include "nlohmann/json.hpp"
 #include "edm4eic/InclusiveKinematicsData.h"
 #include "edm4eic/ReconstructedParticleData.h"
 #include "edm4hep/MCParticleData.h"
+
+//for pf-RICH only
+//#include "/gpfs02/eic/ztu/EPIC/software_tutorial/analysis/irt/delphes/include/DelphesConfig.h"
+#include "/gpfs02/eic/janvanek/eic/tmp/irt/delphes/include/DelphesConfig.h"
+//#include "/gpfs02/eic/janvanek/eic/tmp/irt/delphes/include/DelphesConfigRICH.h"
 
 #define PI            3.1415926
 #define MASS_ELECTRON 0.00051
@@ -35,9 +42,10 @@
 #define MASS_AU197    183.45406466643374
 
 //pfRICH info input file
-auto ff = new TFile("pfRICH-configs/pfRICH-default-Nov8.root", "read");
-auto dconfig = dynamic_cast<DelphesConfig*>(ff->Get("DelphesConfigRICH"));
-//_________________________________________________________________________
+  auto ff = new TFile("./pfRICH-configs/pfRICH-default-Nov8.root");
+  auto dconfig = dynamic_cast<DelphesConfig*>(ff->Get("DelphesConfigRICH"));
+  //_________________________________________________________________________
+
 
 auto getNtrk(const std::vector<edm4eic::ReconstructedParticleData>& parts)
 {
@@ -181,10 +189,11 @@ auto getInelParamElectron_2(float protonEnergyInit, float electronEnergyInit, co
 
 //pfRICH test
 auto getPIDprob_pfRICH(const std::vector<TLorentzVector>& tracks)
-{	//hpid==0,pion
+{	
+  //hpid==0,pion
 	//hpid==1,kaon
 	//hpod==2,proton
-	unsigned int hdim = dconfig->GetMassHypothesisCount();
+	unsigned hdim = dconfig->GetMassHypothesisCount();
 	std::vector<double> prob;
 	
 	for(auto& i1 : tracks)
@@ -212,11 +221,14 @@ auto getPIDprob_pfRICH(const std::vector<TLorentzVector>& tracks)
 }
 
 auto getPIDprob_pfRICH_single(TLorentzVector track)
-{	//hpid==0,pion
+{
+  
+
+	//hpid==0,pion
 	//hpid==1,kaon
 	//hpod==2,proton
 	
-	unsigned int hdim = dconfig->GetMassHypothesisCount();
+	unsigned hdim = dconfig->GetMassHypothesisCount();
 	double prob;
 	
 	int hpid=-1;
@@ -225,8 +237,8 @@ auto getPIDprob_pfRICH_single(TLorentzVector track)
 	if( fabs(track.M()-MASS_PROTON)<1e-5) hpid=2;
 
 	double hmtx[hdim*hdim];
-	TVector3 track = track.Vect();
-	int ret = dconfig->GetSmearingMatrix(track, hmtx);
+
+	int ret = dconfig->GetSmearingMatrix(track.Vect(), hmtx);
 	
 	if(ret!=0 || hpid==-1)
 	{
