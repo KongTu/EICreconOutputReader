@@ -104,48 +104,64 @@ int electronPionSeparation(TString inname="./fileLists/flieList.list", TString o
   TH1D *h_y_inelPar_zoom_MC = new TH1D("h_y_inelPar_zoom_MC", "h_y_inelPar_zoom_MC", 100, 0, 0.01);
   
   //eta distributions in multiple Q^2 and inelasticity bins
-  TH1D *h_eta_scat_ele[nMomBins+1][nQ2bins][nyInelParBins];
+  TH1D *h_eta_scat_ele[nMomBins][nQ2bins][nyInelParBins];
   
-  TH1D *h_eta_ele[nMomBins+1][nQ2bins][nyInelParBins];
-  TH1D *h_eta_pi_plus[nMomBins+1][nQ2bins][nyInelParBins];
-  TH1D *h_eta_K_plus[nMomBins+1][nQ2bins][nyInelParBins];
-  TH1D *h_eta_proton[nMomBins+1][nQ2bins][nyInelParBins];
+  TH1D *h_eta_ele[nMomBins][nQ2bins][nyInelParBins];
+  TH1D *h_eta_pi_plus[nMomBins][nQ2bins][nyInelParBins];
+  TH1D *h_eta_K_plus[nMomBins][nQ2bins][nyInelParBins];
+  TH1D *h_eta_proton[nMomBins][nQ2bins][nyInelParBins];
   
-  TH1D *h_eta_positron[nMomBins+1][nQ2bins][nyInelParBins];
+  TH1D *h_eta_positron[nMomBins][nQ2bins][nyInelParBins];
   
-  TH1D *h_eta_pi_minus[nMomBins+1][nQ2bins][nyInelParBins];
-  TH1D *h_eta_pi_minus_eCAL_85[nMomBins+1][nQ2bins][nyInelParBins];
-  TH1D *h_eta_pi_minus_eCAL_95[nMomBins+1][nQ2bins][nyInelParBins];
+  TH1D *h_eta_pi_minus[nMomBins][nQ2bins][nyInelParBins];
   
-  TH1D *h_eta_pi_minus_eCAL_85_pfRICH[nMomBins+1][nQ2bins][nyInelParBins];
-  TH1D *h_eta_pi_minus_eCAL_95_pfRICH[nMomBins+1][nQ2bins][nyInelParBins];
+  TH1D *h_eta_pi_minus_eCAL_85[nMomBins][nQ2bins][nyInelParBins];
+  TH1D *h_eta_pi_minus_eCAL_95[nMomBins][nQ2bins][nyInelParBins];
   
-  TH1D *h_eta_K_minus[nMomBins+1][nQ2bins][nyInelParBins];
-  TH1D *h_eta_anti_proton[nMomBins+1][nQ2bins][nyInelParBins];
+  TH1D *h_eta_pi_minus_pfRICH[nMomBins][nQ2bins][nyInelParBins];
   
-  for(unsigned int mom_bin = 0; mom_bin < nMomBins+1; mom_bin++)
+  TH1D *h_eta_pi_minus_eCAL_85_pfRICH[nMomBins][nQ2bins][nyInelParBins];
+  TH1D *h_eta_pi_minus_eCAL_95_pfRICH[nMomBins][nQ2bins][nyInelParBins];
+  
+  TH1D *h_eta_K_minus[nMomBins][nQ2bins][nyInelParBins];
+  
+  TH1D *h_eta_K_minus_pfRICH[nMomBins][nQ2bins][nyInelParBins];
+  
+  TH1D *h_eta_anti_proton[nMomBins][nQ2bins][nyInelParBins];
+  
+  TH1D *h_eta_anti_proton_pfRICH[nMomBins][nQ2bins][nyInelParBins];
+  
+  for(unsigned int mom_bin = 0; mom_bin < nMomBins; mom_bin++)
   {
     for(unsigned int Q2bin = 0; Q2bin < nQ2bins; Q2bin++)
     {
       for(unsigned int y_bin = 0; y_bin < nyInelParBins; y_bin++)
       {
-        h_eta_scat_ele[mom_bin][Q2bin][y_bin] = new TH1D(Form("h_eta_scat_ele_mom_%i_Q2_%i_y_%i" , mom_bin, Q2bin, y_bin), Form("h_eta_scat_ele_mom_%i_Q2_%i_y_%i" , mom_bin, Q2bin, y_bin), 200, -4, 4);
-        h_eta_ele[mom_bin][Q2bin][y_bin] = new TH1D(Form("h_eta_ele_mom_%i_Q2_%i_y_%i" , mom_bin, Q2bin, y_bin), Form("h_eta_ele_mom_%i_Q2_%i_y_%i" , mom_bin, Q2bin, y_bin), 200, -4, 4);
-        h_eta_pi_plus[mom_bin][Q2bin][y_bin] = new TH1D(Form("h_eta_pi_plus_mom_%i_Q2_%i_y_%i" , mom_bin, Q2bin, y_bin), Form("h_eta_pi_plus_mom_%i_Q2_%i_y_%i" , mom_bin, Q2bin, y_bin), 200, -4, 4);
-        h_eta_K_plus[mom_bin][Q2bin][y_bin] = new TH1D(Form("h_eta_K_plus_mom_%i_Q2_%i_y_%i" , mom_bin, Q2bin, y_bin), Form("h_eta_K_plus_mom_%i_Q2_%i_y_%i" , mom_bin, Q2bin, y_bin), 200, -4, 4);
-        h_eta_proton[mom_bin][Q2bin][y_bin] = new TH1D(Form("h_eta_proton_mom_%i_Q2_%i_y_%i" , mom_bin, Q2bin, y_bin), Form("h_eta_proton_mom_%i_Q2_%i_y_%i" , mom_bin, Q2bin, y_bin), 200, -4, 4);
+        h_eta_scat_ele[mom_bin][Q2bin][y_bin] = new TH1D(Form("h_eta_scat_ele_mom_%i_Q2_%i_y_%i" , mom_bin, Q2bin, y_bin), Form("h_eta_scat_ele_mom_%i_Q2_%i_y_%i" , mom_bin, Q2bin, y_bin), 100, -4, 0);
+        h_eta_ele[mom_bin][Q2bin][y_bin] = new TH1D(Form("h_eta_ele_mom_%i_Q2_%i_y_%i" , mom_bin, Q2bin, y_bin), Form("h_eta_ele_mom_%i_Q2_%i_y_%i" , mom_bin, Q2bin, y_bin), 100, -4, 0);
+        h_eta_pi_plus[mom_bin][Q2bin][y_bin] = new TH1D(Form("h_eta_pi_plus_mom_%i_Q2_%i_y_%i" , mom_bin, Q2bin, y_bin), Form("h_eta_pi_plus_mom_%i_Q2_%i_y_%i" , mom_bin, Q2bin, y_bin), 100, -4, 0);
+        h_eta_K_plus[mom_bin][Q2bin][y_bin] = new TH1D(Form("h_eta_K_plus_mom_%i_Q2_%i_y_%i" , mom_bin, Q2bin, y_bin), Form("h_eta_K_plus_mom_%i_Q2_%i_y_%i" , mom_bin, Q2bin, y_bin), 100, -4, 0);
+        h_eta_proton[mom_bin][Q2bin][y_bin] = new TH1D(Form("h_eta_proton_mom_%i_Q2_%i_y_%i" , mom_bin, Q2bin, y_bin), Form("h_eta_proton_mom_%i_Q2_%i_y_%i" , mom_bin, Q2bin, y_bin), 100, -4, 0);
         
-        h_eta_positron[mom_bin][Q2bin][y_bin] = new TH1D(Form("h_eta_positron_mom_%i_Q2_%i_y_%i" , mom_bin, Q2bin, y_bin), Form("h_eta_positron_mom_%i_Q2_%i_y_%i" , mom_bin, Q2bin, y_bin), 200, -4, 4);
+        h_eta_positron[mom_bin][Q2bin][y_bin] = new TH1D(Form("h_eta_positron_mom_%i_Q2_%i_y_%i" , mom_bin, Q2bin, y_bin), Form("h_eta_positron_mom_%i_Q2_%i_y_%i" , mom_bin, Q2bin, y_bin), 100, -4, 0);
         
-        h_eta_pi_minus[mom_bin][Q2bin][y_bin] = new TH1D(Form("h_eta_pi_minus_mom_%i_Q2_%i_y_%i" , mom_bin, Q2bin, y_bin), Form("h_eta_pi_minus_mom_%i_Q2_%i_y_%i" , mom_bin, Q2bin, y_bin), 200, -4, 4);
-        h_eta_pi_minus_eCAL_85[mom_bin][Q2bin][y_bin] = new TH1D(Form("h_eta_pi_minus_eCAL_85_mom_%i_Q2_%i_y_%i" , mom_bin, Q2bin, y_bin), Form("h_eta_pi_minus_eCAL_85_mom_%i_Q2_%i_y_%i" , mom_bin, Q2bin, y_bin), 200, -4, 4);
-        h_eta_pi_minus_eCAL_95[mom_bin][Q2bin][y_bin] = new TH1D(Form("h_eta_pi_minus_eCAL_95_mom_%i_Q2_%i_y_%i" , mom_bin, Q2bin, y_bin), Form("h_eta_pi_minus_eCAL_95_mom_%i_Q2_%i_y_%i" , mom_bin, Q2bin, y_bin), 200, -4, 4);
+        h_eta_pi_minus[mom_bin][Q2bin][y_bin] = new TH1D(Form("h_eta_pi_minus_mom_%i_Q2_%i_y_%i" , mom_bin, Q2bin, y_bin), Form("h_eta_pi_minus_mom_%i_Q2_%i_y_%i" , mom_bin, Q2bin, y_bin), 100, -4, 0);
         
-        h_eta_pi_minus_eCAL_85_pfRICH[mom_bin][Q2bin][y_bin] = new TH1D(Form("h_eta_pi_minus_eCAL_85_pfRICH_mom_%i_Q2_%i_y_%i" , mom_bin, Q2bin, y_bin), Form("h_eta_pi_minus_eCAL_85_pfRICH_mom_%i_Q2_%i_y_%i" , mom_bin, Q2bin, y_bin), 200, -4, 4);
-        h_eta_pi_minus_eCAL_95_pfRICH[mom_bin][Q2bin][y_bin] = new TH1D(Form("h_eta_pi_minus_eCAL_95_pfRICH_mom_%i_Q2_%i_y_%i" , mom_bin, Q2bin, y_bin), Form("h_eta_pi_minus_eCAL_95_pfRICH_mom_%i_Q2_%i_y_%i" , mom_bin, Q2bin, y_bin), 200, -4, 4);
+        h_eta_pi_minus_eCAL_85[mom_bin][Q2bin][y_bin] = new TH1D(Form("h_eta_pi_minus_eCAL_85_mom_%i_Q2_%i_y_%i" , mom_bin, Q2bin, y_bin), Form("h_eta_pi_minus_eCAL_85_mom_%i_Q2_%i_y_%i" , mom_bin, Q2bin, y_bin), 100, -4, 0);
+        h_eta_pi_minus_eCAL_95[mom_bin][Q2bin][y_bin] = new TH1D(Form("h_eta_pi_minus_eCAL_95_mom_%i_Q2_%i_y_%i" , mom_bin, Q2bin, y_bin), Form("h_eta_pi_minus_eCAL_95_mom_%i_Q2_%i_y_%i" , mom_bin, Q2bin, y_bin), 100, -4, 0);
         
-        h_eta_K_minus[mom_bin][Q2bin][y_bin] = new TH1D(Form("h_eta_K_minus_mom_%i_Q2_%i_y_%i" , mom_bin, Q2bin, y_bin), Form("h_eta_K_minus_mom_%i_Q2_%i_y_%i" , mom_bin, Q2bin, y_bin), 200, -4, 4);        
-        h_eta_anti_proton[mom_bin][Q2bin][y_bin] = new TH1D(Form("h_eta_anti_proton_mom_%i_Q2_%i_y_%i" , mom_bin, Q2bin, y_bin), Form("h_eta_anti_proton_mom_%i_Q2_%i_y_%i" , mom_bin, Q2bin, y_bin), 200, -4, 4);
+        h_eta_pi_minus_pfRICH[mom_bin][Q2bin][y_bin] = new TH1D(Form("h_eta_pi_minus_pfRICH_mom_%i_Q2_%i_y_%i" , mom_bin, Q2bin, y_bin), Form("h_eta_pi_minus_pfRICH_mom_%i_Q2_%i_y_%i" , mom_bin, Q2bin, y_bin), 100, -4, 0);
+        
+        h_eta_pi_minus_eCAL_85_pfRICH[mom_bin][Q2bin][y_bin] = new TH1D(Form("h_eta_pi_minus_eCAL_85_pfRICH_mom_%i_Q2_%i_y_%i" , mom_bin, Q2bin, y_bin), Form("h_eta_pi_minus_eCAL_85_pfRICH_mom_%i_Q2_%i_y_%i" , mom_bin, Q2bin, y_bin), 100, -4, 0);
+        h_eta_pi_minus_eCAL_95_pfRICH[mom_bin][Q2bin][y_bin] = new TH1D(Form("h_eta_pi_minus_eCAL_95_pfRICH_mom_%i_Q2_%i_y_%i" , mom_bin, Q2bin, y_bin), Form("h_eta_pi_minus_eCAL_95_pfRICH_mom_%i_Q2_%i_y_%i" , mom_bin, Q2bin, y_bin), 100, -4, 0);
+        
+        h_eta_K_minus[mom_bin][Q2bin][y_bin] = new TH1D(Form("h_eta_K_minus_mom_%i_Q2_%i_y_%i" , mom_bin, Q2bin, y_bin), Form("h_eta_K_minus_mom_%i_Q2_%i_y_%i" , mom_bin, Q2bin, y_bin), 100, -4, 0);
+        
+        h_eta_K_minus_pfRICH[mom_bin][Q2bin][y_bin] = new TH1D(Form("h_eta_K_minus_pfRICH_mom_%i_Q2_%i_y_%i" , mom_bin, Q2bin, y_bin), Form("h_eta_K_minus_pfRICH_mom_%i_Q2_%i_y_%i" , mom_bin, Q2bin, y_bin), 100, -4, 0);
+          
+        h_eta_anti_proton[mom_bin][Q2bin][y_bin] = new TH1D(Form("h_eta_anti_proton_mom_%i_Q2_%i_y_%i" , mom_bin, Q2bin, y_bin), Form("h_eta_anti_proton_mom_%i_Q2_%i_y_%i" , mom_bin, Q2bin, y_bin), 100, -4, 0);
+        
+        h_eta_anti_proton_pfRICH[mom_bin][Q2bin][y_bin] = new TH1D(Form("h_eta_anti_proton_pfRICH_mom_%i_Q2_%i_y_%i" , mom_bin, Q2bin, y_bin), Form("h_eta_anti_proton_pfRICH_mom_%i_Q2_%i_y_%i" , mom_bin, Q2bin, y_bin), 100, -4, 0);
       }
     
     }
@@ -257,7 +273,8 @@ int electronPionSeparation(TString inname="./fileLists/flieList.list", TString o
   	  if( mc_generatorStatus_array[imc] != 1 ) continue; 
   	
   		TVector3 mc_mom(mc_px_array[imc], mc_py_array[imc], mc_pz_array[imc]);
-  		TLorentzVector mc_4mom(mc_px_array[imc], mc_py_array[imc], mc_pz_array[imc], mc_mass_array[imc]);
+  		TLorentzVector mc_4mom(0,0,0,0);
+  		mc_4mom.SetVectM(mc_mom, mc_mass_array[imc]);
   		
   		//determine momentum bin of particles in event
   		int mom_bin = -1;
@@ -294,16 +311,36 @@ int electronPionSeparation(TString inname="./fileLists/flieList.list", TString o
   		//pi-
   		if(mc_pdg_array[imc] == -211)
   		{
-  		   h_eta_pi_minus[mom_bin][Q2_bin][y_bin]->Fill(mc_mom.Eta());
+        h_eta_pi_minus[mom_bin][Q2_bin][y_bin]->Fill(mc_mom.Eta());
+
+        //suppression factors for eCAL
+        //default value is 1 - i.e. no suppression
+        double eCAL_suppress_85 = 1.;
+        double eCAL_suppress_95 = 1.;
+
+        //eta acceptance of eCAL
+        if( mc_mom.Eta() > -3.14 && mc_mom.Eta() < -1.87 )
+        {
+          eCAL_suppress_85 = g_pi_false_rate_85->Eval(mc_mom.Mag());
+          eCAL_suppress_95 = g_pi_false_rate_95->Eval(mc_mom.Mag());
+
+          h_eta_pi_minus_eCAL_85[mom_bin][Q2_bin][y_bin]->Fill(mc_mom.Eta(), eCAL_suppress_85);
+          h_eta_pi_minus_eCAL_95[mom_bin][Q2_bin][y_bin]->Fill(mc_mom.Eta(), eCAL_suppress_95); 
+        }
+
+        //change PID to MC
+        double pfRICH_pi_prob = getPIDprob_pfRICH_MC(mc_4mom, 0);
+        double noPID_pi_prob = 1 - pfRICH_pi_prob;
+
+        if( pfRICH_pi_prob != 0)
+        {
+          h_eta_pi_minus_pfRICH[mom_bin][Q2_bin][y_bin]->Fill(mc_mom.Eta(), noPID_pi_prob);
+        
+          h_eta_pi_minus_eCAL_85_pfRICH[mom_bin][Q2_bin][y_bin]->Fill(mc_mom.Eta(), eCAL_suppress_85*noPID_pi_prob);
+          h_eta_pi_minus_eCAL_95_pfRICH[mom_bin][Q2_bin][y_bin]->Fill(mc_mom.Eta(), eCAL_suppress_95*noPID_pi_prob);
+        }
   		   
-  		   h_eta_pi_minus_eCAL_85[mom_bin][Q2_bin][y_bin]->Fill(mc_mom.Eta(), g_pi_false_rate_85->Eval(mc_mom.Mag()));
-  		   h_eta_pi_minus_eCAL_95[mom_bin][Q2_bin][y_bin]->Fill(mc_mom.Eta(), g_pi_false_rate_95->Eval(mc_mom.Mag()));
-  		   
-  		   double pfRICH_pi_prob = getPIDprob_pfRICH_single(mc_4mom);
-  		   double noPID_pi_prob = 1 - pfRICH_pi_prob;
-  		   
-  		   h_eta_pi_minus_eCAL_85_pfRICH[mom_bin][Q2_bin][y_bin]->Fill(mc_mom.Eta(), g_pi_false_rate_85->Eval(mc_mom.Mag())*noPID_pi_prob);
-  		   h_eta_pi_minus_eCAL_95_pfRICH[mom_bin][Q2_bin][y_bin]->Fill(mc_mom.Eta(), g_pi_false_rate_95->Eval(mc_mom.Mag())*noPID_pi_prob);  
+  		     
 
   		}
   		
@@ -315,7 +352,16 @@ int electronPionSeparation(TString inname="./fileLists/flieList.list", TString o
   		//K-
   		if(mc_pdg_array[imc] == -321)
   		{
-  		   h_eta_K_minus[mom_bin][Q2_bin][y_bin]->Fill(mc_mom.Eta());  		
+  		  h_eta_K_minus[mom_bin][Q2_bin][y_bin]->Fill(mc_mom.Eta());
+  		   
+  		  double pfRICH_K_prob = getPIDprob_pfRICH_MC(mc_4mom, 1);
+        double noPID_K_prob = 1 - pfRICH_K_prob;
+
+        if( pfRICH_K_prob != 0)
+        {
+          h_eta_K_minus_pfRICH[mom_bin][Q2_bin][y_bin]->Fill(mc_mom.Eta(), noPID_K_prob);
+        }
+  		   		
   		}
   		
   		//proton
@@ -326,7 +372,15 @@ int electronPionSeparation(TString inname="./fileLists/flieList.list", TString o
   		//anti-proton
   		if(mc_pdg_array[imc] == -2212)
   		{
-  		   h_eta_anti_proton[mom_bin][Q2_bin][y_bin]->Fill(mc_mom.Eta());  		
+  		  h_eta_anti_proton[mom_bin][Q2_bin][y_bin]->Fill(mc_mom.Eta());
+  		   
+  		  double pfRICH_anti_proton_prob = getPIDprob_pfRICH_MC(mc_4mom, 2);
+        double noPID_anti_proton_prob = 1 - pfRICH_anti_proton_prob;
+
+        if( pfRICH_anti_proton_prob != 0)
+        {
+          h_eta_anti_proton_pfRICH[mom_bin][Q2_bin][y_bin]->Fill(mc_mom.Eta(), noPID_anti_proton_prob);
+        } 		
   		}
   		
   	}//end secon particle loop

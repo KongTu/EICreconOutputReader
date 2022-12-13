@@ -167,6 +167,7 @@ auto getInelParamElectron_1(float protonEnergyInit, float electronEnergyInit, co
 
   return (e_init.E() - e_scat.E())/e_scat.E();
 }
+//___________________________________________________________________________
 
 auto getInelParamElectron_2(float protonEnergyInit, float electronEnergyInit, const TVector3 elec)
 {
@@ -186,6 +187,7 @@ auto getInelParamElectron_2(float protonEnergyInit, float electronEnergyInit, co
 		
 	return Yelec;
 }
+//___________________________________________________________________________
 
 //pfRICH test
 auto getPIDprob_pfRICH(const std::vector<TLorentzVector>& tracks)
@@ -219,11 +221,10 @@ auto getPIDprob_pfRICH(const std::vector<TLorentzVector>& tracks)
 	
 	return prob;
 }
+//___________________________________________________________________________
 
 auto getPIDprob_pfRICH_single(TLorentzVector track)
 {
-  
-
 	//hpid==0,pion
 	//hpid==1,kaon
 	//hpod==2,proton
@@ -242,6 +243,34 @@ auto getPIDprob_pfRICH_single(TLorentzVector track)
 	
 	if(ret!=0 || hpid==-1)
 	{
+	  //cout<<"ret = "<<ret<<", hpid = "<<hpid<<endl;
+	  prob = 0.;
+	}
+	else
+	{
+		prob = hmtx[(hdim+1)*hpid];
+	}	
+	
+	return prob;
+}
+//___________________________________________________________________________
+
+auto getPIDprob_pfRICH_MC(TLorentzVector track, int hpid)
+{
+	//hpid==0,pion
+	//hpid==1,kaon
+	//hpod==2,proton
+	
+	unsigned hdim = dconfig->GetMassHypothesisCount();
+	
+	double prob;
+	double hmtx[hdim*hdim];
+
+	int ret = dconfig->GetSmearingMatrix(track.Vect(), hmtx);
+	
+	if(ret!=0 || hpid < 0 || hpid > 2)
+	{
+	  //cout<<"ret = "<<ret<<", hpid = "<<hpid<<endl;
 	  prob = 0.;
 	}
 	else
