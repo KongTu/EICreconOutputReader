@@ -9,7 +9,8 @@
 #include <Math/Vector4D.h>
 
 #include "ROOT/RDataFrame.hxx"
-#include <TH1D.h>
+#include <TH1.h>
+#include <TH2.h>
 #include <TFitResult.h>
 #include <TRandom3.h>
 #include <TCanvas.h>
@@ -42,9 +43,9 @@
 #define MASS_AU197    183.45406466643374
 
 //pfRICH info input file
-  auto ff = new TFile("./pfRICH-configs/pfRICH-default-Nov8.root");
-  auto dconfig = dynamic_cast<DelphesConfig*>(ff->Get("DelphesConfigRICH"));
-  //_________________________________________________________________________
+auto ff = new TFile("./pfRICH-configs/pfRICH-default-Nov8.root");
+auto dconfig = dynamic_cast<DelphesConfig*>(ff->Get("DelphesConfigRICH"));
+//_________________________________________________________________________
 
 
 auto getNtrk(const std::vector<edm4eic::ReconstructedParticleData>& parts)
@@ -279,5 +280,27 @@ auto getPIDprob_pfRICH_MC(TLorentzVector track, int hpid)
 	}	
 	
 	return prob;
+}
+//___________________________________________________________________________
+
+int getPIDprob_pfRICH_QA(TLorentzVector track, double (&PID_mtx)[9])
+{
+	
+	unsigned hdim = dconfig->GetMassHypothesisCount();		
+
+	//double hmtx[hdim*hdim];
+
+	int ret = dconfig->GetSmearingMatrix(track.Vect(), PID_mtx);
+	
+	if(ret!=0)
+	{
+	  //cout<<"ret = "<<ret<<", hpid = "<<hpid<<endl;
+	  return 0;
+	}
+	else
+	{
+		return 1;
+	}	
+	
 }
 

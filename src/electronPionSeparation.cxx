@@ -131,8 +131,14 @@ int electronPionSeparation(TString inname="./fileLists/flieList.list", TString o
   
   TH1D *h_eta_anti_proton_pfRICH[nMomBins][nQ2bins][nyInelParBins];
   
+  TH1D *h_PID_pfRICH_mtx[nMomBins];
+  
+  
   for(unsigned int mom_bin = 0; mom_bin < nMomBins; mom_bin++)
   {
+  
+    h_PID_pfRICH_mtx[mom_bin] = new TH1D(Form("h_PID_pfRICH_mtx_mom_%i", mom_bin), Form("h_PID_pfRICH_mtx_mom_%i", mom_bin), 9, 0, 9);   
+    
     for(unsigned int Q2bin = 0; Q2bin < nQ2bins; Q2bin++)
     {
       for(unsigned int y_bin = 0; y_bin < nyInelParBins; y_bin++)
@@ -175,7 +181,7 @@ int electronPionSeparation(TString inname="./fileLists/flieList.list", TString o
   
 
 	tree_reader.SetEntriesRange(0, myChain->GetEntries());
-	
+		
   while (tree_reader.Next())
   {
 
@@ -262,14 +268,15 @@ int electronPionSeparation(TString inname="./fileLists/flieList.list", TString o
     }
     
     if(Q2_bin < 0 || y_bin < 0 || mom_bin_scat_e < 0) continue;
-    
+    //__________________________________________________________________________________
     
     h_eta_scat_ele[mom_bin_scat_e][Q2_bin][y_bin]->Fill(scatMC.Eta());
     
-     
+    
     //loop ove MC particles to fill distributions of produced particles
     for(int imc=0; imc < mc_px_array.GetSize(); imc++)
   	{
+  	
   	  if( mc_generatorStatus_array[imc] != 1 ) continue; 
   	
   		TVector3 mc_mom(mc_px_array[imc], mc_py_array[imc], mc_pz_array[imc]);
@@ -289,6 +296,9 @@ int electronPionSeparation(TString inname="./fileLists/flieList.list", TString o
       }
       
       if(mom_bin < 0) continue;
+      
+      //_____________________________________________________________________________
+      
   		
   		//all electrons except the scattered one (one with highest pT)
   		//if(mc_pdg_array[imc] == 11 &&  mc_mom.Pt() < maxP)
@@ -302,6 +312,7 @@ int electronPionSeparation(TString inname="./fileLists/flieList.list", TString o
   		{
   			h_eta_positron[mom_bin][Q2_bin][y_bin]->Fill(mc_mom.Eta());  			
   		}
+  		//_____________________________________________________________________________
   		
   		//pi+
   		if(mc_pdg_array[imc] == 211)
@@ -327,13 +338,17 @@ int electronPionSeparation(TString inname="./fileLists/flieList.list", TString o
           h_eta_pi_minus_eCAL_85[mom_bin][Q2_bin][y_bin]->Fill(mc_mom.Eta(), eCAL_suppress_85);
           h_eta_pi_minus_eCAL_95[mom_bin][Q2_bin][y_bin]->Fill(mc_mom.Eta(), eCAL_suppress_95); 
         }
-
+        
+        
         //change PID to MC
-        double pfRICH_pi_prob = getPIDprob_pfRICH_MC(mc_4mom, 0);
-        double noPID_pi_prob = 1 - pfRICH_pi_prob;
-
-        if( pfRICH_pi_prob != 0)
+        double pfRICH_pi_prob = getPIDprob_pfRICH_MC(mc_4mom, 0);    
+        double noPID_pi_prob = 1. - pfRICH_pi_prob; 
+        
+        
+        if(  pfRICH_pi_prob < 0.9999 && pfRICH_pi_prob > 0)
         {
+          //cout<<pfRICH_pi_prob<<endl;
+        
           h_eta_pi_minus_pfRICH[mom_bin][Q2_bin][y_bin]->Fill(mc_mom.Eta(), noPID_pi_prob);
         
           h_eta_pi_minus_eCAL_85_pfRICH[mom_bin][Q2_bin][y_bin]->Fill(mc_mom.Eta(), eCAL_suppress_85*noPID_pi_prob);
@@ -343,6 +358,7 @@ int electronPionSeparation(TString inname="./fileLists/flieList.list", TString o
   		     
 
   		}
+  		//_____________________________________________________________________________
   		
   		//K+
   		if(mc_pdg_array[imc] == 321)
@@ -353,16 +369,24 @@ int electronPionSeparation(TString inname="./fileLists/flieList.list", TString o
   		if(mc_pdg_array[imc] == -321)
   		{
   		  h_eta_K_minus[mom_bin][Q2_bin][y_bin]->Fill(mc_mom.Eta());
-  		   
+  		  
   		  double pfRICH_K_prob = getPIDprob_pfRICH_MC(mc_4mom, 1);
         double noPID_K_prob = 1 - pfRICH_K_prob;
+                       
+        
+        //if( mc_mom.Mag() > 4 && mc_mom.Mag() < 5 ) cout<<PID_mtx[4]<<endl;
 
-        if( pfRICH_K_prob != 0)
+        if( pfRICH_K_prob > 0 && pfRICH_K_prob < 0.9999)
         {
+          //if(mom_bin == 2) cout<<PID_K_mtx[0]<<" "<<PID_K_mtx[4]<<" "<<PID_K_mtx[8]<<endl;
+          //if(mom_bin == 2) cout<<PID_K_mtx[3]<<" "<<PID_K_mtx[4]<<" "<<PID_K_mtx[5]<<endl;
+          //if( mc_mom.Mag() > 4 && mc_mom.Mag() < 5 ) cout<<pfRICH_K_prob<<endl;
+                      
           h_eta_K_minus_pfRICH[mom_bin][Q2_bin][y_bin]->Fill(mc_mom.Eta(), noPID_K_prob);
         }
   		   		
   		}
+  		//_____________________________________________________________________________
   		
   		//proton
   		if(mc_pdg_array[imc] == 2212)
@@ -376,17 +400,36 @@ int electronPionSeparation(TString inname="./fileLists/flieList.list", TString o
   		   
   		  double pfRICH_anti_proton_prob = getPIDprob_pfRICH_MC(mc_4mom, 2);
         double noPID_anti_proton_prob = 1 - pfRICH_anti_proton_prob;
-
-        if( pfRICH_anti_proton_prob != 0)
+        
+     
+        if( pfRICH_anti_proton_prob > 0 && pfRICH_anti_proton_prob < 0.9999)
         {
+                 
           h_eta_anti_proton_pfRICH[mom_bin][Q2_bin][y_bin]->Fill(mc_mom.Eta(), noPID_anti_proton_prob);
         } 		
   		}
+  		//_____________________________________________________________________________
+  		
+  		//general pfRICH info QA
+  		double PID_mtx[9];
+        
+      //change PID to MC
+      int pfRICH_good = getPIDprob_pfRICH_QA(mc_4mom, PID_mtx);
+      
+      if( pfRICH_good == 0 ) continue;
+      
+      for(unsigned int mtx_bin = 0; mtx_bin < 9; mtx_bin++)
+      {        
+        if( PID_mtx[mtx_bin] > 0 && PID_mtx[mtx_bin] < 0.9999 ) h_PID_pfRICH_mtx[mom_bin]->Fill(mtx_bin+0.5, PID_mtx[mtx_bin]);
+      }
+      
   		
   	}//end secon particle loop
    
 
   }//end while over TTree entries
+
+
 
 	output->Write();
 	output->Close();
