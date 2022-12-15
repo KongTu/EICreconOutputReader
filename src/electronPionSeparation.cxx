@@ -132,12 +132,14 @@ int electronPionSeparation(TString inname="./fileLists/flieList.list", TString o
   TH1D *h_eta_anti_proton_pfRICH[nMomBins][nQ2bins][nyInelParBins];
   
   TH1D *h_PID_pfRICH_mtx[nMomBins];
+  TH1D *h_PID_pfRICH_mtx_nFill[nMomBins];
   
   
   for(unsigned int mom_bin = 0; mom_bin < nMomBins; mom_bin++)
   {
   
-    h_PID_pfRICH_mtx[mom_bin] = new TH1D(Form("h_PID_pfRICH_mtx_mom_%i", mom_bin), Form("h_PID_pfRICH_mtx_mom_%i", mom_bin), 9, 0, 9);   
+    h_PID_pfRICH_mtx[mom_bin] = new TH1D(Form("h_PID_pfRICH_mtx_mom_%i", mom_bin), Form("h_PID_pfRICH_mtx_mom_%i", mom_bin), 9, 0, 9);
+    h_PID_pfRICH_mtx_nFill[mom_bin] = new TH1D(Form("h_PID_pfRICH_mtx_nFill_mom_%i", mom_bin), Form("h_PID_pfRICH_mtx_nFill_mom_%i", mom_bin), 9, 0, 9); 
     
     for(unsigned int Q2bin = 0; Q2bin < nQ2bins; Q2bin++)
     {
@@ -420,7 +422,13 @@ int electronPionSeparation(TString inname="./fileLists/flieList.list", TString o
       
       for(unsigned int mtx_bin = 0; mtx_bin < 9; mtx_bin++)
       {        
-        if( PID_mtx[mtx_bin] > 0 && PID_mtx[mtx_bin] < 0.9999 ) h_PID_pfRICH_mtx[mom_bin]->Fill(mtx_bin+0.5, PID_mtx[mtx_bin]);
+        if( PID_mtx[mtx_bin] > 0 && PID_mtx[mtx_bin] < 0.9999 )
+        {
+          h_PID_pfRICH_mtx[mom_bin]->Fill(mtx_bin+0.5, PID_mtx[mtx_bin]);
+          h_PID_pfRICH_mtx_nFill[mom_bin]->Fill(mtx_bin+0.5);        
+        }
+        
+         
       }
       
   		
