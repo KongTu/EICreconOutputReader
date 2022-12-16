@@ -35,7 +35,7 @@ int electronPionSeparation(TString inname="./fileLists/flieList.list", TString o
   float const mom_bins[nMomBins+1] = { 0,1,3,7,10, 18 };
   
   //____________________________________________________
-  //pi eCALion
+  //pi eCAL info
   //values from Dimitry Kalinkin
 
   double array_mom_bins[8] = {0.1, 0.2, 0.5, 1., 2., 5., 10., 20.};
@@ -68,7 +68,7 @@ int electronPionSeparation(TString inname="./fileLists/flieList.list", TString o
   //TTreeReader tree_reader(tree);       // !the tree reader
   TTreeReader tree_reader(myChain);       // !the tree reader
   
-  // MC particle pz array for each MC particle
+  // MC particles
   TTreeReaderArray<float> mc_px_array = {tree_reader, "MCParticles.momentum.x"};
   TTreeReaderArray<float> mc_py_array = {tree_reader, "MCParticles.momentum.y"};
   TTreeReaderArray<float> mc_pz_array = {tree_reader, "MCParticles.momentum.z"};
@@ -77,7 +77,7 @@ int electronPionSeparation(TString inname="./fileLists/flieList.list", TString o
   TTreeReaderArray<int> mc_generatorStatus_array = {tree_reader, "MCParticles.generatorStatus"};
 
 
-  // Reconstructed particles pz array for each reconstructed particle
+  // Reconstructed particles
   TTreeReaderArray<float> reco_px_array = {tree_reader, "ReconstructedChargedParticles.momentum.x"};
   TTreeReaderArray<float> reco_py_array = {tree_reader, "ReconstructedChargedParticles.momentum.y"};
   TTreeReaderArray<float> reco_pz_array = {tree_reader, "ReconstructedChargedParticles.momentum.z"};
@@ -85,6 +85,21 @@ int electronPionSeparation(TString inname="./fileLists/flieList.list", TString o
 
   TTreeReaderArray<unsigned int> rec_id = {tree_reader, "ReconstructedChargedParticlesAssociations.recID"};
   TTreeReaderArray<unsigned int> sim_id = {tree_reader, "ReconstructedChargedParticlesAssociations.simID"};
+  
+  //Reconstructed eCAL clusters
+  TTreeReaderArray<float> em_energy_array = {tree_reader, "EcalEndcapNClusters.energy"};
+  TTreeReaderArray<float> em_x_array = {tree_reader, "EcalEndcapNClusters.position.x"};
+  TTreeReaderArray<float> em_y_array = {tree_reader, "EcalEndcapNClusters.position.y"};
+
+  TTreeReaderArray<unsigned int> em_rec_id_array = {tree_reader, "EcalEndcapNClustersAssociations.recID"};
+  TTreeReaderArray<unsigned int> em_sim_id_array = {tree_reader, "EcalEndcapNClustersAssociations.simID"};
+  
+  //Reconstructed eCAL hits
+  //for own clustering, does not have association info
+ 	//TTreeReaderArray<float> emhits_x_array = {tree_reader, "EcalEndcapNRecHits.position.x"};
+  //TTreeReaderArray<float> emhits_y_array = {tree_reader, "EcalEndcapNRecHits.position.y"};
+  //TTreeReaderArray<float> emhits_energy_array = {tree_reader, "EcalEndcapNRecHits.energy"};
+
   
 
   //defining output file and histos.
@@ -130,16 +145,35 @@ int electronPionSeparation(TString inname="./fileLists/flieList.list", TString o
   TH1D *h_eta_anti_proton[nMomBins][nQ2bins][nyInelParBins];
   
   TH1D *h_eta_anti_proton_pfRICH[nMomBins][nQ2bins][nyInelParBins];
-  
+    
+  //QA histograms
   TH1D *h_PID_pfRICH_mtx[nMomBins];
   TH1D *h_PID_pfRICH_mtx_nFill[nMomBins];
+  
+  TH1D *h_PID_pfRICH_pi_mtx[nMomBins];
+  TH1D *h_PID_pfRICH_pi_mtx_nFill[nMomBins];
+  
+  TH1D *h_PID_pfRICH_K_mtx[nMomBins];
+  TH1D *h_PID_pfRICH_K_mtx_nFill[nMomBins];
+  
+  TH1D *h_PID_pfRICH_p_mtx[nMomBins];
+  TH1D *h_PID_pfRICH_p_mtx_nFill[nMomBins];
   
   
   for(unsigned int mom_bin = 0; mom_bin < nMomBins; mom_bin++)
   {
   
     h_PID_pfRICH_mtx[mom_bin] = new TH1D(Form("h_PID_pfRICH_mtx_mom_%i", mom_bin), Form("h_PID_pfRICH_mtx_mom_%i", mom_bin), 9, 0, 9);
-    h_PID_pfRICH_mtx_nFill[mom_bin] = new TH1D(Form("h_PID_pfRICH_mtx_nFill_mom_%i", mom_bin), Form("h_PID_pfRICH_mtx_nFill_mom_%i", mom_bin), 9, 0, 9); 
+    h_PID_pfRICH_mtx_nFill[mom_bin] = new TH1D(Form("h_PID_pfRICH_mtx_nFill_mom_%i", mom_bin), Form("h_PID_pfRICH_mtx_nFill_mom_%i", mom_bin), 9, 0, 9);
+    
+    h_PID_pfRICH_pi_mtx[mom_bin] = new TH1D(Form("h_PID_pfRICH_pi_mtx_mom_%i", mom_bin), Form("h_PID_pfRICH_pi_mtx_mom_%i", mom_bin), 9, 0, 9);
+    h_PID_pfRICH_pi_mtx_nFill[mom_bin] = new TH1D(Form("h_PID_pfRICH_pi_mtx_nFill_mom_%i", mom_bin), Form("h_PID_pfRICH_pi_mtx_nFill_mom_%i", mom_bin), 9, 0, 9);
+    
+    h_PID_pfRICH_K_mtx[mom_bin] = new TH1D(Form("h_PID_pfRICH_K_mtx_mom_%i", mom_bin), Form("h_PID_pfRICH_K_mtx_mom_%i", mom_bin), 9, 0, 9);
+    h_PID_pfRICH_K_mtx_nFill[mom_bin] = new TH1D(Form("h_PID_pfRICH_K_mtx_nFill_mom_%i", mom_bin), Form("h_PID_pfRICH_K_mtx_nFill_mom_%i", mom_bin), 9, 0, 9);
+    
+    h_PID_pfRICH_p_mtx[mom_bin] = new TH1D(Form("h_PID_pfRICH_p_mtx_mom_%i", mom_bin), Form("h_PID_pfRICH_p_mtx_mom_%i", mom_bin), 9, 0, 9);
+    h_PID_pfRICH_p_mtx_nFill[mom_bin] = new TH1D(Form("h_PID_pfRICH_p_mtx_nFill_mom_%i", mom_bin), Form("h_PID_pfRICH_p_mtx_nFill_mom_%i", mom_bin), 9, 0, 9);
     
     for(unsigned int Q2bin = 0; Q2bin < nQ2bins; Q2bin++)
     {
@@ -415,7 +449,7 @@ int electronPionSeparation(TString inname="./fileLists/flieList.list", TString o
   		//general pfRICH info QA
   		double PID_mtx[9];
         
-      //change PID to MC
+      //all particles
       int pfRICH_good = getPIDprob_pfRICH_QA(mc_4mom, PID_mtx);
       
       if( pfRICH_good == 0 ) continue;
@@ -425,7 +459,29 @@ int electronPionSeparation(TString inname="./fileLists/flieList.list", TString o
         if( PID_mtx[mtx_bin] > 0 && PID_mtx[mtx_bin] < 0.9999 )
         {
           h_PID_pfRICH_mtx[mom_bin]->Fill(mtx_bin+0.5, PID_mtx[mtx_bin]);
-          h_PID_pfRICH_mtx_nFill[mom_bin]->Fill(mtx_bin+0.5);        
+          h_PID_pfRICH_mtx_nFill[mom_bin]->Fill(mtx_bin+0.5);
+          
+          //pi-
+          if(mc_pdg_array[imc] == -211)
+          {
+            h_PID_pfRICH_pi_mtx[mom_bin]->Fill(mtx_bin+0.5, PID_mtx[mtx_bin]);
+            h_PID_pfRICH_pi_mtx_nFill[mom_bin]->Fill(mtx_bin+0.5);          
+          }
+          
+          //K-
+          if(mc_pdg_array[imc] == -321)
+          {
+            h_PID_pfRICH_K_mtx[mom_bin]->Fill(mtx_bin+0.5, PID_mtx[mtx_bin]);
+            h_PID_pfRICH_K_mtx_nFill[mom_bin]->Fill(mtx_bin+0.5);          
+          }
+          
+          //anti-proton
+          if(mc_pdg_array[imc] == -2212)
+          {
+            h_PID_pfRICH_p_mtx[mom_bin]->Fill(mtx_bin+0.5, PID_mtx[mtx_bin]);
+            h_PID_pfRICH_p_mtx_nFill[mom_bin]->Fill(mtx_bin+0.5);          
+          }
+                
         }
         
          
