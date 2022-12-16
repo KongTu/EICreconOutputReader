@@ -81,6 +81,7 @@ int electronPionSeparation(TString inname="./fileLists/flieList.list", TString o
   TTreeReaderArray<float> reco_px_array = {tree_reader, "ReconstructedChargedParticles.momentum.x"};
   TTreeReaderArray<float> reco_py_array = {tree_reader, "ReconstructedChargedParticles.momentum.y"};
   TTreeReaderArray<float> reco_pz_array = {tree_reader, "ReconstructedChargedParticles.momentum.z"};
+  TTreeReaderArray<int> reco_cahrge = {tree_reader, "ReconstructedChargedParticles.charge"};
   TTreeReaderArray<int> reco_PDG = {tree_reader, "ReconstructedChargedParticles.PDG"};
 
   TTreeReaderArray<unsigned int> rec_id = {tree_reader, "ReconstructedChargedParticlesAssociations.recID"};
@@ -106,7 +107,7 @@ int electronPionSeparation(TString inname="./fileLists/flieList.list", TString o
   TString output_name_dir = outname;
 	TFile* output = new TFile("output/"+output_name_dir+"-output.root","RECREATE");
 
-  
+  //MC histograms
   TH1D* h_energy_MC = new TH1D("h_energy_MC","E_{MC} (GeV)",100,0,20);
   TH1D* h_energy_zoom_MC = new TH1D("h_energy_zoom_MC","E_{MC} (GeV)",20,e_energy-2,e_energy+2);
   
@@ -145,7 +146,37 @@ int electronPionSeparation(TString inname="./fileLists/flieList.list", TString o
   TH1D *h_eta_anti_proton[nMomBins][nQ2bins][nyInelParBins];
   
   TH1D *h_eta_anti_proton_pfRICH[nMomBins][nQ2bins][nyInelParBins];
-    
+  
+  
+  //reco histograms
+  TH1D* h_energy_RC = new TH1D("h_energy_RC","E_{RC} (GeV)",100,0,20);
+  
+  TH1D* h_momentum_RC = new TH1D("h_momentum_RC","p_{RC} (GeV/c)",100,0,20);
+  
+  TH1D *h_E_over_p_RC = new TH1D("h_E_over_p_RC", "h_E_over_p_RC", 120, 0, 1.2);
+  
+  TH1D* h_Q2_RC = new TH1D("h_Q2_RC",";Q^{2}",100,0,20);
+  
+  TH1D *h_y_inelPar_RC = new TH1D("h_y_inelPar_RC", "h_y_inelPar_RC", 100, 0, 1);
+  
+  //reconstructed scattered electron
+  TH1D *h_eta_scat_ele_RC[nMomBins][nQ2bins][nyInelParBins];
+  
+  //background - negative charged particles
+  TH1D *h_eta_neg_ch_part_RC[nMomBins][nQ2bins][nyInelParBins];
+  
+  //negative charged particles after E/p cut
+  //TH1D *h_eta_neg_ch_part_RC_eCAL_cut[nMomBins][nQ2bins][nyInelParBins];
+  
+  //negative charged par after pfRCIH veto
+  //TH1D *h_eta_neg_ch_part_RC_pFRICH_cut[nMomBins][nQ2bins][nyInelParBins];
+  
+  //negative charged particles after eCAL+pfRCIH veto
+  //TH1D *h_eta_neg_ch_part_RC_eCAL_pfRICH_cut[nMomBins][nQ2bins][nyInelParBins];
+  
+  //MC-RC matching
+  TH1D *h_scat_ele_MC_RC_match[nMomBins][nQ2bins][nyInelParBins];
+
   //QA histograms
   TH1D *h_PID_pfRICH_mtx[nMomBins];
   TH1D *h_PID_pfRICH_mtx_nFill[nMomBins];
@@ -162,7 +193,7 @@ int electronPionSeparation(TString inname="./fileLists/flieList.list", TString o
   
   for(unsigned int mom_bin = 0; mom_bin < nMomBins; mom_bin++)
   {
-  
+    //pfRCIH QA histograms
     h_PID_pfRICH_mtx[mom_bin] = new TH1D(Form("h_PID_pfRICH_mtx_mom_%i", mom_bin), Form("h_PID_pfRICH_mtx_mom_%i", mom_bin), 9, 0, 9);
     h_PID_pfRICH_mtx_nFill[mom_bin] = new TH1D(Form("h_PID_pfRICH_mtx_nFill_mom_%i", mom_bin), Form("h_PID_pfRICH_mtx_nFill_mom_%i", mom_bin), 9, 0, 9);
     
@@ -174,11 +205,13 @@ int electronPionSeparation(TString inname="./fileLists/flieList.list", TString o
     
     h_PID_pfRICH_p_mtx[mom_bin] = new TH1D(Form("h_PID_pfRICH_p_mtx_mom_%i", mom_bin), Form("h_PID_pfRICH_p_mtx_mom_%i", mom_bin), 9, 0, 9);
     h_PID_pfRICH_p_mtx_nFill[mom_bin] = new TH1D(Form("h_PID_pfRICH_p_mtx_nFill_mom_%i", mom_bin), Form("h_PID_pfRICH_p_mtx_nFill_mom_%i", mom_bin), 9, 0, 9);
+    //___________________________________________________________________________________________________________________________________________________________
     
     for(unsigned int Q2bin = 0; Q2bin < nQ2bins; Q2bin++)
     {
       for(unsigned int y_bin = 0; y_bin < nyInelParBins; y_bin++)
       {
+        //MC histograms
         h_eta_scat_ele[mom_bin][Q2bin][y_bin] = new TH1D(Form("h_eta_scat_ele_mom_%i_Q2_%i_y_%i" , mom_bin, Q2bin, y_bin), Form("h_eta_scat_ele_mom_%i_Q2_%i_y_%i" , mom_bin, Q2bin, y_bin), 100, -4, 0);
         h_eta_ele[mom_bin][Q2bin][y_bin] = new TH1D(Form("h_eta_ele_mom_%i_Q2_%i_y_%i" , mom_bin, Q2bin, y_bin), Form("h_eta_ele_mom_%i_Q2_%i_y_%i" , mom_bin, Q2bin, y_bin), 100, -4, 0);
         h_eta_pi_plus[mom_bin][Q2bin][y_bin] = new TH1D(Form("h_eta_pi_plus_mom_%i_Q2_%i_y_%i" , mom_bin, Q2bin, y_bin), Form("h_eta_pi_plus_mom_%i_Q2_%i_y_%i" , mom_bin, Q2bin, y_bin), 100, -4, 0);
@@ -204,6 +237,25 @@ int electronPionSeparation(TString inname="./fileLists/flieList.list", TString o
         h_eta_anti_proton[mom_bin][Q2bin][y_bin] = new TH1D(Form("h_eta_anti_proton_mom_%i_Q2_%i_y_%i" , mom_bin, Q2bin, y_bin), Form("h_eta_anti_proton_mom_%i_Q2_%i_y_%i" , mom_bin, Q2bin, y_bin), 100, -4, 0);
         
         h_eta_anti_proton_pfRICH[mom_bin][Q2bin][y_bin] = new TH1D(Form("h_eta_anti_proton_pfRICH_mom_%i_Q2_%i_y_%i" , mom_bin, Q2bin, y_bin), Form("h_eta_anti_proton_pfRICH_mom_%i_Q2_%i_y_%i" , mom_bin, Q2bin, y_bin), 100, -4, 0);
+        //___________________________________________________________________________________________________________________________________________________________
+        
+        //reconstructed particle histograms
+        h_eta_scat_ele_RC[mom_bin][Q2bin][y_bin] = new TH1D(Form("h_eta_scat_ele_RC_mom_%i_Q2_%i_y_%i" , mom_bin, Q2bin, y_bin), Form("h_eta_scat_ele_RC_mom_%i_Q2_%i_y_%i" , mom_bin, Q2bin, y_bin), 100, -4, 0);
+  
+        //background - negative charged particles
+        h_eta_neg_ch_part_RC[mom_bin][Q2bin][y_bin] = new TH1D(Form("h_eta_neg_ch_part_RC_mom_%i_Q2_%i_y_%i" , mom_bin, Q2bin, y_bin), Form("h_eta_neg_ch_part_RC_mom_%i_Q2_%i_y_%i" , mom_bin, Q2bin, y_bin), 100, -4, 0);
+        
+        //negative charged particles after E/p cut
+        //h_eta_neg_ch_part_RC_eCAL_cut[mom_bin][Q2bin][y_bin] = new TH1D(Form("h_eta_neg_ch_part_RC_eCAL_cut_mom_%i_Q2_%i_y_%i" , mom_bin, Q2bin, y_bin), Form("h_eta_neg_ch_part_RC_eCAL_cut_mom_%i_Q2_%i_y_%i" , mom_bin, Q2bin, y_bin), 100, -4, 0);
+        
+        //negative charged par after pfRCIH veto
+        //h_eta_neg_ch_part_RC_pFRICH_cut[mom_bin][Q2bin][y_bin] = new TH1D(Form("h_eta_neg_ch_part_RC_pFRICH_cut_mom_%i_Q2_%i_y_%i" , mom_bin, Q2bin, y_bin), Form("h_eta_neg_ch_part_RC_pFRICH_cut_mom_%i_Q2_%i_y_%i" , mom_bin, Q2bin, y_bin), 100, -4, 0);
+        
+        //negative charged particles after eCAL+pfRCIH veto
+        //h_eta_neg_ch_part_RC_eCAL_pfRICH_cut[mom_bin][Q2bin][y_bin] = new TH1D(Form("h_eta_neg_ch_part_RC_eCAL_pfRICH_cut_mom_%i_Q2_%i_y_%i" , mom_bin, Q2bin, y_bin), Form("h_eta_neg_ch_part_RC_eCAL_pfRICH_cut_mom_%i_Q2_%i_y_%i" , mom_bin, Q2bin, y_bin), 100, -4, 0);
+        
+        h_scat_ele_MC_RC_match[mom_bin][Q2bin][y_bin] = new TH1D(Form("h_scat_ele_MC_RC_match_mom_%i_Q2_%i_y_%i" , mom_bin, Q2bin, y_bin), Form("h_scat_ele_MC_RC_match_mom_%i_Q2_%i_y_%i" , mom_bin, Q2bin, y_bin), 2, 0, 2);
+        
       }
     
     }
@@ -221,7 +273,8 @@ int electronPionSeparation(TString inname="./fileLists/flieList.list", TString o
   while (tree_reader.Next())
   {
 
-  	//MCParticles
+  	//MC analysis
+  	
     //finding the scattering electron
   	TLorentzVector scatMC(0,0,0,0);
   	int mc_elect_index = -1;
@@ -303,10 +356,10 @@ int electronPionSeparation(TString inname="./fileLists/flieList.list", TString o
       
     }
     
-    if(Q2_bin < 0 || y_bin < 0 || mom_bin_scat_e < 0) continue;
+    //if(Q2_bin < 0 || y_bin < 0 || mom_bin_scat_e < 0) continue;
     //__________________________________________________________________________________
     
-    h_eta_scat_ele[mom_bin_scat_e][Q2_bin][y_bin]->Fill(scatMC.Eta());
+    if( !(Q2_bin < 0 || y_bin < 0 || mom_bin_scat_e < 0) ) h_eta_scat_ele[mom_bin_scat_e][Q2_bin][y_bin]->Fill(scatMC.Eta());
     
     
     //loop ove MC particles to fill distributions of produced particles
@@ -331,7 +384,7 @@ int electronPionSeparation(TString inname="./fileLists/flieList.list", TString o
         
       }
       
-      if(mom_bin < 0) continue;
+      if(Q2_bin < 0 || y_bin < 0 || mom_bin < 0) continue;
       
       //_____________________________________________________________________________
       
@@ -444,7 +497,8 @@ int electronPionSeparation(TString inname="./fileLists/flieList.list", TString o
           h_eta_anti_proton_pfRICH[mom_bin][Q2_bin][y_bin]->Fill(mc_mom.Eta(), noPID_anti_proton_prob);
         } 		
   		}
-  		//_____________________________________________________________________________
+  		//___________________________________________________________________________________________________________________________________________________________
+  		
   		
   		//general pfRICH info QA
   		double PID_mtx[9];
@@ -488,7 +542,188 @@ int electronPionSeparation(TString inname="./fileLists/flieList.list", TString o
       }
       
   		
-  	}//end secon particle loop
+  	}//end secon MC particle loop
+  	//___________________________________________________________________________________________________________________________________________________________
+  	
+  	
+  	//reconstructed charged particles analysis
+  		
+		//find scattered electron candidate
+		//look for cluster with highest energy
+		
+		//leading cluster
+    double maxEnergy=-99.;
+    int sim_id_scat_e_RC = -1;
+    
+    for(int iclus=0; iclus < em_energy_array.GetSize(); iclus++)
+    {
+  	  if(em_energy_array[iclus] > maxEnergy)
+  	  {
+  		  maxEnergy = em_energy_array[iclus];
+  		  sim_id_scat_e_RC = em_sim_id_array[iclus];    		  
+  	  }
+    }
+    
+    h_energy_RC->Fill(maxEnergy);
+    
+    //find charged track corresponding to leading culster
+    //save scattered e candidate momentum
+    
+    TVector3 scat_e_mom_RC(0,0,0);
+    int scat_e_iTrack = -1; //index of scattered e in charged track array
+    
+    for(unsigned int iChTrack = 0; iChTrack < sim_id.GetSize(); iChTrack++)
+    {
+      if( sim_id[iChTrack] == sim_id_scat_e_RC /*&& reco_cahrge[iChTrack] == -1 */)
+      {
+        scat_e_mom_RC.SetXYZ( reco_px_array[iChTrack], reco_py_array[iChTrack], reco_pz_array[iChTrack] );
+        scat_e_iTrack = iChTrack;
+        
+        break; //stop when corresponding ch. track is found        
+      }        
+    
+    }
+    
+    if(scat_e_mom_RC.Mag() == 0)
+    {
+      cout<<"No good RC scattered e found! Continue with next event..."<<endl;
+      continue;    
+    }
+    
+    h_momentum_RC->Fill(scat_e_mom_RC.Mag());
+        
+    h_E_over_p_RC->Fill( maxEnergy/scat_e_mom_RC.Mag() );
+    
+    //analyze RC tracks only when E/p cut is passed
+    if( fabs( 1. - maxEnergy/scat_e_mom_RC.Mag() ) < 0.1 )
+    {
+      double y_inelPar_e_RC = getInelParamElectron_2(p_energy, e_energy, scat_e_mom_RC);
+      
+      double Q2_electron_RC = getQ2elec( e_energy, scat_e_mom_RC);
+      
+      h_Q2_RC->Fill(Q2_electron_RC);
+      h_y_inelPar_RC->Fill(y_inelPar_e_RC);
+      
+      
+      //find bins for reconstructed scattered e and charged particles
+      int Q2_bin_RC = -1;
+
+      for(int j = 0; j < nQ2bins; j++) 
+      {
+        if(Q2_electron_RC > Q2_bins[j] && Q2_electron_RC <= Q2_bins[j+1])
+        {
+          Q2_bin_RC = j;
+        }
+       }
+          
+      
+      int y_bin_RC = -1;
+
+      for(int j = 0; j < nyInelParBins; j++) 
+      {
+        if(y_inelPar_e_RC > y_bins[j] && y_inelPar_e_RC <= y_bins[j+1])
+        {
+          y_bin_RC = j;
+        }
+      }
+      
+      
+      int mom_bin_scat_e_RC = -1;
+
+      for(int j = 0; j < nMomBins; j++) //loop over pT bins
+      {
+        if(scat_e_mom_RC.Mag() > mom_bins[j] && scat_e_mom_RC.Mag() <= mom_bins[j+1])
+        {
+          mom_bin_scat_e_RC = j;
+        }
+        
+      }
+      
+      //if(Q2_bin_RC < 0 || y_bin_RC < 0 || mom_bin_scat_e_RC < 0) continue;
+      //__________________________________________________________________________________
+      
+      
+      
+      //reconstructed scattered electron
+      if( !(Q2_bin_RC < 0 || y_bin_RC < 0 || mom_bin_scat_e_RC < 0) )  
+      {
+        h_eta_scat_ele_RC[mom_bin_scat_e_RC][Q2_bin_RC][y_bin_RC]->Fill(scat_e_mom_RC.Eta());
+        
+        if( mc_pdg_array[sim_id_scat_e_RC] == 11 ) h_scat_ele_MC_RC_match[mom_bin_scat_e_RC][Q2_bin_RC][y_bin_RC]->Fill(1.5); //RC scattered e candidate is MC electron
+        else h_scat_ele_MC_RC_match[mom_bin_scat_e_RC][Q2_bin_RC][y_bin_RC]->Fill(0.5); //RC scattered e candidate is not MC electron
+      
+      }
+      
+      
+      
+      //loop over RC charged particles
+      for(unsigned int iChTrack = 0; iChTrack < reco_px_array.GetSize(); iChTrack++)
+      {
+        if( reco_cahrge[iChTrack]  > 0 || iChTrack == scat_e_iTrack) continue; //analyze negative charge particles only, skip scattered e identified earlier
+        
+        TVector3 rc_mom(reco_px_array[iChTrack], reco_py_array[iChTrack], reco_pz_array[iChTrack]);
+        
+        //TLorentzVector rc_4mom(0,0,0,0);
+		    //rc_4mom.SetVectM(rc_mom, mc_mass_array[imc]);
+		    
+		    //determine momentum bin of particles in event
+		    int mom_bin_RC = -1;
+
+        for(int j = 0; j < nMomBins; j++) //loop over pT bins
+        {
+          if(rc_mom.Mag() > mom_bins[j] && rc_mom.Mag() <= mom_bins[j+1])
+          {
+            mom_bin_RC = j;
+          }
+          
+        }
+        
+        if(Q2_bin_RC < 0 || y_bin_RC < 0 || mom_bin_RC < 0) continue;
+        
+        //_____________________________________________________________________________
+        
+      
+        //background - negative charged particles
+        h_eta_neg_ch_part_RC[mom_bin_RC][Q2_bin_RC][y_bin_RC]->Fill(rc_mom.Eta());
+        
+        //negative charged particles after E/p cut
+ /*       
+        //first find corresponding cluster in eCAL
+        float track_eCAL_energy = -99.;
+        
+        for(unsigned int iCluster = 0; iCluster < em_energy_array.GetSize(); iCluster++)
+        {
+          if( sim_id[iChTrack] == em_sim_id_array[iCluster] )
+          {
+            track_eCAL_energy = em_energy_array[iCluster];
+            
+            break; //stop when corresponding cluster is found
+          
+          }
+        
+        }
+        
+        //check that matchig cluser was found
+        //apply same E/p cut as for scattered E - histogram will contain background for scattered e
+        if(track_eCAL_energy > 0 && fabs( 1. - track_eCAL_energy/rc_mom.Mag() ) < 0.1 )
+        {
+            h_eta_neg_ch_part_RC_eCAL_cut[mom_bin_RC][Q2_bin_RC][y_bin_RC]->Fill(rc_mom.Eta());
+        }
+ */       
+        
+        //negative charged par after pfRCIH veto
+        //h_eta_neg_ch_part_RC_pFRICH_cut[mom_bin_RC][Q2_bin_RC][y_bin_RC];
+        
+        //negative charged particles after eCAL+pfRCIH veto
+        //h_eta_neg_ch_part_RC_eCAL_pfRICH_cut[mom_bin_RC][Q2_bin_RC][y_bin_RC];
+      
+      
+      }    
+      
+    
+    
+    }//end if scattered e E/p cut
+  	
    
 
   }//end while over TTree entries
