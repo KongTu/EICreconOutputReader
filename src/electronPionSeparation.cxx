@@ -187,15 +187,23 @@ int electronPionSeparation(TString inname="./fileLists/flieList.list", TString o
   
   TH1D *h_eta_scat_ele_RC_pfRICH[nMomBins][nQ2bins][nyInelParBins];
   
-  TH1D *h_pi_pfRICH_PID_eff[4]; //PID efficiency - no PID baseline, good PID and mis-PID
-  TH1D *h_K_pfRICH_PID_eff[4];
-  TH1D *h_p_pfRICH_PID_eff[4];
+  TH1D *h_pi_pfRICH_PID_eff_MC[4]; //PID efficiency as a function of MC momentum - no PID baseline, good PID and mis-PID
+  TH1D *h_K_pfRICH_PID_eff_MC[4];
+  TH1D *h_p_pfRICH_PID_eff_MC[4];
+  
+  TH1D *h_pi_pfRICH_PID_eff_RC[4]; //PID efficiency as a function of RC momentum - no PID baseline, good PID and mis-PID
+  TH1D *h_K_pfRICH_PID_eff_RC[4];
+  TH1D *h_p_pfRICH_PID_eff_RC[4];
   
   for(unsigned int PID_bin = 0; PID_bin < 4; PID_bin++)
   {
-    h_pi_pfRICH_PID_eff[PID_bin] = new TH1D(Form("h_pi_pfRICH_PID_eff_%i", PID_bin), Form("h_pi_pfRICH_PID_eff_%i", PID_bin), 100, 0, 20); //PID efficiency - good PID and mis-PID
-    h_K_pfRICH_PID_eff[PID_bin] = new TH1D(Form("h_K_pfRICH_PID_eff_%i", PID_bin), Form("h_K_pfRICH_PID_eff_%i", PID_bin), 100, 0, 20);
-    h_p_pfRICH_PID_eff[PID_bin] = new TH1D(Form("h_p_pfRICH_PID_eff_%i", PID_bin), Form("h_p_pfRICH_PID_eff_%i", PID_bin), 200, 0, 20);
+    h_pi_pfRICH_PID_eff_MC[PID_bin] = new TH1D(Form("h_pi_pfRICH_PID_eff_MC_%i", PID_bin), Form("h_pi_pfRICH_PID_eff_MC_%i", PID_bin), 100, 0, 20); //PID efficiency - good PID and mis-PID
+    h_K_pfRICH_PID_eff_MC[PID_bin] = new TH1D(Form("h_K_pfRICH_PID_eff_MC_%i", PID_bin), Form("h_K_pfRICH_PID_eff_MC_%i", PID_bin), 100, 0, 20);
+    h_p_pfRICH_PID_eff_MC[PID_bin] = new TH1D(Form("h_p_pfRICH_PID_eff_MC_%i", PID_bin), Form("h_p_pfRICH_PID_eff_MC_%i", PID_bin), 200, 0, 20);
+    
+    h_pi_pfRICH_PID_eff_RC[PID_bin] = new TH1D(Form("h_pi_pfRICH_PID_eff_RC_%i", PID_bin), Form("h_pi_pfRICH_PID_eff_RC_%i", PID_bin), 100, 0, 20); //PID efficiency - good PID and mis-PID
+    h_K_pfRICH_PID_eff_RC[PID_bin] = new TH1D(Form("h_K_pfRICH_PID_eff_RC_%i", PID_bin), Form("h_K_pfRICH_PID_eff_RC_%i", PID_bin), 100, 0, 20);
+    h_p_pfRICH_PID_eff_RC[PID_bin] = new TH1D(Form("h_p_pfRICH_PID_eff_RC_%i", PID_bin), Form("h_p_pfRICH_PID_eff_RC_%i", PID_bin), 200, 0, 20);
   }
   
   //TH1D *h_K_purity_pfRICH_MC[nMomBins][nQ2bins][nyInelParBins];
@@ -327,7 +335,48 @@ int electronPionSeparation(TString inname="./fileLists/flieList.list", TString o
   			mc_elect_index = imc;
   			scatMC.SetVectM(mctrk,mc_mass_array[imc]);  			
   		}
-  	} 	
+  		
+  		//_______________________________________________________________
+  		
+  		//fill pfRICH PID efficiency histograms for pi/K/p for MC tracks
+      //get pfRICH matrix
+      double pfRICH_mtx[9];
+      
+      int good_pfRICH_mtx = getPIDprob_pfRICH_mtx(mctrk, pfRICH_mtx);
+      
+      if(good_pfRICH_mtx == 1)
+      {        
+        //find matchig MC track
+        //pi-
+        if( mc_pdg_array[imc] == -211 )
+        {
+          h_pi_pfRICH_PID_eff_MC[0]->Fill(mctrk.Mag());//no PID baseline
+          if(pfRICH_mtx[0] > 0 && pfRICH_mtx[0] < 1) h_pi_pfRICH_PID_eff_MC[1]->Fill(mctrk.Mag(), pfRICH_mtx[0]);//pi identified as pi (diagonal term of pfRICH_mtx)
+          if(pfRICH_mtx[1] > 0 && pfRICH_mtx[1] < 1) h_pi_pfRICH_PID_eff_MC[2]->Fill(mctrk.Mag(), pfRICH_mtx[1]);//pi identified as K
+          if(pfRICH_mtx[2] > 0 && pfRICH_mtx[2] < 1) h_pi_pfRICH_PID_eff_MC[3]->Fill(mctrk.Mag(), pfRICH_mtx[2]);//pi identified as p
+        }
+        
+        //K-
+        if( mc_pdg_array[imc] == -321 )
+        {
+          h_K_pfRICH_PID_eff_MC[0]->Fill(mctrk.Mag());//no PID baseline
+          if(pfRICH_mtx[1] > 0 && pfRICH_mtx[4] < 1) h_K_pfRICH_PID_eff_MC[1]->Fill(mctrk.Mag(), pfRICH_mtx[4]);//K identified as K (diagonal term of pfRICH_mtx)
+          if(pfRICH_mtx[3] > 0 && pfRICH_mtx[3] < 1) h_K_pfRICH_PID_eff_MC[2]->Fill(mctrk.Mag(), pfRICH_mtx[3]);//K identified as pi
+          if(pfRICH_mtx[5] > 0 && pfRICH_mtx[5] < 1) h_K_pfRICH_PID_eff_MC[3]->Fill(mctrk.Mag(), pfRICH_mtx[5]);//K identified as p
+        
+        }
+        
+        //p-bar
+        if( mc_pdg_array[imc] == -2212 )
+        {
+          h_p_pfRICH_PID_eff_MC[0]->Fill(mctrk.Mag());//no PID baseline
+          if(pfRICH_mtx[8] > 0 && pfRICH_mtx[8] < 1) h_p_pfRICH_PID_eff_MC[1]->Fill(mctrk.Mag(), pfRICH_mtx[8]);//p identified as p (diagonal term of pfRICH_mtx)
+          if(pfRICH_mtx[6] > 0 && pfRICH_mtx[6] < 1) h_p_pfRICH_PID_eff_MC[2]->Fill(mctrk.Mag(), pfRICH_mtx[6]);//p identified as pi
+          if(pfRICH_mtx[7] > 0 && pfRICH_mtx[7] < 1) h_p_pfRICH_PID_eff_MC[3]->Fill(mctrk.Mag(), pfRICH_mtx[7]);//p identified as K      
+        }
+       }      		
+  		
+  	} //end MC particles for loop
   	 	
   	//charge proton and electron energy loading - for now hard coded
     double y_inelPar_e = getInelParamElectron_2(p_energy, e_energy, scatMC.Vect() );
@@ -790,29 +839,29 @@ int electronPionSeparation(TString inname="./fileLists/flieList.list", TString o
         //pi-
         if( mc_pdg_array[simID] == -211 )
         {
-          h_pi_pfRICH_PID_eff[0]->Fill(scat_e_mom_RC_pfRICH.Mag());//no PID baseline
-          h_pi_pfRICH_PID_eff[1]->Fill(scat_e_mom_RC_pfRICH.Mag(), pfRICH_mtx[0]);//pi identified as pi (diagonal term of pfRICH_mtx)
-          h_pi_pfRICH_PID_eff[2]->Fill(scat_e_mom_RC_pfRICH.Mag(), pfRICH_mtx[1]);//pi identified as K
-          h_pi_pfRICH_PID_eff[3]->Fill(scat_e_mom_RC_pfRICH.Mag(), pfRICH_mtx[2]);//pi identified as p
+          h_pi_pfRICH_PID_eff_RC[0]->Fill(scat_e_mom_RC_pfRICH.Mag());//no PID baseline
+          if(pfRICH_mtx[0] > 0 && pfRICH_mtx[0] < 1) h_pi_pfRICH_PID_eff_RC[1]->Fill(scat_e_mom_RC_pfRICH.Mag(), pfRICH_mtx[0]);//pi identified as pi (diagonal term of pfRICH_mtx)
+          if(pfRICH_mtx[1] > 0 && pfRICH_mtx[1] < 1) h_pi_pfRICH_PID_eff_RC[2]->Fill(scat_e_mom_RC_pfRICH.Mag(), pfRICH_mtx[1]);//pi identified as K
+          if(pfRICH_mtx[2] > 0 && pfRICH_mtx[2] < 1) h_pi_pfRICH_PID_eff_RC[3]->Fill(scat_e_mom_RC_pfRICH.Mag(), pfRICH_mtx[2]);//pi identified as p
         }
         
         //K-
         if( mc_pdg_array[simID] == -321 )
         {
-          h_K_pfRICH_PID_eff[0]->Fill(scat_e_mom_RC_pfRICH.Mag());//no PID baseline
-          h_K_pfRICH_PID_eff[1]->Fill(scat_e_mom_RC_pfRICH.Mag(), pfRICH_mtx[4]);//K identified as K (diagonal term of pfRICH_mtx)
-          h_K_pfRICH_PID_eff[2]->Fill(scat_e_mom_RC_pfRICH.Mag(), pfRICH_mtx[3]);//K identified as pi
-          h_K_pfRICH_PID_eff[3]->Fill(scat_e_mom_RC_pfRICH.Mag(), pfRICH_mtx[5]);//K identified as p
+          h_K_pfRICH_PID_eff_RC[0]->Fill(scat_e_mom_RC_pfRICH.Mag());//no PID baseline
+          if(pfRICH_mtx[4] > 0 && pfRICH_mtx[4] < 1) h_K_pfRICH_PID_eff_RC[1]->Fill(scat_e_mom_RC_pfRICH.Mag(), pfRICH_mtx[4]);//K identified as K (diagonal term of pfRICH_mtx)
+          if(pfRICH_mtx[3] > 0 && pfRICH_mtx[3] < 1) h_K_pfRICH_PID_eff_RC[2]->Fill(scat_e_mom_RC_pfRICH.Mag(), pfRICH_mtx[3]);//K identified as pi
+          if(pfRICH_mtx[5] > 0 && pfRICH_mtx[5] < 1) h_K_pfRICH_PID_eff_RC[3]->Fill(scat_e_mom_RC_pfRICH.Mag(), pfRICH_mtx[5]);//K identified as p
         
         }
         
         //p-bar
         if( mc_pdg_array[simID] == -2212 )
         {
-          h_p_pfRICH_PID_eff[0]->Fill(scat_e_mom_RC_pfRICH.Mag());//no PID baseline
-          h_p_pfRICH_PID_eff[1]->Fill(scat_e_mom_RC_pfRICH.Mag(), pfRICH_mtx[8]);//p identified as p (diagonal term of pfRICH_mtx)
-          h_p_pfRICH_PID_eff[2]->Fill(scat_e_mom_RC_pfRICH.Mag(), pfRICH_mtx[6]);//p identified as pi
-          h_p_pfRICH_PID_eff[3]->Fill(scat_e_mom_RC_pfRICH.Mag(), pfRICH_mtx[7]);//p identified as K      
+          h_p_pfRICH_PID_eff_RC[0]->Fill(scat_e_mom_RC_pfRICH.Mag());//no PID baseline
+          if(pfRICH_mtx[8] > 0 && pfRICH_mtx[8] < 1) h_p_pfRICH_PID_eff_RC[1]->Fill(scat_e_mom_RC_pfRICH.Mag(), pfRICH_mtx[8]);//p identified as p (diagonal term of pfRICH_mtx)
+          if(pfRICH_mtx[6] > 0 && pfRICH_mtx[6] < 1) h_p_pfRICH_PID_eff_RC[2]->Fill(scat_e_mom_RC_pfRICH.Mag(), pfRICH_mtx[6]);//p identified as pi
+          if(pfRICH_mtx[7] > 0 && pfRICH_mtx[7] < 1) h_p_pfRICH_PID_eff_RC[3]->Fill(scat_e_mom_RC_pfRICH.Mag(), pfRICH_mtx[7]);//p identified as K      
         }
        }     
       
