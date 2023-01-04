@@ -195,15 +195,23 @@ int electronPionSeparation(TString inname="./fileLists/flieList.list", TString o
   TH1D *h_K_pfRICH_PID_eff_RC[4];
   TH1D *h_p_pfRICH_PID_eff_RC[4];
   
+  TH1D *h_pi_pfRICH_PID_eff_MC_RC_match[4]; //PID efficiency as a function of MC momentum, from RC-MC matchig - no PID baseline, good PID and mis-PID
+  TH1D *h_K_pfRICH_PID_eff_MC_RC_match[4];
+  TH1D *h_p_pfRICH_PID_eff_MC_RC_match[4];
+  
   for(unsigned int PID_bin = 0; PID_bin < 4; PID_bin++)
   {
     h_pi_pfRICH_PID_eff_MC[PID_bin] = new TH1D(Form("h_pi_pfRICH_PID_eff_MC_%i", PID_bin), Form("h_pi_pfRICH_PID_eff_MC_%i", PID_bin), 100, 0, 20); //PID efficiency - good PID and mis-PID
     h_K_pfRICH_PID_eff_MC[PID_bin] = new TH1D(Form("h_K_pfRICH_PID_eff_MC_%i", PID_bin), Form("h_K_pfRICH_PID_eff_MC_%i", PID_bin), 100, 0, 20);
-    h_p_pfRICH_PID_eff_MC[PID_bin] = new TH1D(Form("h_p_pfRICH_PID_eff_MC_%i", PID_bin), Form("h_p_pfRICH_PID_eff_MC_%i", PID_bin), 200, 0, 20);
+    h_p_pfRICH_PID_eff_MC[PID_bin] = new TH1D(Form("h_p_pfRICH_PID_eff_MC_%i", PID_bin), Form("h_p_pfRICH_PID_eff_MC_%i", PID_bin), 100, 0, 20);
     
     h_pi_pfRICH_PID_eff_RC[PID_bin] = new TH1D(Form("h_pi_pfRICH_PID_eff_RC_%i", PID_bin), Form("h_pi_pfRICH_PID_eff_RC_%i", PID_bin), 100, 0, 20); //PID efficiency - good PID and mis-PID
     h_K_pfRICH_PID_eff_RC[PID_bin] = new TH1D(Form("h_K_pfRICH_PID_eff_RC_%i", PID_bin), Form("h_K_pfRICH_PID_eff_RC_%i", PID_bin), 100, 0, 20);
-    h_p_pfRICH_PID_eff_RC[PID_bin] = new TH1D(Form("h_p_pfRICH_PID_eff_RC_%i", PID_bin), Form("h_p_pfRICH_PID_eff_RC_%i", PID_bin), 200, 0, 20);
+    h_p_pfRICH_PID_eff_RC[PID_bin] = new TH1D(Form("h_p_pfRICH_PID_eff_RC_%i", PID_bin), Form("h_p_pfRICH_PID_eff_RC_%i", PID_bin), 100, 0, 20);
+    
+    h_pi_pfRICH_PID_eff_MC_RC_match[PID_bin] = new TH1D(Form("h_pi_pfRICH_PID_eff_MC_RC_match_%i", PID_bin), Form("h_pi_pfRICH_PID_eff_MC_RC_match_%i", PID_bin), 100, 0, 20); //PID efficiency - good PID and mis-PID
+    h_K_pfRICH_PID_eff_MC_RC_match[PID_bin] = new TH1D(Form("h_K_pfRICH_PID_eff_MC_RC_match_%i", PID_bin), Form("h_K_pfRICH_PID_eff_MC_RC_match_%i", PID_bin), 100, 0, 20);
+    h_p_pfRICH_PID_eff_MC_RC_match[PID_bin] = new TH1D(Form("h_p_pfRICH_PID_eff_MC_RC_match_%i", PID_bin), Form("h_p_pfRICH_PID_eff_MC_RC_match_%i", PID_bin), 100, 0, 20);
   }
   
   //TH1D *h_K_purity_pfRICH_MC[nMomBins][nQ2bins][nyInelParBins];
@@ -342,8 +350,29 @@ int electronPionSeparation(TString inname="./fileLists/flieList.list", TString o
       //get pfRICH matrix
       double pfRICH_mtx[9];
       
-      int good_pfRICH_mtx = getPIDprob_pfRICH_mtx(mctrk, pfRICH_mtx);
+      int good_pfRICH_mtx = getPIDprob_pfRICH_mtx(mctrk, pfRICH_mtx, 0);
+  /*    
+      if( mc_pdg_array[imc] == -211 )
+      {
+        h_pi_pfRICH_PID_eff_MC[0]->Fill(mctrk.Mag());//no PID baseline
+        
+      }
       
+      //K-
+      if( mc_pdg_array[imc] == -321 )
+      {
+        h_K_pfRICH_PID_eff_MC[0]->Fill(mctrk.Mag());//no PID baseline
+        
+      
+      }
+      
+      //p-bar
+      if( mc_pdg_array[imc] == -2212 )
+      {
+        h_p_pfRICH_PID_eff_MC[0]->Fill(mctrk.Mag());//no PID baseline           
+      }
+      
+  */    
       if(good_pfRICH_mtx == 1)
       {        
         //find matchig MC track
@@ -383,7 +412,7 @@ int electronPionSeparation(TString inname="./fileLists/flieList.list", TString o
     
     double Q2_electron = getQ2elec( e_energy, scatMC.Vect());
     
-    if(Q2_electron< 1. || Q2_electron > 20.) continue;
+    if(Q2_electron < 1. || Q2_electron > 20.) continue;
     if(y_inelPar_e < 0.01 ||y_inelPar_e > 0.95) continue;
     
     //fill truth scattered electron energy
@@ -511,7 +540,7 @@ int electronPionSeparation(TString inname="./fileLists/flieList.list", TString o
         
         
         //change PID to MC
-        double pfRICH_pi_prob = getPIDprob_pfRICH_MC(mc_4mom, 0);    
+        double pfRICH_pi_prob = getPIDprob_pfRICH_MC(mc_4mom, 0, 0);    
         double noPID_pi_prob = 1. - pfRICH_pi_prob; 
         
         
@@ -540,7 +569,7 @@ int electronPionSeparation(TString inname="./fileLists/flieList.list", TString o
   		{
   		  h_eta_K_minus[mom_bin][Q2_bin][y_bin]->Fill(mc_mom.Eta());
   		  
-  		  double pfRICH_K_prob = getPIDprob_pfRICH_MC(mc_4mom, 1);
+  		  double pfRICH_K_prob = getPIDprob_pfRICH_MC(mc_4mom, 1, 0);
         double noPID_K_prob = 1 - pfRICH_K_prob;
                        
         
@@ -568,7 +597,7 @@ int electronPionSeparation(TString inname="./fileLists/flieList.list", TString o
   		{
   		  h_eta_anti_proton[mom_bin][Q2_bin][y_bin]->Fill(mc_mom.Eta());
   		   
-  		  double pfRICH_anti_proton_prob = getPIDprob_pfRICH_MC(mc_4mom, 2);
+  		  double pfRICH_anti_proton_prob = getPIDprob_pfRICH_MC(mc_4mom, 2, 0);
         double noPID_anti_proton_prob = 1 - pfRICH_anti_proton_prob;
         
      
@@ -585,7 +614,7 @@ int electronPionSeparation(TString inname="./fileLists/flieList.list", TString o
   		double PID_mtx[9];
         
       //all particles
-      int pfRICH_good = getPIDprob_pfRICH_mtx(mc_4mom, PID_mtx);
+      int pfRICH_good = getPIDprob_pfRICH_mtx(mc_4mom, PID_mtx, 0);
       
       if( pfRICH_good == 0 ) continue;
       
@@ -812,7 +841,7 @@ int electronPionSeparation(TString inname="./fileLists/flieList.list", TString o
     TVector3 scat_e_mom_RC_pfRICH(0,0,0);
     double maxP_pfRICH = -1;//to store leading momentum
        
-    int scat_e_simID_pfRICH = -1; //index of scattered e in charged track array
+    int scat_e_simID_pfRICH = -1; //simID of scattered e
     
     for(unsigned int iChTrack = 0; iChTrack < sim_id.GetSize(); iChTrack++)
     {    
@@ -830,11 +859,13 @@ int electronPionSeparation(TString inname="./fileLists/flieList.list", TString o
       //get pfRICH matrix
       double pfRICH_mtx[9];
       
-      int good_pfRICH_mtx = getPIDprob_pfRICH_mtx(scat_e_mom_RC_pfRICH, pfRICH_mtx);
-      
+      int good_pfRICH_mtx = getPIDprob_pfRICH_mtx(scat_e_mom_RC_pfRICH, pfRICH_mtx, 0);
+    
       if(good_pfRICH_mtx == 1)
       {
         int simID = sim_id[iChTrack];
+        
+        TVector3 mc_mom(mc_px_array[simID], mc_py_array[simID], mc_pz_array[simID]); //matching track MC momentum
         //find matchig MC track
         //pi-
         if( mc_pdg_array[simID] == -211 )
@@ -843,6 +874,12 @@ int electronPionSeparation(TString inname="./fileLists/flieList.list", TString o
           if(pfRICH_mtx[0] > 0 && pfRICH_mtx[0] < 1) h_pi_pfRICH_PID_eff_RC[1]->Fill(scat_e_mom_RC_pfRICH.Mag(), pfRICH_mtx[0]);//pi identified as pi (diagonal term of pfRICH_mtx)
           if(pfRICH_mtx[1] > 0 && pfRICH_mtx[1] < 1) h_pi_pfRICH_PID_eff_RC[2]->Fill(scat_e_mom_RC_pfRICH.Mag(), pfRICH_mtx[1]);//pi identified as K
           if(pfRICH_mtx[2] > 0 && pfRICH_mtx[2] < 1) h_pi_pfRICH_PID_eff_RC[3]->Fill(scat_e_mom_RC_pfRICH.Mag(), pfRICH_mtx[2]);//pi identified as p
+          
+          h_pi_pfRICH_PID_eff_MC_RC_match[0]->Fill(mc_mom.Mag());//no PID baseline
+          if(pfRICH_mtx[0] > 0 && pfRICH_mtx[0] < 1) h_pi_pfRICH_PID_eff_MC_RC_match[1]->Fill(mc_mom.Mag(), pfRICH_mtx[0]);//pi identified as pi (diagonal term of pfRICH_mtx)
+          if(pfRICH_mtx[1] > 0 && pfRICH_mtx[1] < 1) h_pi_pfRICH_PID_eff_MC_RC_match[2]->Fill(mc_mom.Mag(), pfRICH_mtx[1]);//pi identified as K
+          if(pfRICH_mtx[2] > 0 && pfRICH_mtx[2] < 1) h_pi_pfRICH_PID_eff_MC_RC_match[3]->Fill(mc_mom.Mag(), pfRICH_mtx[2]);//pi identified as p
+          
         }
         
         //K-
@@ -852,6 +889,11 @@ int electronPionSeparation(TString inname="./fileLists/flieList.list", TString o
           if(pfRICH_mtx[4] > 0 && pfRICH_mtx[4] < 1) h_K_pfRICH_PID_eff_RC[1]->Fill(scat_e_mom_RC_pfRICH.Mag(), pfRICH_mtx[4]);//K identified as K (diagonal term of pfRICH_mtx)
           if(pfRICH_mtx[3] > 0 && pfRICH_mtx[3] < 1) h_K_pfRICH_PID_eff_RC[2]->Fill(scat_e_mom_RC_pfRICH.Mag(), pfRICH_mtx[3]);//K identified as pi
           if(pfRICH_mtx[5] > 0 && pfRICH_mtx[5] < 1) h_K_pfRICH_PID_eff_RC[3]->Fill(scat_e_mom_RC_pfRICH.Mag(), pfRICH_mtx[5]);//K identified as p
+          
+          h_K_pfRICH_PID_eff_MC_RC_match[0]->Fill(mc_mom.Mag());//no PID baseline
+          if(pfRICH_mtx[0] > 0 && pfRICH_mtx[0] < 1) h_K_pfRICH_PID_eff_MC_RC_match[1]->Fill(mc_mom.Mag(), pfRICH_mtx[0]);//pi identified as pi (diagonal term of pfRICH_mtx)
+          if(pfRICH_mtx[1] > 0 && pfRICH_mtx[1] < 1) h_K_pfRICH_PID_eff_MC_RC_match[2]->Fill(mc_mom.Mag(), pfRICH_mtx[1]);//pi identified as K
+          if(pfRICH_mtx[2] > 0 && pfRICH_mtx[2] < 1) h_K_pfRICH_PID_eff_MC_RC_match[3]->Fill(mc_mom.Mag(), pfRICH_mtx[2]);//pi identified as p
         
         }
         
@@ -861,7 +903,12 @@ int electronPionSeparation(TString inname="./fileLists/flieList.list", TString o
           h_p_pfRICH_PID_eff_RC[0]->Fill(scat_e_mom_RC_pfRICH.Mag());//no PID baseline
           if(pfRICH_mtx[8] > 0 && pfRICH_mtx[8] < 1) h_p_pfRICH_PID_eff_RC[1]->Fill(scat_e_mom_RC_pfRICH.Mag(), pfRICH_mtx[8]);//p identified as p (diagonal term of pfRICH_mtx)
           if(pfRICH_mtx[6] > 0 && pfRICH_mtx[6] < 1) h_p_pfRICH_PID_eff_RC[2]->Fill(scat_e_mom_RC_pfRICH.Mag(), pfRICH_mtx[6]);//p identified as pi
-          if(pfRICH_mtx[7] > 0 && pfRICH_mtx[7] < 1) h_p_pfRICH_PID_eff_RC[3]->Fill(scat_e_mom_RC_pfRICH.Mag(), pfRICH_mtx[7]);//p identified as K      
+          if(pfRICH_mtx[7] > 0 && pfRICH_mtx[7] < 1) h_p_pfRICH_PID_eff_RC[3]->Fill(scat_e_mom_RC_pfRICH.Mag(), pfRICH_mtx[7]);//p identified as K
+          
+          h_p_pfRICH_PID_eff_MC_RC_match[0]->Fill(mc_mom.Mag());//no PID baseline
+          if(pfRICH_mtx[0] > 0 && pfRICH_mtx[0] < 1) h_p_pfRICH_PID_eff_MC_RC_match[1]->Fill(mc_mom.Mag(), pfRICH_mtx[0]);//pi identified as pi (diagonal term of pfRICH_mtx)
+          if(pfRICH_mtx[1] > 0 && pfRICH_mtx[1] < 1) h_p_pfRICH_PID_eff_MC_RC_match[2]->Fill(mc_mom.Mag(), pfRICH_mtx[1]);//pi identified as K
+          if(pfRICH_mtx[2] > 0 && pfRICH_mtx[2] < 1) h_p_pfRICH_PID_eff_MC_RC_match[3]->Fill(mc_mom.Mag(), pfRICH_mtx[2]);//pi identified as p   
         }
        }     
       
@@ -883,28 +930,56 @@ int electronPionSeparation(TString inname="./fileLists/flieList.list", TString o
     TRandom3 *rndm_pfRICH = new TRandom3();
     double rndm_PID_pfRICH = rndm_pfRICH->Rndm();
     
+    int is_pfRICH_electron = 0; //flag if track is identified by pfRICH as electron   
     int is_pfRICH_hadron = 0; //flag if track is identified by pfRICH as hadron   
     
     //get pfRICH PID probablilities
     //also rejecting tracks with invalid pfRICH info
+    
+   
+    
+    //selection of electrons
+    //direct for e
+    //contamination by pi from e/pi PID table
+    //veto on K and p    
     //pi-
     if( MC_PDG_ID_pfRICH == -211 )
     {
-      double pi_PID_prob_pfRICH = getPIDprob_pfRICH_MC(scat_e_mom_RC_pfRICH, 0);
+      //PID of pi - not used now
+      //double pi_PID_prob_pfRICH = getPIDprob_pfRICH_MC(scat_e_mom_RC_pfRICH, 0, 0);
       
-      if( pi_PID_prob_pfRICH > rndm_PID_pfRICH /*&& pi_PID_prob_pfRICH < 0.9999 */|| pi_PID_prob_pfRICH == 0) is_pfRICH_hadron = 1;      
+      //if( pi_PID_prob_pfRICH > rndm_PID_pfRICH /*&& pi_PID_prob_pfRICH < 0.9999 */|| pi_PID_prob_pfRICH == 0) is_pfRICH_hadron = 1;
+      
+      
+      //pi mis-identified as e      
+      
+      //PID mtx has to have 9 elemets to be compatible with getPIDprob_pfRICH_mtx
+      //for e/pi, only 4 elemets will be filled:
+      // 0 - e identified as e, 1 - e identified as pi
+      // 2 - pi identified as e, 3 - pi identified as pi
+      double PID_mtx[9]; 
+        
+      //all particles
+      int pfRICH_good = getPIDprob_pfRICH_mtx(scat_e_mom_RC_pfRICH, PID_mtx, 1); // e/pi PID matrix
+      
+      if(pfRICH_good)
+      {
+        //check if pi was mis-identified as e
+        if( PID_mtx[2] > rndm_PID_pfRICH) is_pfRICH_electron = 1;      
+      }
+         
     }
     //K-
     else if( MC_PDG_ID_pfRICH == -321 )
     {
-      double K_PID_prob_pfRICH = getPIDprob_pfRICH_MC(scat_e_mom_RC_pfRICH, 1);
+      double K_PID_prob_pfRICH = getPIDprob_pfRICH_MC(scat_e_mom_RC_pfRICH, 1, 0);
     
       if( K_PID_prob_pfRICH > rndm_PID_pfRICH /*&& K_PID_prob_pfRICH < 0.9999 */ || K_PID_prob_pfRICH == 0) is_pfRICH_hadron = 1;      
     }
     //p-bar
     else if( MC_PDG_ID_pfRICH == -2212 )
     {
-      double p_PID_prob_pfRICH = getPIDprob_pfRICH_MC(scat_e_mom_RC_pfRICH, 2);
+      double p_PID_prob_pfRICH = getPIDprob_pfRICH_MC(scat_e_mom_RC_pfRICH, 2, 0);
       
       if( p_PID_prob_pfRICH > rndm_PID_pfRICH /*&& p_PID_prob_pfRICH < 0.9999 */ || p_PID_prob_pfRICH == 0) is_pfRICH_hadron = 1;      
     }
@@ -912,8 +987,14 @@ int electronPionSeparation(TString inname="./fileLists/flieList.list", TString o
     else if( MC_PDG_ID_pfRICH == 11 )
     {
       //if electron then accept
-      //don't have pfRICH info for electrons now
-      is_pfRICH_hadron = 0;    
+      
+      double e_PID_prob_pfRICH = getPIDprob_pfRICH_MC(scat_e_mom_RC_pfRICH, 0, 1);
+      
+      if( e_PID_prob_pfRICH > rndm_PID_pfRICH )      
+      {
+        is_pfRICH_electron = 1;
+      } 
+              
     }
     else
     {
@@ -926,7 +1007,8 @@ int electronPionSeparation(TString inname="./fileLists/flieList.list", TString o
       
     //continue for good scattered electron candidates
     //accept only particles in pfRICH acceptance
-    if( MC_PDG_ID_pfRICH != -99 && is_pfRICH_hadron != 1 &&  scat_e_mom_RC_pfRICH.Eta() > -3.8 && scat_e_mom_RC_pfRICH.Eta() < -1.5 )
+    //if( MC_PDG_ID_pfRICH != -99 && (is_pfRICH_electron == 1 || is_pfRICH_hadron != 1) &&  scat_e_mom_RC_pfRICH.Eta() > -3.8 && scat_e_mom_RC_pfRICH.Eta() < -1.5 )
+    if( MC_PDG_ID_pfRICH != -99 && is_pfRICH_electron == 1 &&  scat_e_mom_RC_pfRICH.Eta() > -3.8 && scat_e_mom_RC_pfRICH.Eta() < -1.5 )
     { 
     
       double y_inelPar_e_RC_pfRICH = getInelParamElectron_2(p_energy, e_energy, scat_e_mom_RC_pfRICH);

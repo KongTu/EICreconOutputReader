@@ -45,6 +45,9 @@
 //pfRICH info input file
 auto ff = new TFile("./pfRICH-configs/pfRICH-default-Nov8.root");
 auto dconfig = dynamic_cast<DelphesConfig*>(ff->Get("DelphesConfigRICH"));
+
+auto ff_e_pi = new TFile("./pfRICH-configs/pfRICH_e_pi.root");
+auto dconfig_e_pi = dynamic_cast<DelphesConfig*>(ff->Get("DelphesConfigRICH"));
 //_________________________________________________________________________
 
 
@@ -256,18 +259,43 @@ auto getPIDprob_pfRICH_single(TLorentzVector track)
 }
 //___________________________________________________________________________
 
-auto getPIDprob_pfRICH_MC(TLorentzVector track, int hpid)
+auto getPIDprob_pfRICH_MC(TLorentzVector track, int hpid, int config)
 {
+  //config == 0 - pi/K/p PID table
+  //config == 1 - e/pi PID table
+  
 	//hpid==0,pion
 	//hpid==1,kaon
 	//hpod==2,proton
 	
-	unsigned hdim = dconfig->GetMassHypothesisCount();
+	unsigned hdim;
+	
+	if(config == 0) 
+	{
+  	hdim = dconfig->GetMassHypothesisCount();
+	}	
+	
+	if(config == 1) 
+	{
+	  hdim = dconfig_e_pi->GetMassHypothesisCount();
+	}
+	
+	
+	double hmtx[hdim*hdim];	
+	int ret;
+	
+	if(config == 0) 
+	{
+   	ret = dconfig->GetSmearingMatrix(track.Vect(), hmtx);	
+	}	
+	
+	if(config == 1) 
+	{
+	  ret = dconfig_e_pi->GetSmearingMatrix(track.Vect(), hmtx);	  
+	}
+	
 	
 	double prob;
-	double hmtx[hdim*hdim];
-
-	int ret = dconfig->GetSmearingMatrix(track.Vect(), hmtx);
 	
 	if(ret!=0 || hpid < 0 || hpid > 2)
 	{
@@ -283,18 +311,44 @@ auto getPIDprob_pfRICH_MC(TLorentzVector track, int hpid)
 }
 //___________________________________________________________________________
 
-auto getPIDprob_pfRICH_MC(TVector3 track, int hpid)
+auto getPIDprob_pfRICH_MC(TVector3 track, int hpid, int config)
 {
+  //config == 0 - pi/K/p PID table
+  //config == 1 - e/pi PID table
+
 	//hpid==0,pion
 	//hpid==1,kaon
 	//hpod==2,proton
 	
-	unsigned hdim = dconfig->GetMassHypothesisCount();
+	unsigned hdim;
+	
+	if(config == 0) 
+	{
+  	hdim = dconfig->GetMassHypothesisCount();
+	}	
+	
+	if(config == 1) 
+	{
+	  hdim = dconfig_e_pi->GetMassHypothesisCount();
+	}
+	
+	
+	double hmtx[hdim*hdim];	
+	int ret;
+	
+	if(config == 0) 
+	{
+   	ret = dconfig->GetSmearingMatrix(track, hmtx);	
+	}	
+	
+	if(config == 1) 
+	{
+	  ret = dconfig_e_pi->GetSmearingMatrix(track, hmtx);	  
+	}
+	
 	
 	double prob;
-	double hmtx[hdim*hdim];
-
-	int ret = dconfig->GetSmearingMatrix(track, hmtx);
+	
 	
 	if(ret!=0 || hpid < 0 || hpid > 2)
 	{
@@ -310,14 +364,41 @@ auto getPIDprob_pfRICH_MC(TVector3 track, int hpid)
 }
 //___________________________________________________________________________
 
-int getPIDprob_pfRICH_mtx(TLorentzVector track, double (&PID_mtx)[9])
+int getPIDprob_pfRICH_mtx(TLorentzVector track, double (&PID_mtx)[9], int config)
 {
+  //config == 0 - pi/K/p PID table
+  //config == 1 - e/pi PID table
+  
+	//hpid==0,pion
+	//hpid==1,kaon
+	//hpod==2,proton
 	
-	unsigned hdim = dconfig->GetMassHypothesisCount();		
-
-	//double hmtx[hdim*hdim];
-
-	int ret = dconfig->GetSmearingMatrix(track.Vect(), PID_mtx);
+	unsigned hdim;
+	
+	if(config == 0) 
+	{
+  	hdim = dconfig->GetMassHypothesisCount();
+	}	
+	
+	if(config == 1) 
+	{
+	  hdim = dconfig_e_pi->GetMassHypothesisCount();
+	}
+	
+	
+	double hmtx[hdim*hdim];	
+	int ret;
+	
+	if(config == 0) 
+	{
+   	ret = dconfig->GetSmearingMatrix(track.Vect(), hmtx);	
+	}	
+	
+	if(config == 1) 
+	{
+	  ret = dconfig_e_pi->GetSmearingMatrix(track.Vect(), hmtx);	  
+	}
+	
 	
 	if(ret!=0)
 	{
@@ -326,20 +407,53 @@ int getPIDprob_pfRICH_mtx(TLorentzVector track, double (&PID_mtx)[9])
 	}
 	else
 	{
+  	for(unsigned int index = 0; index < hdim*hdim; index++)
+    {
+      PID_mtx[index] = hmtx[index]	;
+    }
+	
 		return 1;
 	}	
 	
 }
 //___________________________________________________________________________
 
-int getPIDprob_pfRICH_mtx(TVector3 track, double (&PID_mtx)[9])
+int getPIDprob_pfRICH_mtx(TVector3 track, double (&PID_mtx)[9], int config)
 {
+  //config == 0 - pi/K/p PID table
+  //config == 1 - e/pi PID table
+  
+	//hpid==0,pion
+	//hpid==1,kaon
+	//hpod==2,proton
 	
-	unsigned hdim = dconfig->GetMassHypothesisCount();		
-
-	//double hmtx[hdim*hdim];
-
-	int ret = dconfig->GetSmearingMatrix(track, PID_mtx);
+	unsigned hdim;
+	
+	if(config == 0) 
+	{
+  	hdim = dconfig->GetMassHypothesisCount();
+	}	
+	
+	if(config == 1) 
+	{
+	  hdim = dconfig_e_pi->GetMassHypothesisCount();
+	}
+	
+	
+	double hmtx[hdim*hdim];	
+	int ret;
+	
+	if(config == 0) 
+	{
+   	ret = dconfig->GetSmearingMatrix(track, hmtx);	
+	}	
+	
+	if(config == 1) 
+	{
+	  ret = dconfig_e_pi->GetSmearingMatrix(track, hmtx);	  
+	}
+	
+	
 	
 	if(ret!=0)
 	{
@@ -348,6 +462,11 @@ int getPIDprob_pfRICH_mtx(TVector3 track, double (&PID_mtx)[9])
 	}
 	else
 	{
+	  for(unsigned int index = 0; index < hdim*hdim; index++)
+	  {
+	    PID_mtx[index] = hmtx[index]	;
+	  }
+	
 		return 1;
 	}	
 	
