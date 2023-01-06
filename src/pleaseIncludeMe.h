@@ -47,7 +47,7 @@ auto ff = new TFile("./pfRICH-configs/pfRICH-default-Nov8.root");
 auto dconfig = dynamic_cast<DelphesConfig*>(ff->Get("DelphesConfigRICH"));
 
 auto ff_e_pi = new TFile("./pfRICH-configs/pfRICH_e_pi.root");
-auto dconfig_e_pi = dynamic_cast<DelphesConfig*>(ff->Get("DelphesConfigRICH"));
+auto dconfig_e_pi = dynamic_cast<DelphesConfig*>(ff_e_pi->Get("DelphesConfigRICH"));
 //_________________________________________________________________________
 
 
