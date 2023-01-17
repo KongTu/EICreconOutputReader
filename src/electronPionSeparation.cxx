@@ -31,8 +31,11 @@ int electronPionSeparation(TString inname="./fileLists/flieList.list", TString o
   const int nyInelParBins = 4;
   float const y_bins[nyInelParBins+1] = { 0.01,0.05,0.1,0.5,0.95 };
 
-  const int nMomBins = 5;
-  float const mom_bins[nMomBins+1] = { 0,1,3,7,10, 18 };
+  const int nMomBins = 11;
+  float const mom_bins[nMomBins+1] = { 0,0.5,1,1.5,2,3,4,5,6,7,10, 18 };
+  
+  const int nEtaBins = 4;
+  float const eta_bins[nEtaBins+1] = { -4, -3, -2, -1, 0 };
 
   //____________________________________________________
   //pi eCAL info
@@ -127,26 +130,57 @@ int electronPionSeparation(TString inname="./fileLists/flieList.list", TString o
   TH1D *h_eta_K_plus[nMomBins][nQ2bins][nyInelParBins];
   TH1D *h_eta_proton[nMomBins][nQ2bins][nyInelParBins];
 
+
   TH1D *h_eta_positron[nMomBins][nQ2bins][nyInelParBins];
-
   TH1D *h_eta_pi_minus[nMomBins][nQ2bins][nyInelParBins];
-
+  TH1D *h_eta_K_minus[nMomBins][nQ2bins][nyInelParBins];
+  TH1D *h_eta_anti_proton[nMomBins][nQ2bins][nyInelParBins];
+  
+  
   TH1D *h_eta_pi_minus_eCAL_85[nMomBins][nQ2bins][nyInelParBins];
   TH1D *h_eta_pi_minus_eCAL_95[nMomBins][nQ2bins][nyInelParBins];
-
-  TH1D *h_eta_pi_minus_pfRICH[nMomBins][nQ2bins][nyInelParBins];
-
+    
   TH1D *h_eta_pi_minus_eCAL_85_pfRICH[nMomBins][nQ2bins][nyInelParBins];
   TH1D *h_eta_pi_minus_eCAL_95_pfRICH[nMomBins][nQ2bins][nyInelParBins];
-
-  TH1D *h_eta_K_minus[nMomBins][nQ2bins][nyInelParBins];
-
+    
+  TH1D *h_eta_pi_minus_pfRICH[nMomBins][nQ2bins][nyInelParBins];
   TH1D *h_eta_K_minus_pfRICH[nMomBins][nQ2bins][nyInelParBins];
-
-  TH1D *h_eta_anti_proton[nMomBins][nQ2bins][nyInelParBins];
-
   TH1D *h_eta_anti_proton_pfRICH[nMomBins][nQ2bins][nyInelParBins];
 
+  //p distributions in multiple eta bins
+  //use just wide Q^2 and y selection
+  
+  //eta bins defined higher + 1 eta bin for pfRICH acceptance window
+  TH1D *h_p_scat_ele[nEtaBins+1];
+  
+  TH1D *h_p_pi_minus[nEtaBins+1];
+  
+  TH1D *h_p_pi_minus_eCAL_85[nEtaBins+1];
+  TH1D *h_p_pi_minus_eCAL_95[nEtaBins+1];
+  
+  TH1D *h_p_pi_minus_eCAL_85_pfRICH[nEtaBins+1];
+  TH1D *h_p_pi_minus_eCAL_95_pfRICH[nEtaBins+1];
+  
+  TH1D *h_p_pi_minus_pfRICH[nEtaBins+1];
+  
+  for(unsigned int eta_bin = 0; eta_bin < nEtaBins+1; eta_bin++) 
+  {
+    h_p_scat_ele[eta_bin] = new TH1D(Form("h_p_scat_ele_eta_%i", eta_bin), Form("h_p_scat_ele_eta_%i", eta_bin), 200, 0, 20);
+    
+    h_p_pi_minus[eta_bin] = new TH1D(Form("h_p_pi_minus_eta_%i", eta_bin), Form("h_p_pi_minus_eta_%i", eta_bin), 200, 0, 20);
+    
+    h_p_pi_minus_eCAL_85[eta_bin] = new TH1D(Form("h_p_pi_minus_eCAL_85_eta_%i", eta_bin), Form("h_p_pi_minus_eCAL_85_eta_%i", eta_bin), 200, 0, 20);
+    h_p_pi_minus_eCAL_95[eta_bin] = new TH1D(Form("h_p_pi_minus_eCAL_95_eta_%i", eta_bin), Form("h_p_pi_minus_eCAL_95_eta_%i", eta_bin), 200, 0, 20);
+    
+    h_p_pi_minus_eCAL_85_pfRICH[eta_bin] = new TH1D(Form("h_p_pi_minus_eCAL_85_pfRICH_eta_%i", eta_bin), Form("h_p_pi_minus_eCAL_85_pfRICH_eta_%i", eta_bin), 200, 0, 20);
+    h_p_pi_minus_eCAL_95_pfRICH[eta_bin] = new TH1D(Form("h_p_pi_minus_eCAL_95_pfRICH_eta_%i", eta_bin), Form("h_p_pi_minus_eCAL_95_pfRICH_eta_%i", eta_bin), 200, 0, 20);
+    
+    h_p_pi_minus_pfRICH[eta_bin] = new TH1D(Form("h_p_pi_minus_pfRICH_eta_%i", eta_bin), Form("h_p_pi_minus_pfRICH_eta_%i", eta_bin), 200, 0, 20);
+  
+  }
+  
+
+  //____________________________________________________________
 
   //reco histograms with eCAL
   TH1D* h_energy_RC = new TH1D("h_energy_RC","E_{RC} (GeV)",100,0,20);
@@ -163,6 +197,8 @@ int electronPionSeparation(TString inname="./fileLists/flieList.list", TString o
   TH1D *h_eta_scat_ele_RC_eCAL[nMomBins][nQ2bins][nyInelParBins];
   
   TH1D *h_eta_scat_ele_RC_eCAL_E_over_p[nMomBins][nQ2bins][nyInelParBins];
+  
+  
 
   //background - negative charged particles
   //TH1D *h_eta_neg_ch_part_RC[nMomBins][nQ2bins][nyInelParBins];
@@ -182,7 +218,8 @@ int electronPionSeparation(TString inname="./fileLists/flieList.list", TString o
   TH1D *h_y_inelPar_RC_pfRICH = new TH1D("h_y_inelPar_RC_pfRICH", "h_momentum_RC_pfRICH", 100, 0, 1);
 
   TH1D *h_eta_scat_ele_RC_lead_p[nMomBins][nQ2bins][nyInelParBins];
-  TH1D *h_eta_scat_ele_RC_pfRICH[nMomBins][nQ2bins][nyInelParBins];
+  TH1D *h_eta_scat_ele_RC_pfRICH[nMomBins][nQ2bins][nyInelParBins];  
+  
 
   //pi/K/p efficiency histogram
   TH1D *h_pi_pfRICH_PID_eff_MC[4]; //PID efficiency as a function of MC momentum - no PID baseline, good PID and mis-PID
@@ -346,16 +383,13 @@ int electronPionSeparation(TString inname="./fileLists/flieList.list", TString o
     }
   }
 
-  //TH1D* h_eta = new TH1D("h_eta",";#eta",100,-5,5);
-  //TH1D* h_energy_REC = new TH1D("h_energy_REC",";E_{REC} (GeV)",100,0,20);
-  //TH2D* h_emClus_position_REC = new TH2D("h_emClus_position_REC",";x (cm);y (cm)",400,-800,800,400,-800,800);
-  //TH2D* h_energy_res = new TH2D("h_energy_res",";E_{MC} (GeV); E_{MC}-E_{REC}/E_{MC}",100,0,20,1000,-1,1);
-
-
   //______________________________________________________________________________________________________________________________________________________________________________________
-
+  cout<<"test 1"<<endl;
 
 	tree_reader.SetEntriesRange(0, myChain->GetEntries());
+	
+	cout<<"test 2"<<endl;
+
 
   while (tree_reader.Next())
   {
@@ -460,11 +494,14 @@ int electronPionSeparation(TString inname="./fileLists/flieList.list", TString o
 
     double Q2_electron = getQ2elec( e_energy, scatMC.Vect());
 
-    if(Q2_electron < 1. || Q2_electron > 20.) continue;
-    if(y_inelPar_e < 0.01 ||y_inelPar_e > 0.95) continue;
+
+    //flag for wide MC Q2 and y cut
+    int has_good_Q2_y_MC = 0;
+    
+    if( Q2_electron > 1. && Q2_electron < 20. && y_inelPar_e > 0.01 && y_inelPar_e < 0.95) has_good_Q2_y_MC = 1;
 
     //fill truth scattered electron energy
-    if(Q2_electron < 10.)
+    if(has_good_Q2_y_MC && Q2_electron < 10.) //additional Q2 cut to match Kong's selection
     {
       h_energy_MC->Fill(scatMC.E());
     	h_energy_zoom_MC->Fill(scatMC.E());
@@ -476,7 +513,6 @@ int electronPionSeparation(TString inname="./fileLists/flieList.list", TString o
 
       h_Q2_MC->Fill(Q2_electron);
       h_Q2_zoom_MC->Fill(Q2_electron);
-
     }
 
 
@@ -511,13 +547,33 @@ int electronPionSeparation(TString inname="./fileLists/flieList.list", TString o
       {
         mom_bin_scat_e = j;
       }
+    }
+    
+    
+    int eta_bin_scat_e = -1;
 
+    for(int j = 0; j < nEtaBins; j++) //loop over eta bins
+    {
+      if(scatMC.Eta() > eta_bins[j] && scatMC.P() <= eta_bins[j+1])
+      {
+        eta_bin_scat_e = j;
+      }
     }
 
-    //if(Q2_bin < 0 || y_bin < 0 || mom_bin_scat_e < 0) continue;
     //__________________________________________________________________________________
 
+    //fill MC p distributions
+    if(has_good_Q2_y_MC == 1)
+    {
+      if( eta_bin_scat_e != -1 ) h_p_scat_ele[eta_bin_scat_e]->Fill(scatMC.P());    
+    }
+    
+    
+    
+    //fille MC eta distributions
     if( !(Q2_bin < 0 || y_bin < 0 || mom_bin_scat_e < 0) ) h_eta_scat_ele[mom_bin_scat_e][Q2_bin][y_bin]->Fill(scatMC.Eta());
+    
+    
 
 
     //loop ove MC particles to fill distributions of produced particles
@@ -529,8 +585,9 @@ int electronPionSeparation(TString inname="./fileLists/flieList.list", TString o
   		TVector3 mc_mom(mc_px_array[imc], mc_py_array[imc], mc_pz_array[imc]);
   		TLorentzVector mc_4mom(0,0,0,0);  
   		mc_4mom.SetVectM(mc_mom, mc_mass_array[imc]);
+  		
 
-  		//determine momentum bin of particles in event
+  		//determine momentum and eta bin of particles in event
   		int mom_bin = -1;
 
       for(int j = 0; j < nMomBins; j++) //loop over pT bins
@@ -541,10 +598,78 @@ int electronPionSeparation(TString inname="./fileLists/flieList.list", TString o
         }
 
       }
+      
+      
+      int eta_bin = -1;
 
+      for(int j = 0; j < nEtaBins; j++) //loop over pT bins
+      {
+        if(mc_mom.Eta() > eta_bins[j] && mc_mom.Eta() <= eta_bins[j+1])
+        {
+          eta_bin = j;
+        }
+
+      }
+      
+      //fill p distributions for MC particles
+      if(has_good_Q2_y_MC == 1)
+      {
+        if(eta_bin != -1)
+        {
+          //pi-
+          if(mc_pdg_array[imc] == -211) 
+          {
+            h_p_pi_minus[eta_bin]->Fill(mc_mom.Mag());
+            
+            //suppression factors for eCAL
+            //default value is 1 - i.e. no suppression
+            double eCAL_suppress_85 = 1.;
+            double eCAL_suppress_95 = 1.;
+
+            //eta acceptance of eCAL
+            if( mc_mom.Eta() > -3.14 && mc_mom.Eta() < -1.87 )
+            {
+              h_p_pi_minus_eCAL_85[eta_bin]->Fill(mc_mom.Eta(), eCAL_suppress_85);
+              h_p_pi_minus_eCAL_95[eta_bin]->Fill(mc_mom.Eta(), eCAL_suppress_95);
+            }
+            
+            
+            //change PID to MC
+            double pfRICH_pi_prob;
+            
+            //use e/pi PID table for p < 5 GeV/c
+            if(mc_mom.Mag() < 5)
+            {
+              pfRICH_pi_prob = getPIDprob_pfRICH_MC(mc_4mom, 1, 1);        
+            }
+            else
+            {
+              pfRICH_pi_prob = getPIDprob_pfRICH_MC(mc_4mom, 0, 0);
+            }
+            
+            double noPID_pi_prob = 1. - pfRICH_pi_prob;
+
+
+            if(  pfRICH_pi_prob < 0.9999 && pfRICH_pi_prob > 0)
+            {
+              //cout<<pfRICH_pi_prob<<endl;
+
+              h_p_pi_minus_pfRICH[eta_bin]->Fill(mc_mom.Eta(), noPID_pi_prob);
+
+              h_p_pi_minus_eCAL_85_pfRICH[eta_bin]->Fill(mc_mom.Eta(), eCAL_suppress_85*noPID_pi_prob);
+              h_p_pi_minus_eCAL_95_pfRICH[eta_bin]->Fill(mc_mom.Eta(), eCAL_suppress_95*noPID_pi_prob);
+            }
+          
+          }
+                  
+        }      
+      }
+      
+      //______________________________________________________________________________________________________________________________________________________________________________________
+      
+      //fill eta distributions for MC particles
       if(Q2_bin < 0 || y_bin < 0 || mom_bin < 0) continue;
-
-      //_____________________________________________________________________________
+      
 
 
   		//all electrons except the scattered one (one with highest pT)
