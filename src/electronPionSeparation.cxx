@@ -554,7 +554,7 @@ int electronPionSeparation(TString inname="./fileLists/flieList.list", TString o
 
     for(int j = 0; j < nEtaBins; j++) //loop over eta bins
     {
-      if(scatMC.Eta() > eta_bins[j] && scatMC.P() <= eta_bins[j+1])
+      if(scatMC.Eta() > eta_bins[j] && scatMC.Eta() <= eta_bins[j+1])
       {
         eta_bin_scat_e = j;
       }
@@ -629,8 +629,8 @@ int electronPionSeparation(TString inname="./fileLists/flieList.list", TString o
             //eta acceptance of eCAL
             if( mc_mom.Eta() > -3.14 && mc_mom.Eta() < -1.87 )
             {
-              h_p_pi_minus_eCAL_85[eta_bin]->Fill(mc_mom.Eta(), eCAL_suppress_85);
-              h_p_pi_minus_eCAL_95[eta_bin]->Fill(mc_mom.Eta(), eCAL_suppress_95);
+              h_p_pi_minus_eCAL_85[eta_bin]->Fill(mc_mom.Mag(), eCAL_suppress_85);
+              h_p_pi_minus_eCAL_95[eta_bin]->Fill(mc_mom.Mag(), eCAL_suppress_95);
             }
             
             
@@ -654,10 +654,10 @@ int electronPionSeparation(TString inname="./fileLists/flieList.list", TString o
             {
               //cout<<pfRICH_pi_prob<<endl;
 
-              h_p_pi_minus_pfRICH[eta_bin]->Fill(mc_mom.Eta(), noPID_pi_prob);
+              h_p_pi_minus_pfRICH[eta_bin]->Fill(mc_mom.Mag(), noPID_pi_prob);
 
-              h_p_pi_minus_eCAL_85_pfRICH[eta_bin]->Fill(mc_mom.Eta(), eCAL_suppress_85*noPID_pi_prob);
-              h_p_pi_minus_eCAL_95_pfRICH[eta_bin]->Fill(mc_mom.Eta(), eCAL_suppress_95*noPID_pi_prob);
+              h_p_pi_minus_eCAL_85_pfRICH[eta_bin]->Fill(mc_mom.Mag(), eCAL_suppress_85*noPID_pi_prob);
+              h_p_pi_minus_eCAL_95_pfRICH[eta_bin]->Fill(mc_mom.Mag(), eCAL_suppress_95*noPID_pi_prob);
             }
           
           }

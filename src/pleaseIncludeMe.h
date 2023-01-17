@@ -25,6 +25,9 @@
 #include "fmt/color.h"
 #include "fmt/core.h"
 
+//temporary hack to resolve issues
+#define PODIO_JSON_OUTPUT
+
 #include "nlohmann/json.hpp"
 #include "edm4eic/InclusiveKinematicsData.h"
 #include "edm4eic/ReconstructedParticleData.h"
