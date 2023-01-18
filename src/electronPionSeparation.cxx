@@ -498,7 +498,8 @@ int electronPionSeparation(TString inname="./fileLists/flieList.list", TString o
     //flag for wide MC Q2 and y cut
     int has_good_Q2_y_MC = 0;
     
-    if( Q2_electron > 1. && Q2_electron < 20. && y_inelPar_e > 0.01 && y_inelPar_e < 0.95) has_good_Q2_y_MC = 1;
+    //if( Q2_electron > 1. && Q2_electron < 20. && y_inelPar_e > 0.01 && y_inelPar_e < 0.95) has_good_Q2_y_MC = 1;
+    if( Q2_electron > 1. && y_inelPar_e < 0.95) has_good_Q2_y_MC = 1;
 
     //fill truth scattered electron energy
     if(has_good_Q2_y_MC && Q2_electron < 10.) //additional Q2 cut to match Kong's selection
@@ -565,7 +566,8 @@ int electronPionSeparation(TString inname="./fileLists/flieList.list", TString o
     //fill MC p distributions
     if(has_good_Q2_y_MC == 1)
     {
-      if( eta_bin_scat_e != -1 ) h_p_scat_ele[eta_bin_scat_e]->Fill(scatMC.P());    
+      if( eta_bin_scat_e != -1 ) h_p_scat_ele[eta_bin_scat_e]->Fill(scatMC.P());
+      if(scatMC.Eta() > -3.8 && scatMC.Eta() < -1.5) h_p_scat_ele[nEtaBins]->Fill(scatMC.P());
     }
     
     
@@ -619,7 +621,8 @@ int electronPionSeparation(TString inname="./fileLists/flieList.list", TString o
           //pi-
           if(mc_pdg_array[imc] == -211) 
           {
-            h_p_pi_minus[eta_bin]->Fill(mc_mom.Mag());
+            h_p_pi_minus[eta_bin]->Fill(mc_mom.Mag());          
+            if(mc_mom.Eta() > -3.8 && mc_mom.Eta() < -1.5) h_p_pi_minus[nEtaBins]->Fill(mc_mom.Mag()); //baseline in pfRICH eta acceptance
             
             //suppression factors for eCAL
             //default value is 1 - i.e. no suppression
@@ -629,8 +632,14 @@ int electronPionSeparation(TString inname="./fileLists/flieList.list", TString o
             //eta acceptance of eCAL
             if( mc_mom.Eta() > -3.14 && mc_mom.Eta() < -1.87 )
             {
+              eCAL_suppress_85 = g_pi_false_rate_85->Eval(mc_mom.Mag());
+              eCAL_suppress_95 = g_pi_false_rate_95->Eval(mc_mom.Mag());
+              
               h_p_pi_minus_eCAL_85[eta_bin]->Fill(mc_mom.Mag(), eCAL_suppress_85);
               h_p_pi_minus_eCAL_95[eta_bin]->Fill(mc_mom.Mag(), eCAL_suppress_95);
+              
+              h_p_pi_minus_eCAL_85[nEtaBins]->Fill(mc_mom.Mag(), eCAL_suppress_85);
+              h_p_pi_minus_eCAL_95[nEtaBins]->Fill(mc_mom.Mag(), eCAL_suppress_95);
             }
             
             
@@ -658,6 +667,16 @@ int electronPionSeparation(TString inname="./fileLists/flieList.list", TString o
 
               h_p_pi_minus_eCAL_85_pfRICH[eta_bin]->Fill(mc_mom.Mag(), eCAL_suppress_85*noPID_pi_prob);
               h_p_pi_minus_eCAL_95_pfRICH[eta_bin]->Fill(mc_mom.Mag(), eCAL_suppress_95*noPID_pi_prob);
+              
+              //pfRICH eta acceptance
+              if(mc_mom.Eta() > -3.8 && mc_mom.Eta() < -1.5)
+              {
+                h_p_pi_minus_pfRICH[nEtaBins]->Fill(mc_mom.Mag(), noPID_pi_prob);
+
+                h_p_pi_minus_eCAL_85_pfRICH[nEtaBins]->Fill(mc_mom.Mag(), eCAL_suppress_85*noPID_pi_prob);
+                h_p_pi_minus_eCAL_95_pfRICH[nEtaBins]->Fill(mc_mom.Mag(), eCAL_suppress_95*noPID_pi_prob);
+              
+              }
             }
           
           }
