@@ -45,12 +45,21 @@
 #define MASS_KAON     0.493667
 #define MASS_AU197    183.45406466643374
 
-//pfRICH info input file
+//pfRICH info input files
 auto ff = new TFile("./pfRICH-configs/pfRICH-default-Nov8.root");
 auto dconfig = dynamic_cast<DelphesConfig*>(ff->Get("DelphesConfigRICH"));
 
 auto ff_e_pi = new TFile("./pfRICH-configs/pfRICH_e_pi.root");
 auto dconfig_e_pi = dynamic_cast<DelphesConfig*>(ff_e_pi->Get("DelphesConfigRICH"));
+
+
+//pfRICH TOF files
+//"./pfRICH-configs/ETOF.e-pi.t000ps-pf10ps.root");
+//"./pfRICH-configs/ETOF.e-pi.t025ps-pf10ps.root");
+//"./pfRICH-configs/ETOF.e-pi.t025ps-pf20ps.root");
+
+auto ff_e_pi_TOF = new TFile("./pfRICH-configs/ETOF.e-pi.t025ps-pf20ps.root");
+auto dconfig_e_pi_TOF = dynamic_cast<DelphesConfig*>(ff_e_pi_TOF->Get("DelphesConfigTOF"));
 //_________________________________________________________________________
 
 
@@ -456,6 +465,118 @@ int getPIDprob_pfRICH_mtx(TVector3 track, double (&PID_mtx)[9], int config)
 	  ret = dconfig_e_pi->GetSmearingMatrix(track, hmtx);	  
 	}
 	
+	
+	
+	if(ret!=0)
+	{
+	  //cout<<"ret = "<<ret<<", hpid = "<<hpid<<endl;
+	  return 0;
+	}
+	else
+	{
+	  for(unsigned int index = 0; index < hdim*hdim; index++)
+	  {
+	    PID_mtx[index] = hmtx[index]	;
+	  }
+	
+		return 1;
+	}	
+	
+}
+//___________________________________________________________________________
+
+auto getPIDprob_TOF_MC(TVector3 track, int hpid, int config)
+{
+  //config == 0 - pi/K/p PID table
+  
+	//hpid==0,pion
+	//hpid==1,kaon
+	//hpod==2,proton
+	
+	
+	//config == 1 - e/pi PID table
+	
+	//hpid==0,electron
+	//hpid==1,pion
+
+	
+	unsigned hdim = dconfig_e_pi_TOF->GetMassHypothesisCount();
+	
+	double hmtx[hdim*hdim];	
+	int ret = dconfig_e_pi_TOF->GetSmearingMatrix(track, hmtx);;	
+	
+	double prob;
+	
+	if(ret!=0 || hpid < 0 || hpid > 2)
+	{
+	  //cout<<"ret = "<<ret<<", hpid = "<<hpid<<endl;
+	  prob = 0.;
+	}
+	else
+	{
+		prob = hmtx[(hdim+1)*hpid];
+	}	
+	
+	return prob;
+}
+//___________________________________________________________________________
+
+int getPIDprob_TOF_mtx(TLorentzVector track, double (&PID_mtx)[9], int config)
+{
+  //config == 0 - pi/K/p PID table
+  
+	//hpid==0,pion
+	//hpid==1,kaon
+	//hpod==2,proton
+	
+	
+	//config == 1 - e/pi PID table
+	
+	//hpid==0,electron
+	//hpid==1,pion
+	
+	unsigned hdim = dconfig_e_pi_TOF->GetMassHypothesisCount();
+	
+	double hmtx[hdim*hdim];	
+	int ret = dconfig_e_pi_TOF->GetSmearingMatrix(track.Vect(), hmtx);
+	
+	
+	if(ret!=0)
+	{
+	  //cout<<"ret = "<<ret<<", hpid = "<<hpid<<endl;
+	  return 0;
+	}
+	else
+	{
+  	for(unsigned int index = 0; index < hdim*hdim; index++)
+    {
+      PID_mtx[index] = hmtx[index]	;
+    }
+	
+		return 1;
+	}	
+	
+}
+//___________________________________________________________________________
+
+int getPIDprob_TOF_mtx(TVector3 track, double (&PID_mtx)[9], int config)
+{
+  //config == 0 - pi/K/p PID table
+
+	//hpid==0,pion
+	//hpid==1,kaon
+	//hpod==2,proton
+	
+	
+	//config == 1 - e/pi PID table
+	
+	//hpid==0,electron
+	//hpid==1,pion
+	
+  unsigned hdim = dconfig_e_pi_TOF->GetMassHypothesisCount();
+	
+	double hmtx[hdim*hdim];	
+	int ret = dconfig_e_pi_TOF->GetSmearingMatrix(track, hmtx);
 	
 	
 	if(ret!=0)

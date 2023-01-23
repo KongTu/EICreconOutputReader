@@ -247,6 +247,17 @@ int electronPionSeparation(TString inname="./fileLists/flieList.list", TString o
 
   TH1D *h_e_pfRICH_PID_eff_MC_RC[3];
   TH1D *h_e_pi_pfRICH_PID_eff_MC_RC[3];
+  
+  
+  //e/pi TOF PID efficiency histograms
+  TH1D *h_e_pfRICH_TOF_PID_eff_MC[3];
+  TH1D *h_e_pi_pfRICH_TOF_PID_eff_MC[3];
+
+  //TH1D *h_e_pfRICH_TOF_PID_eff_RC[3];
+  //TH1D *h_e_pi_pfRICH_TOF_PID_eff_RC[3];
+
+  //TH1D *h_e_pfRICH_TOF_PID_eff_MC_RC[3];
+  //TH1D *h_e_pi_pfRICH_TOF_PID_eff_MC_RC[3];
 
   for(unsigned int PID_bin = 0; PID_bin < 4; PID_bin++)
   {
@@ -264,6 +275,7 @@ int electronPionSeparation(TString inname="./fileLists/flieList.list", TString o
 
     if(PID_bin < 3)
     {
+      //RICH PID
       h_e_pfRICH_PID_eff_MC[PID_bin] = new TH1D(Form("h_e_pfRICH_PID_eff_MC_%i", PID_bin), Form("h_e_pfRICH_PID_eff_MC_%i", PID_bin), 100, 0, 20);
       h_e_pi_pfRICH_PID_eff_MC[PID_bin] = new TH1D(Form("h_e_pi_pfRICH_PID_eff_MC_%i", PID_bin), Form("h_e_pi_pfRICH_PID_eff_MC_%i", PID_bin), 100, 0, 20);
 
@@ -272,6 +284,16 @@ int electronPionSeparation(TString inname="./fileLists/flieList.list", TString o
 
       h_e_pfRICH_PID_eff_MC_RC[PID_bin] = new TH1D(Form("h_e_pfRICH_PID_eff_MC_RC_%i", PID_bin), Form("h_e_pfRICH_PID_eff_MC_RC_%i", PID_bin), 100, 0, 20);
       h_e_pi_pfRICH_PID_eff_MC_RC[PID_bin] = new TH1D(Form("h_e_pi_pfRICH_PID_eff_MC_RC_%i", PID_bin), Form("h_e_pi_pfRICH_PID_eff_MC_RC_%i", PID_bin), 100, 0, 20);
+      
+      //TOF PID
+      h_e_pfRICH_TOF_PID_eff_MC[PID_bin] = new TH1D(Form("h_e_pfRICH_TOF_PID_eff_MC_%i", PID_bin), Form("h_e_pfRICH_TOF_PID_eff_MC_%i", PID_bin), 100, 0, 20);
+      h_e_pi_pfRICH_TOF_PID_eff_MC[PID_bin] = new TH1D(Form("h_e_pi_pfRICH_TOF_PID_eff_MC_%i", PID_bin), Form("h_e_pi_pfRICH_TOF_PID_eff_MC_%i", PID_bin), 100, 0, 20);
+
+      //h_e_pfRICH_TOF_PID_eff_RC[PID_bin] = new TH1D(Form("h_e_pfRICH_TOF_PID_eff_RC_%i", PID_bin), Form("h_e_pfRICH_TOF_PID_eff_RC_%i", PID_bin), 100, 0, 20);
+      //h_e_pi_pfRICH_TOF_PID_eff_RC[PID_bin] = new TH1D(Form("h_e_pi_pfRICH_TOF_PID_eff_RC_%i", PID_bin), Form("h_e_pi_pfRICH_TOF_PID_eff_RC_%i", PID_bin), 100, 0, 20);
+
+      //h_e_pfRICH_TOF_PID_eff_MC_RC[PID_bin] = new TH1D(Form("h_e_pfRICH_TOF_PID_eff_MC_RC_%i", PID_bin), Form("h_e_pfRICH_TOF_PID_eff_MC_RC_%i", PID_bin), 100, 0, 20);
+      //h_e_pi_pfRICH_TOF_PID_eff_MC_RC[PID_bin] = new TH1D(Form("h_e_pi_pfRICH_TOF_PID_eff_MC_RC_%i", PID_bin), Form("h_e_pi_pfRICH_TOF_PID_eff_MC_RC_%i", PID_bin), 100, 0, 20);
     }
   }
 
@@ -384,11 +406,11 @@ int electronPionSeparation(TString inname="./fileLists/flieList.list", TString o
   }
 
   //______________________________________________________________________________________________________________________________________________________________________________________
-  cout<<"test 1"<<endl;
+  
 
 	tree_reader.SetEntriesRange(0, myChain->GetEntries());
 	
-	cout<<"test 2"<<endl;
+	
 
 
   while (tree_reader.Next())
@@ -484,8 +506,36 @@ int electronPionSeparation(TString inname="./fileLists/flieList.list", TString o
         }
 
 
-       }
+      }
+     
+       //cout<<"test 1"<<endl;
+      //e/pi pfRICH TOF PID
+      double pfRICH_TOF_mtx_e[9];
 
+      int good_pfRICH_TOF_mtx_e = getPIDprob_TOF_mtx(mctrk, pfRICH_TOF_mtx_e, 0);
+      
+      //cout<<"test 2"<<endl;
+
+      if(good_pfRICH_TOF_mtx_e == 1)
+      {
+        //find matchig MC track
+        //e
+        if( mc_pdg_array[imc] == 11 )
+        {
+          h_e_pfRICH_TOF_PID_eff_MC[0]->Fill(mctrk.Mag());//no PID baseline
+          if(pfRICH_TOF_mtx_e[0] > 0 && pfRICH_TOF_mtx_e[0] < 1) h_e_pfRICH_TOF_PID_eff_MC[1]->Fill(mctrk.Mag(), pfRICH_TOF_mtx_e[0]);//e identified as e (diagonal term of pfRICH_mtx)
+          if(pfRICH_TOF_mtx_e[1] > 0 && pfRICH_TOF_mtx_e[1] < 1) h_e_pfRICH_TOF_PID_eff_MC[2]->Fill(mctrk.Mag(), pfRICH_TOF_mtx_e[1]);//e identified as pi
+        }
+ 
+        //pi-
+        if( mc_pdg_array[imc] == -211 )
+        {
+          h_e_pi_pfRICH_TOF_PID_eff_MC[0]->Fill(mctrk.Mag());//no PID baseline
+          if(pfRICH_TOF_mtx_e[3] > 0 && pfRICH_TOF_mtx_e[3] < 1) h_e_pi_pfRICH_TOF_PID_eff_MC[1]->Fill(mctrk.Mag(), pfRICH_TOF_mtx_e[3]);//pi identified as pi (diagonal term of pfRICH_mtx)
+          if(pfRICH_TOF_mtx_e[2] > 0 && pfRICH_TOF_mtx_e[2] < 1) h_e_pi_pfRICH_TOF_PID_eff_MC[2]->Fill(mctrk.Mag(), pfRICH_TOF_mtx_e[2]);//pi identified as e
+        }
+
+      }
 
   	} //end MC particles for loop
 
