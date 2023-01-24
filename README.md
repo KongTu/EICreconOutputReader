@@ -27,7 +27,7 @@ Install EICreconOutputReader
 
 ```git clone https://github.com/KongTu/EICreconOutputReader.git --branch simple-branch```
 
-## Running samples:
+## Running single particle samples:
 
 Look into getInputFromS3.sh to modify accordingly what to grab from S3:
 
@@ -40,3 +40,15 @@ Run with RDataFrame:
 Or Run with TTreeReader:
 
 ```./runSingleParticleSimpleReader.sh input/INPUT_NAME.root OUTPUT_NAME```
+
+## Running diffractive VM (e.g., phi) samples:
+
+Look into getInputFromS3-exclusive.sh to modify accordingly what to grab from S3:
+
+```./getInputFromS3-exclusive.sh```
+
+Run with TTreeReader:
+
+```./runDiffractiveVMReader.sh input/rec-batch_5_official_*.eicrecon.tree.edm4eic.root output/eicrecon-sartre_coherent_phi```
+
+with input files in `input` and output results in `output`
