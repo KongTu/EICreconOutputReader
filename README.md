@@ -2,7 +2,7 @@
 
 Contact - Kong Tu (kongtu@bnl.gov)
 
-This is a reader script to analyze EIC reconstructed data or MC. The input of this reader is the EICrecon Output, as the name suggested. Here I took the RDataFrame used previously in the physics benchmarks. 
+This is a reader script to analyze EIC reconstructed data or MC. The input of this reader is the EICrecon Output, as the name suggested. Here I took the i) RDataFrame used previously in the physics benchmarks in ATHENA and ii) the TTree reader. 
 
 This repo will be actively developed and added with more examples as we progress, e.g., how to analyze a DIS physics event or an exclusive physics event. Hopefully, there will be more examples showing up under `src`, e.g., `src/readSingleParticles.cxx`. Contributions are welcomed. 
 
