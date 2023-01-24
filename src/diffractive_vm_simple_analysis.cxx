@@ -19,15 +19,36 @@ auto giveme_t_method_L(TLorentzVector eIn,
 }
 
 
-int diffractive_vm_simple_analysis(TString rec_file, TString outputfile)
+int diffractive_vm_simple_analysis(TString rec_file, TString outputfile, int vm_type=1)
 {	
 // read our configuration	
 TString name_of_input = (TString) rec_file;
-name_of_input = "input/rec-batch_5_official_*.eicrecon.tree.edm4eic.root";
-std::cout << "what is this rec_file = " << name_of_input << endl;
+std::cout << "Input file = " << name_of_input << endl;
 auto tree = new TChain("events");
 tree->Add(name_of_input);
 TTreeReader tree_reader(tree);       // !the tree reader
+	
+double mass_daug=0.;
+double mass_vm=0.;
+int daug_pdg=0;
+double vm_mass_width=0.;
+
+if(vm_type==1){
+	cout << "we are analyzing phi meson" << endl;
+	mass_daug=MASS_KAON;
+	mass_vm=1.019461;
+	daug_pdg=321;
+	vm_mass_width=0.02;
+
+}
+else if(vm_type==2){
+	cout << "we are analyzing phi meson" << endl;
+	mass_daug=MASS_ELECTRON;
+	mass_vm=3.096916;
+	daug_pdg=11;
+	vm_mass_width=0.03;
+}
+else {cout << "wrong VM species" << endl; return 0;}
 
 TTreeReaderArray<int> mc_genStatus_array = {tree_reader, "MCParticles.generatorStatus"};
 // MC particle pz array for each MC particle
@@ -57,8 +78,9 @@ TTreeReaderArray<float> reco_charge_array = {tree_reader, "ReconstructedChargedP
 TTreeReaderArray<unsigned int> rec_id = {tree_reader, "ReconstructedChargedParticlesAssociations.recID"};
 TTreeReaderArray<unsigned int> sim_id = {tree_reader, "ReconstructedChargedParticlesAssociations.simID"};
 
-TString output_name_dir = outputfile;
-TFile* output = new TFile(output_name_dir+"_output.root","RECREATE");
+TString output_name_dir = outputfile+"_output.root";
+cout << "Output file = " << output_name_dir << endl;
+TFile* output = new TFile(output_name_dir,"RECREATE");
 
 //events
 TH1D* h_Q2_e = new TH1D("h_Q2_e",";Q^{2}_{e,MC}",100,0,20);
@@ -129,10 +151,10 @@ while (tree_reader.Next()) {
 			mc_elect_index=imc;
 			scatMC.SetVectM(mctrk,mc_mass_array[imc]);
 		}
-		if(mc_pdg_array[imc]==321
-			&& mc_genStatus_array[imc]==1) kplusMC.SetVectM(mctrk,MASS_KAON);
-		if(mc_pdg_array[imc]==-321
-			&& mc_genStatus_array[imc]==1) kminusMC.SetVectM(mctrk,MASS_KAON);
+		if(mc_pdg_array[imc]==daug_pdg
+			&& mc_genStatus_array[imc]==1) kplusMC.SetVectM(mctrk,mass_daug);
+		if(mc_pdg_array[imc]==-daug_pdg
+			&& mc_genStatus_array[imc]==1) kminusMC.SetVectM(mctrk,mass_daug);
 
 	}
 	vmMC=kplusMC+kminusMC;
@@ -269,8 +291,8 @@ while (tree_reader.Next()) {
     		//selecting phi->kk daughters;
     		h_eta->Fill(trk.Eta());
     		if(fabs(trk.Eta())<3.0){
-    			if(reco_charge_array[itrk]>0) kplusREC.SetVectM(trk,MASS_KAON);
-    			if(reco_charge_array[itrk]<0) kminusREC.SetVectM(trk,MASS_KAON);
+    			if(reco_charge_array[itrk]>0) kplusREC.SetVectM(trk,mass_daug);
+    			if(reco_charge_array[itrk]<0) kminusREC.SetVectM(trk,mass_daug);
     		}
 		}
 	}
@@ -320,12 +342,12 @@ while (tree_reader.Next()) {
 
 	//VM rec
 	if(vmREC.E()==0) continue;
-	double phi_mass = vmREC.M();
-	h_VM_mass_REC->Fill(phi_mass);
+	double vm_mass = vmREC.M();
+	h_VM_mass_REC->Fill(vm_mass);
 	h_VM_pt_REC->Fill(vmREC.Pt());
 
 	//select phi mass and rapidity window 
-	if( fabs(phi_mass-1.02)<0.02
+	if( fabs(vm_mass-mass_vm)<vm_mass_width
     		&& fabs(vmREC.Rapidity())<3.5 ){
     	//2 versions: track and energy cluster:
 	double t_trk_REC = giveme_t_method_L(ebeam,scatMCmatchREC,pbeam,vmREC);
