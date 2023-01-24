@@ -23,8 +23,7 @@ int diffractive_vm_simple_analysis(TString rec_file, TString outputfile)
 {	
 // read our configuration	
 TString name_of_input = (TString) rec_file;
-name_of_input = "input/rec-batch_5_official_*.eicrecon.tree.edm4eic.root";
-std::cout << "what is this rec_file = " << name_of_input << endl;
+std::cout << "Input file = " << name_of_input << endl;
 auto tree = new TChain("events");
 tree->Add(name_of_input);
 TTreeReader tree_reader(tree);       // !the tree reader
@@ -57,8 +56,9 @@ TTreeReaderArray<float> reco_charge_array = {tree_reader, "ReconstructedChargedP
 TTreeReaderArray<unsigned int> rec_id = {tree_reader, "ReconstructedChargedParticlesAssociations.recID"};
 TTreeReaderArray<unsigned int> sim_id = {tree_reader, "ReconstructedChargedParticlesAssociations.simID"};
 
-TString output_name_dir = outputfile;
-TFile* output = new TFile(output_name_dir+"_output.root","RECREATE");
+TString output_name_dir = outputfile+"_output.root";
+cout << "Output file = " << output_name_dir << endl;
+TFile* output = new TFile(output_name_dir,"RECREATE");
 
 //events
 TH1D* h_Q2_e = new TH1D("h_Q2_e",";Q^{2}_{e,MC}",100,0,20);
