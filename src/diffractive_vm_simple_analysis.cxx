@@ -42,7 +42,7 @@ if(vm_type==1){
 
 }
 else if(vm_type==2){
-	cout << "we are analyzing phi meson" << endl;
+	cout << "we are analyzing jpsi meson" << endl;
 	mass_daug=MASS_ELECTRON;
 	mass_vm=3.096916;
 	daug_pdg=11;
