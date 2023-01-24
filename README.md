@@ -45,7 +45,7 @@ Or Run with TTreeReader:
 
 Look into getInputFromS3-exclusive.sh to modify accordingly what to grab from S3:
 
-```./getInputFromS3-exclusive.sh```
+```./getInputFromS3-exclusive.sh``` (its grabing 1000 files on s3 in this example, give it a few mins)
 
 Run with TTreeReader:
 
