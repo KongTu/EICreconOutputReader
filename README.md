@@ -49,6 +49,6 @@ Look into getInputFromS3-exclusive.sh to modify accordingly what to grab from S3
 
 Run with TTreeReader:
 
-```./runDiffractiveVMReader.sh input/rec-batch_5_official_*.eicrecon.tree.edm4eic.root output/eicrecon-sartre_coherent_phi```
+```./runDiffractiveVMReader.sh input/rec-batch_5_official_\*.eicrecon.tree.edm4eic.root output/eicrecon-sartre_coherent_phi```
 
 with input files in `input` and output results in `output`
