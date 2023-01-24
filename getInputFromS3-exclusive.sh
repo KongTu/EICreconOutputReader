@@ -22,5 +22,5 @@ echo "************************************************"
 echo "Download from S3 successful."
 echo "Next step is to run reader on them, for example:"
 echo "************************************************"
-echo "./runDiffractiveVMReader.sh input/rec-batch_5_official_*.eicrecon.tree.edm4eic.root output/eicrecon-sartre_coherent_phi"
+echo "./runDiffractiveVMReader.sh input/rec-batch_5_official_\*.eicrecon.tree.edm4eic.root output/eicrecon-sartre_coherent_phi"
 echo "************************************************
