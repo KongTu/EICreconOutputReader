@@ -152,6 +152,7 @@ while (tree_reader.Next()) {
 			mc_elect_index=imc;
 			scatMC.SetVectM(mctrk,mc_mass_array[imc]);
 		}
+		if(fabs(mctrk.Eta())>1.0) continue;
 		if(mc_pdg_array[imc]==daug_pdg
 			&& mc_genStatus_array[imc]==1) kplusMC.SetVectM(mctrk,mass_daug);
 		if(mc_pdg_array[imc]==-daug_pdg
