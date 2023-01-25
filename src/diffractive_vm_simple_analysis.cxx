@@ -86,6 +86,7 @@ TFile* output = new TFile(output_name_dir,"RECREATE");
 TH1D* h_Q2_e = new TH1D("h_Q2_e",";Q^{2}_{e,MC}",100,0,20);
 TH1D* h_y_e = new TH1D("h_y_e",";y_{e,MC}",100,0,1);
 TH1D* h_energy_MC = new TH1D("h_energy_MC",";E_{MC} (GeV)",100,0,20);
+TH1D* h_VM_mass_MC = new TH1D("h_VM_mass_MC",";mass (GeV)",200,0,4);
 TH1D* h_t_MC = new TH1D("h_t_MC",";t_{MC}; counts",100,0,0.2);
 
 TH1D* h_Q2REC_e = new TH1D("h_Q2REC_e",";Q^{2}_{e,REC}",100,0,20);
@@ -178,12 +179,14 @@ while (tree_reader.Next()) {
 
 	double t_MC=0.;
 	if(vmMC.E()!=0 
-	  && fabs(vmMC.Rapidity())<3.5
-	   && fabs(vmMC.M()-mass_vm)<vm_mass_width)
+	  && fabs(vmMC.Rapidity())<3.5)
 	{
-		double method_E = -(qbeam-vmMC).Mag2();
-		t_MC=method_E;
-		h_t_MC->Fill( method_E );
+		h_VM_mass_MC->Fill(vmMC.M());
+		if( fabs(vmMC.M()-mass_vm)<vm_mass_width ){
+		  double method_E = -(qbeam-vmMC).Mag2();
+		  t_MC=method_E;
+		  h_t_MC->Fill( method_E );
+		}
 	}
 
 	//rec level
