@@ -361,6 +361,7 @@ while (tree_reader.Next()) {
 	if( fabs(vm_mass-mass_vm)<vm_mass_width
 			&& fabs(vmREC.Rapidity())<3.5 ){
 	//2 versions: track and energy cluster:
+	vmREC.SetM(mass_vm);//true VM mass to further constrain.
 	double t_trk_REC = giveme_t_method_L(ebeam,scatMCmatchREC,pbeam,vmREC);
 	double t_REC = giveme_t_method_L(ebeam,scatClusEREC,pbeam,vmREC);
 	h_t_trk_REC->Fill( t_trk_REC );
