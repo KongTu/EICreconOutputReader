@@ -178,7 +178,8 @@ while (tree_reader.Next()) {
 
 	double t_MC=0.;
 	if(vmMC.E()!=0 
-		&& fabs(vmMC.Rapidity())<3.5)
+	  && fabs(vmMC.Rapidity())<3.5
+	   && fabs(vmMC.M()-mass_vm)<vm_mass_width)
 	{
 		double method_E = -(qbeam-vmMC).Mag2();
 		t_MC=method_E;
@@ -231,7 +232,7 @@ while (tree_reader.Next()) {
 	yClus = yClus/maxHitEnergy;
 	double radius=sqrt(xClus*xClus+yClus*yClus);
 	if(radius<150. || radius>550. ) continue; //geometric acceptance cut
-	//6% energy calibration.
+	//4.4% energy calibration.
 	double clusEnergy=1.044*maxHitEnergy; 
 
 	h_energy_REC->Fill(clusEnergy);
