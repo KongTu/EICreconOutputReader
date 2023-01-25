@@ -137,6 +137,7 @@ while (tree_reader.Next()) {
 
 	//MC level
 	TLorentzVector scatMC(0,0,0,0);
+	TLorentzVector virtPhot(0,0,0,0);
 	int mc_elect_index=-1;
 	double maxPt=-99.;
 	for(int imc=0;imc<mc_px_array.GetSize();imc++){
@@ -145,6 +146,7 @@ while (tree_reader.Next()) {
 			if(mc_pdg_array[imc]==11) ebeam.SetVectM(mctrk, MASS_ELECTRON);
 				if(mc_pdg_array[imc]==2212) pbeam.SetVectM(mctrk, MASS_PROTON);
 		}
+		if(mc_genStatus_array[imc]!=1 && mc_pdg_array[imc]==22){virtPhot.SetVectM(mctrk,0.0);}
 		if(mc_genStatus_array[imc]!=1) continue;
 		if(mc_pdg_array[imc]==11 	
 			&& mctrk.Perp()>maxPt){
@@ -152,7 +154,6 @@ while (tree_reader.Next()) {
 			mc_elect_index=imc;
 			scatMC.SetVectM(mctrk,mc_mass_array[imc]);
 		}
-		if(fabs(mctrk.Eta())>1.0) continue;
 		if(mc_pdg_array[imc]==daug_pdg
 			&& mc_genStatus_array[imc]==1) kplusMC.SetVectM(mctrk,mass_daug);
 		if(mc_pdg_array[imc]==-daug_pdg
@@ -165,7 +166,12 @@ while (tree_reader.Next()) {
 		std::cout << "problem with MC incoming beams" << std::endl;
 		continue;
 	}
+	//try to correct the scatElecMC
 	TLorentzVector qbeam=ebeam-scatMC;
+	if(qbeam.DeltaR(virtPhot)>0.05) {
+		scatMC = ebeam - virtPhot;
+		qbeam = virtPhot;
+	}
 	double Q2=-(qbeam).Mag2();  
 	double pq=pbeam.Dot(qbeam);
 	double y= pq/pbeam.Dot(ebeam);
