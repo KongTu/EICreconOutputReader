@@ -252,17 +252,17 @@ while (tree_reader.Next()) {
 		}
 	}
     
-    TLorentzVector scatMCmatchREC(0,0,0,0);
-    TLorentzVector scatREC(0,0,0,0);
-    TLorentzVector scatClusEREC(0,0,0,0);
-    TLorentzVector hfs(0,0,0,0);
-    TLorentzVector particle(0,0,0,0);
-    TLorentzVector kplusREC(0,0,0,0);
-    TLorentzVector kminusREC(0,0,0,0);
-    TLorentzVector vmREC(0,0,0,0);
+	TLorentzVector scatMCmatchREC(0,0,0,0);
+	TLorentzVector scatREC(0,0,0,0);
+	TLorentzVector scatClusEREC(0,0,0,0);
+	TLorentzVector hfs(0,0,0,0);
+	TLorentzVector particle(0,0,0,0);
+	TLorentzVector kplusREC(0,0,0,0);
+	TLorentzVector kminusREC(0,0,0,0);
+	TLorentzVector vmREC(0,0,0,0);
 
-    double maxP=-1.;
-    //track loop
+	double maxP=-1.;
+	//track loop
 	for(int itrk=0;itrk<reco_pz_array.GetSize();itrk++){
 		TVector3 trk(reco_px_array[itrk],reco_py_array[itrk],reco_pz_array[itrk]);
 		if(rec_elect_index!=-1
@@ -287,13 +287,13 @@ while (tree_reader.Next()) {
 		TVector3 trk(reco_px_array[itrk],reco_py_array[itrk],reco_pz_array[itrk]);
 		particle.SetVectM(trk,MASS_PION);//assume pions;
 		if(itrk!=rec_elect_index) {
-    		hfs += particle; //hfs 4vector sum.
-    		//selecting phi->kk daughters;
-    		h_eta->Fill(trk.Eta());
-    		if(fabs(trk.Eta())<3.0){
-    			if(reco_charge_array[itrk]>0) kplusREC.SetVectM(trk,mass_daug);
-    			if(reco_charge_array[itrk]<0) kminusREC.SetVectM(trk,mass_daug);
-    		}
+			hfs += particle; //hfs 4vector sum.
+			//selecting phi->kk daughters;
+			h_eta->Fill(trk.Eta());
+			if(fabs(trk.Eta())<3.0){
+				if(reco_charge_array[itrk]>0) kplusREC.SetVectM(trk,mass_daug);
+				if(reco_charge_array[itrk]<0) kminusREC.SetVectM(trk,mass_daug);
+			}
 		}
 	}
 	//4vector of VM;
@@ -303,11 +303,11 @@ while (tree_reader.Next()) {
 
 	//track-base e' energy REC;
 	h_trk_energy_REC->Fill(scatMCmatchREC.E());
-	
+
 	//track-base e' energy resolution;
 	res= (scatMC.E()-scatMCmatchREC.E())/scatMC.E();
 	h_trk_energy_res->Fill(scatMC.E(), res);
-	
+
 	//track-base e' pt resolution;
 	res= (scatMC.Pt()-scatMCmatchREC.Pt())/scatMC.Pt();
 	h_trk_Pt_res->Fill(scatMC.Pt(), res);
@@ -348,37 +348,37 @@ while (tree_reader.Next()) {
 
 	//select phi mass and rapidity window 
 	if( fabs(vm_mass-mass_vm)<vm_mass_width
-    		&& fabs(vmREC.Rapidity())<3.5 ){
-    	//2 versions: track and energy cluster:
+			&& fabs(vmREC.Rapidity())<3.5 ){
+	//2 versions: track and energy cluster:
 	double t_trk_REC = giveme_t_method_L(ebeam,scatMCmatchREC,pbeam,vmREC);
-    	double t_REC = giveme_t_method_L(ebeam,scatClusEREC,pbeam,vmREC);
-    	h_t_trk_REC->Fill( t_trk_REC );
-    	h_t_REC->Fill( t_REC );
-    	h_t_REC_2D->Fill(t_trk_REC,t_REC);
-    	if( (t_trk_REC/t_REC) > 0.5 && (t_trk_REC/t_REC) < 1.5 ){
-    		h_t_combo_REC->Fill( (t_trk_REC+t_REC)/2. );//w=1./(fabs(1.0-(t_trk_REC/t_REC)))
-    	} 
-    	h_t_RECMC_2D->Fill(t_MC,t_trk_REC/t_REC);
+	double t_REC = giveme_t_method_L(ebeam,scatClusEREC,pbeam,vmREC);
+	h_t_trk_REC->Fill( t_trk_REC );
+	h_t_REC->Fill( t_REC );
+	h_t_REC_2D->Fill(t_trk_REC,t_REC);
+	if( (t_trk_REC/t_REC) > 0.5 && (t_trk_REC/t_REC) < 1.5 ){
+		h_t_combo_REC->Fill( (t_trk_REC+t_REC)/2. );//w=1./(fabs(1.0-(t_trk_REC/t_REC)))
+	} 
+	h_t_RECMC_2D->Fill(t_MC,t_trk_REC/t_REC);
 
-    	//t track resolution 
+	//t track resolution 
 	res= (t_MC-t_trk_REC)/t_MC;
 	h_trk_t_res->Fill(t_MC, res);
-	
-    	//t EEMC resolution;
+
+	//t EEMC resolution;
 	res= (t_MC-t_REC)/t_MC;
 	h_t_res->Fill(t_MC, res);
-	
+
 	//2D t
 	h_t_2D->Fill(t_MC,t_trk_REC);
 
-    	//VM pt resolution;
-    	res= (vmMC.Pt()-vmREC.Pt())/vmMC.Pt();
+	//VM pt resolution;
+	res= (vmMC.Pt()-vmREC.Pt())/vmMC.Pt();
 	h_VM_res->Fill(vmMC.Pt(), res);
-    	}
+	}
 
-}
-output->Write();
-output->Close();
+	}//end of event loop
+	output->Write();
+	output->Close();
 
-return 0;
+	return 0;
 }
