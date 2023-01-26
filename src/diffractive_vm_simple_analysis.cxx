@@ -251,7 +251,7 @@ while (tree_reader.Next()) {
 	double radius=sqrt(xClus*xClus+yClus*yClus);
 	if( radius>550. ) continue; //geometric acceptance cut
 	//4.4% energy calibration.
-	double clusEnergy=1.06*maxHitEnergy; 
+	double clusEnergy=1.05*maxHitEnergy; 
 
 	h_energy_REC->Fill(clusEnergy);
 	//ratio of reco / truth Energy
