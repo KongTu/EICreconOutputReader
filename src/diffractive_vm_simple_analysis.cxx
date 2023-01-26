@@ -49,6 +49,11 @@ else if(vm_type==2){
 	vm_mass_width=0.03;
 }
 else {cout << "wrong VM species" << endl; return 0;}
+	
+double Q2min=1.;
+double Q2max=10.;
+double ymin=0.01;
+double ymax=0.95;
 
 TTreeReaderArray<int> mc_genStatus_array = {tree_reader, "MCParticles.generatorStatus"};
 // MC particle pz array for each MC particle
@@ -178,8 +183,8 @@ while (tree_reader.Next()) {
 	double y= pq/pbeam.Dot(ebeam);
 	
 	//MC level phase space cut
-	if(Q2<2.||Q2>10.) continue;
-	if(y<0.01||y>0.85) continue;
+	if(Q2<Q2min||Q2>Q2max) continue;
+	if(y<ymin||y>ymax) continue;
 
 	h_Q2_e->Fill(Q2);
 	h_y_e->Fill(y);
@@ -351,8 +356,8 @@ while (tree_reader.Next()) {
 	if( EoverP<0.8||EoverP>1.18 ) continue;		
 
 	//MC level phase space cut
-	if(Q2REC<2.||Q2REC>10.) continue;
-	if(yREC<0.01||yREC>0.85) continue;
+	if(Q2REC<Q2min||Q2REC>Q2max) continue;
+	if(yREC<ymin||yREC>ymax) continue;
 
 	//VM rec
 	if(vmREC.E()==0) continue;
