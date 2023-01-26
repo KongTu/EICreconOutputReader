@@ -116,6 +116,7 @@ TH2D* h_t_RECMC_2D = new TH2D("h_t_RECMC_2D",";t_{MC} (GeV^{2}); t_{trk,REC} / t
 
 //energy clus
 TH2D* h_emClus_position_REC = new TH2D("h_emClus_position_REC",";x (mm);y (mm)",80,-800,800,80,-800,800);
+TH2D* h_emClus_position_new_REC = new TH2D("h_emClus_position_new_REC",";x (mm);y (mm)",80,-800,800,80,-800,800);
 TH2D* h_emHits_position_REC = new TH2D("h_emHits_position_REC",";x (mm);y (mm)",80,-800,800,80,-800,800);
 TH2D* h_energy_res = new TH2D("h_energy_res",";E_{MC} (GeV); E_{MC}-E_{REC}/E_{MC} emcal",100,0,20,1000,-1,1);
 TH1D* h_energy_calibration_REC = new TH1D("h_energy_calibration_REC",";E (GeV)",200,0,2);
@@ -221,6 +222,8 @@ while (tree_reader.Next()) {
 			        hit_index=ihit;
 		}
 	}
+	//fill leading hit distributions:
+	h_emHits_position_REC->Fill(xhitpos, yhitpos, maxHitEnergy);
 	//sum over all 3x3 towers around the leading tower
 	double xClus=xhitpos*maxHitEnergy;
 	double yClus=yhitpos*maxHitEnergy;
@@ -252,7 +255,7 @@ while (tree_reader.Next()) {
 	double res= (scatMC.E()-clusEnergy)/scatMC.E();
 	h_energy_res->Fill(scatMC.E(), res);
 	h_emClus_position_REC->Fill(xpos,ypos);//default clustering position
-	h_emHits_position_REC->Fill(xClus,yClus); //self clustering position
+	h_emClus_position_new_REC->Fill(xClus,yClus); //self clustering position
 	
 	//association of rec level scat' e
 	int rec_elect_index=-1;
