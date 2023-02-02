@@ -89,17 +89,17 @@ int electronPionSeparation(TString inname="./fileLists/flieList.list", TString o
   TTreeReaderArray<float> reco_py_array = {tree_reader, "ReconstructedChargedParticles.momentum.y"};
   TTreeReaderArray<float> reco_pz_array = {tree_reader, "ReconstructedChargedParticles.momentum.z"};
   TTreeReaderArray<float> reco_cahrge = {tree_reader, "ReconstructedChargedParticles.charge"};
-  TTreeReaderArray<int> reco_PDG = {tree_reader, "ReconstructedChargedParticles.PDG"};
+  //TTreeReaderArray<int> reco_PDG = {tree_reader, "ReconstructedChargedParticles.PDG"};
 
   TTreeReaderArray<unsigned int> rec_id = {tree_reader, "ReconstructedChargedParticlesAssociations.recID"};
   TTreeReaderArray<unsigned int> sim_id = {tree_reader, "ReconstructedChargedParticlesAssociations.simID"};
 
   //Reconstructed eCAL clusters
   TTreeReaderArray<float> em_energy_array = {tree_reader, "EcalEndcapNClusters.energy"};
-  TTreeReaderArray<float> em_x_array = {tree_reader, "EcalEndcapNClusters.position.x"};
-  TTreeReaderArray<float> em_y_array = {tree_reader, "EcalEndcapNClusters.position.y"};
+  //TTreeReaderArray<float> em_x_array = {tree_reader, "EcalEndcapNClusters.position.x"};
+  //TTreeReaderArray<float> em_y_array = {tree_reader, "EcalEndcapNClusters.position.y"};
 
-  TTreeReaderArray<unsigned int> em_rec_id_array = {tree_reader, "EcalEndcapNClustersAssociations.recID"};
+  //TTreeReaderArray<unsigned int> em_rec_id_array = {tree_reader, "EcalEndcapNClustersAssociations.recID"};
   TTreeReaderArray<unsigned int> em_sim_id_array = {tree_reader, "EcalEndcapNClustersAssociations.simID"};
 
   //Reconstructed eCAL hits
