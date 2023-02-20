@@ -104,7 +104,15 @@ int kaonPurity(TString inname="./fileLists/flieList.list", TString outname="test
   TH1F *h_eta_K_minus_MC[nQ2bins][nyInelParBins];
   
   TH1F *h_p_K_plus_MC[nEtaBins+1];
-  TH1F *h_p_K_minus_MC[nEtaBins+1];    
+  TH1F *h_p_K_minus_MC[nEtaBins+1];
+  
+  
+  TH1F *h_eta_K_plus_lead_MC[nQ2bins][nyInelParBins];
+  TH1F *h_eta_K_minus_lead_MC[nQ2bins][nyInelParBins];
+  
+  TH1F *h_p_K_plus_lead_MC[nEtaBins+1];
+  TH1F *h_p_K_minus_lead_MC[nEtaBins+1]; 
+  
 
   
   TH1F *h_eta_K_plus_MC_pfRICH[nQ2bins][nyInelParBins];
@@ -172,6 +180,10 @@ int kaonPurity(TString inname="./fileLists/flieList.list", TString outname="test
       //K eta histograms
       h_eta_K_plus_MC[Q2bin][y_bin] = new TH1F(Form("h_eta_K_plus_MC_Q2_%i_y_%i" , Q2bin, y_bin), Form("h_eta_K_plus_MC_Q2_%i_y_%i" , Q2bin, y_bin), 100, -4, 0);       
       h_eta_K_minus_MC[Q2bin][y_bin] = new TH1F(Form("h_eta_K_minus_MC_Q2_%i_y_%i" , Q2bin, y_bin), Form("h_eta_K_minus_MC_Q2_%i_y_%i" , Q2bin, y_bin), 100, -4, 0);
+      
+      h_eta_K_plus_lead_MC[Q2bin][y_bin] = new TH1F(Form("h_eta_K_plus_lead_MC_Q2_%i_y_%i" , Q2bin, y_bin), Form("h_eta_K_plus_lead_MC_Q2_%i_y_%i" , Q2bin, y_bin), 100, -4, 0);       
+      h_eta_K_minus_lead_MC[Q2bin][y_bin] = new TH1F(Form("h_eta_K_minus_lead_MC_Q2_%i_y_%i" , Q2bin, y_bin), Form("h_eta_K_minus_lead_MC_Q2_%i_y_%i" , Q2bin, y_bin), 100, -4, 0);
+      
 
       h_eta_K_plus_MC_pfRICH[Q2bin][y_bin] = new TH1F(Form("h_eta_K_plus_MC_pfRICH_Q2_%i_y_%i" , Q2bin, y_bin), Form("h_eta_K_plus_MC_pfRICH_Q2_%i_y_%i" , Q2bin, y_bin), 100, -4, 0);
       h_eta_K_minus_MC_pfRICH[Q2bin][y_bin] = new TH1F(Form("h_eta_K_minus_MC_pfRICH_Q2_%i_y_%i" , Q2bin, y_bin), Form("h_eta_K_minus_MC_pfRICH_Q2_%i_y_%i" , Q2bin, y_bin), 100, -4, 0);
@@ -211,6 +223,10 @@ int kaonPurity(TString inname="./fileLists/flieList.list", TString outname="test
     //K p histograms
     h_p_K_plus_MC[eta_bin] = new TH1F(Form("h_p_K_plus_MC_eta_%i", eta_bin), Form("h_p_K_plus_MC_eta_%i", eta_bin), 200, 0, 20);
     h_p_K_minus_MC[eta_bin] = new TH1F(Form("h_p_K_minus_MC_eta_%i", eta_bin), Form("h_p_K_minus_MC_eta_%i", eta_bin), 200, 0, 20);
+    
+    h_p_K_plus_lead_MC[eta_bin] = new TH1F(Form("h_p_K_plus_lead_MC_eta_%i", eta_bin), Form("h_p_K_plus_lead_MC_eta_%i", eta_bin), 200, 0, 20);
+    h_p_K_minus_lead_MC[eta_bin] = new TH1F(Form("h_p_K_minus_lead_MC_eta_%i", eta_bin), Form("h_p_K_minus_lead_MC_eta_%i", eta_bin), 200, 0, 20);
+    
     
     h_p_K_plus_MC_pfRICH[eta_bin] = new TH1F(Form("h_p_K_plus_MC_pfRICH_eta_%i", eta_bin), Form("h_p_K_plus_MC_pfRICH_eta_%i", eta_bin), 200, 0, 20);
     h_p_K_minus_MC_pfRICH[eta_bin] = new TH1F(Form("h_p_K_minus_MC_pfRICH_eta_%i", eta_bin), Form("h_p_K_minus_MC_pfRICH_eta_%i", eta_bin), 200, 0, 20);
@@ -319,12 +335,25 @@ int kaonPurity(TString inname="./fileLists/flieList.list", TString outname="test
    
     //fill MC eta distributions
     
-    //vectors for MC -> RC matchig
-    //vector<int> K_minus_simID_vect;
-    //vector<float> K_minus_eta_MC; //MC eta of pion
-    
-    //vector<int> K_plus_simID_vect;
-    //vector<float> K_plus_eta_MC; //MC eta of pion
+    //for leading K+/- (in pfRICH acceptance)
+  	TVector3 lead_K_minus_mom_MC(0,0,0);
+  	int mc_lead_K_minus_index = -1;
+  	double maxP_lead_K_minus_MC = -99.;
+  	int eta_bin_lead_K_minus_MC = -1;
+  	
+  	TVector3 lead_K_minus_mom_MC_pfRICH(0,0,0);
+  	int mc_lead_K_minus_index_pfRICH = -1;
+  	double maxP_lead_K_minus_pfRICH = -99.;
+  	
+  	
+  	TVector3 lead_K_plus_mom_MC(0,0,0);
+  	int mc_lead_K_plus_index = -1;
+  	double maxP_lead_K_plus_MC = -99.;
+  	int eta_bin_lead_K_plus_MC = -1;
+  	
+  	TVector3 lead_K_plus_mom_MC_pfRICH(0,0,0);
+  	int mc_lead_K_plus_index_pfRICH = -1;
+  	double maxP_lead_K_plus_MC_pfRICH = -99.;
 
     //loop ove MC particles to fill distributions of produced particles
     for(int imc=0; imc < mc_px_array.GetSize(); imc++)
@@ -334,6 +363,7 @@ int kaonPurity(TString inname="./fileLists/flieList.list", TString outname="test
   	  if( mc_generatorStatus_array[imc] != 1 ) continue;
 
   		TVector3 mc_mom(mc_px_array[imc], mc_py_array[imc], mc_pz_array[imc]);
+  		 		
   		
       //only par in pfRICH acceptance
   		if(mc_mom.Eta() < -3.8 && mc_mom.Eta() > -1.5) continue;
@@ -350,6 +380,30 @@ int kaonPurity(TString inname="./fileLists/flieList.list", TString outname="test
         }
 
       }
+      //_________________________________________________________________________
+      
+      if(mc_pdg_array[imc] == -321 && mc_mom.Mag() > maxP_lead_K_minus_MC)
+  		{
+  		  lead_K_minus_mom_MC.SetXYZ(mc_px_array[imc], mc_py_array[imc], mc_pz_array[imc]);
+  		  
+  		  mc_lead_K_minus_index = imc;
+  		  
+  		  eta_bin_lead_K_minus_MC = eta_bin;
+  		  
+  		  maxP_lead_K_minus_MC = mc_mom.Mag();  		  
+  		}
+  		
+  		if(mc_pdg_array[imc] == 321 && mc_mom.Mag() > maxP_lead_K_plus_MC)
+  		{
+  		  lead_K_plus_mom_MC.SetXYZ(mc_px_array[imc], mc_py_array[imc], mc_pz_array[imc]);
+  		  
+  		  mc_lead_K_plus_index = imc;
+  		  
+  		  eta_bin_lead_K_plus_MC = eta_bin;
+  		  
+  		  maxP_lead_K_plus_MC = mc_mom.Mag();  		  
+  		}
+  		
       
       //_________________________________________________________________________
             
@@ -393,14 +447,15 @@ int kaonPurity(TString inname="./fileLists/flieList.list", TString outname="test
       //cout<<"p start"<<endl;
       
       if( eta_bin != -1)
-      {
+      {    
+        
         //pure MC
         //K-
         if(mc_pdg_array[imc] == -321) 
         {
           h_p_K_minus_MC[eta_bin]->Fill(mc_mom.Mag());                 
           h_p_K_minus_MC[nEtaBins]->Fill(mc_mom.Mag()); //baseline in pfRICH eta acceptance
-          
+                   
           //K_minus_simID_vect.push_back(imc);
           //K_minus_eta_MC.push_back(mc_mom.Eta());
                  
@@ -537,6 +592,25 @@ int kaonPurity(TString inname="./fileLists/flieList.list", TString outname="test
       }   
 
   	}//end second MC particle loop
+  	
+  	
+  	//fill leading K+- histos
+  	if(Q2_bin != -1 && y_bin != -1)
+  	{
+  	  h_eta_K_minus_lead_MC[Q2_bin][y_bin]->Fill(lead_K_minus_mom_MC.Eta());
+  	  h_eta_K_plus_lead_MC[Q2_bin][y_bin]->Fill(lead_K_plus_mom_MC.Eta());  	
+  	}
+  	
+  	if(eta_bin_lead_K_minus_MC != -1)
+  	{
+  	  h_p_K_minus_lead_MC[eta_bin_lead_K_minus_MC]->Fill(lead_K_minus_mom_MC.Mag());  	
+  	}
+  	
+  	if(eta_bin_lead_K_plus_MC != -1)
+  	{
+  	  h_p_K_plus_lead_MC[eta_bin_lead_K_plus_MC]->Fill(lead_K_plus_mom_MC.Mag());  	
+  	}
+  	
   	//___________________________________________________________________________________________________________________________________________________________
 
   	
