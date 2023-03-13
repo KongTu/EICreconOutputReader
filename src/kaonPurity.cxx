@@ -39,7 +39,7 @@ int kaonPurity(TString inname="./fileLists/flieList.list", TString outname="test
   TRandom3 *myRandom = new TRandom3();
   
   
-  //pfRICH eta acceptance mc_mom.Eta() > -3.8 && mc_mom.Eta() < -1.5
+  //pfRICH eta acceptance mc_4mom.Eta() > -3.8 && mc_4mom.Eta() < -1.5
   const int nEtaBins = 4;
   float const eta_bins[nEtaBins+1] = { -3.8, -3, -2.5, -2, -1.5};
 
@@ -96,67 +96,90 @@ int kaonPurity(TString inname="./fileLists/flieList.list", TString outname="test
   TString output_name_dir = outname;
 	TFile* output = new TFile("output/"+output_name_dir+"-output_K.root","RECREATE");
 
+  TH1F* h_hadron_zh = new TH1F("h_hadron_zh", "h_hadron_zh", 100, 0, 1);
+
   //MC histograms
   //p bins + p integrated
-  //TH1F *h_eta_K_plus_lead_MC[nMomBins+1][nQ2bins][nyInelParBins];
-  TH1F *h_eta_K_minus_lead_MC[nMomBins+1][nQ2bins][nyInelParBins];
+  //TH1F *h_eta_K_plus_lead_MC[nQ2bins][nyInelParBins];
+  TH1F *h_eta_K_minus_lead_MC[nQ2bins][nyInelParBins];
   
-  //TH1F *h_p_K_plus_lead_MC_Q2_y[nMomBins+1][nQ2bins][nyInelParBins];
-  TH1F *h_p_K_minus_lead_MC_Q2_y[nMomBins+1][nQ2bins][nyInelParBins];
+  //TH1F *h_p_K_plus_lead_MC_Q2_y[nQ2bins][nyInelParBins];
+  TH1F *h_p_K_minus_lead_MC_Q2_y[nQ2bins][nyInelParBins];
+  
+  TH1F *h_p_pi_minus_lead_MC_Q2_y[nQ2bins][nyInelParBins];
+  TH1F *h_p_p_minus_lead_MC_Q2_y[nQ2bins][nyInelParBins];
+  
+  TH1F *h_p_K_as_K_minus_lead_MC_Q2_y_pfRICH[nQ2bins][nyInelParBins];
+  TH1F *h_p_pi_as_K_minus_lead_MC_Q2_y_pfRICH[nQ2bins][nyInelParBins];
+  TH1F *h_p_p_as_K_minus_lead_MC_Q2_y_pfRICH[nQ2bins][nyInelParBins];
+  
+  TH1F *h_p_K_minus_lead_MC_Q2_y_pfRICH[nQ2bins][nyInelParBins];
  
   
   //MC -> RC histograms   
-  //TH1F *h_eta_K_plus_lead_MC_RC_pfRICH[nMomBins+1][nQ2bins][nyInelParBins];
-  TH1F *h_eta_K_minus_lead_MC_RC_pfRICH[nMomBins+1][nQ2bins][nyInelParBins];
+  //TH1F *h_eta_K_plus_lead_MC_RC_pfRICH[nQ2bins][nyInelParBins];
+  //TH1F *h_eta_K_minus_lead_MC_RC_pfRICH[nQ2bins][nyInelParBins];
     
-  //TH1F *h_p_K_plus_lead_MC_RC_Q2_y_pfRICH[nMomBins+1][nQ2bins][nyInelParBins];
-  TH1F *h_p_K_minus_lead_MC_RC_Q2_y_pfRICH[nMomBins+1][nQ2bins][nyInelParBins];
+  //TH1F *h_p_K_plus_lead_MC_RC_Q2_y_pfRICH[nQ2bins][nyInelParBins];
+  //TH1F *h_p_K_minus_lead_MC_RC_Q2_y_pfRICH[nQ2bins][nyInelParBins];
   
   //____________________________________________________________
 
   //K- 
-  TH1F *h_K_minus_lead_purity_pfRICH_MC_RC[nMomBins+1][nQ2bins][nyInelParBins];
+  TH1F *h_K_minus_lead_purity_pfRICH_MC_tot[nQ2bins][nyInelParBins];
   
+  
+  //TH1F *h_K_minus_lead_purity_pfRICH_MC_RC[nQ2bins][nyInelParBins];
   
 /*  
   //K+
-  TH1F *h_K_plus_lead_purity_pfRICH_MC_RC[nMomBins+1][nQ2bins][nyInelParBins];  
-
+  TH1F *h_K_plus_lead_purity_pfRICH_MC_RC[nQ2bins][nyInelParBins]; 
 */
 
-  for(unsigned int pBin = 0; pBin < nMomBins+1; pBin++)
-  {
-    for(unsigned int Q2bin = 0; Q2bin < nQ2bins; Q2bin++)
-    {
-      for(unsigned int y_bin = 0; y_bin < nyInelParBins; y_bin++)
-      {
-        //K eta histograms
-        //MC
-        //h_eta_K_plus_lead_MC[pBin][Q2bin][y_bin] = new TH1F(Form("h_eta_K_plus_lead_MC_p_%i_Q2_%i_y_%i" , pBin, Q2bin, y_bin), Form("h_eta_K_plus_lead_MC_p_%i_Q2_%i_y_%i" , pBin, Q2bin, y_bin), 100, -4, 0);       
-        h_eta_K_minus_lead_MC[pBin][Q2bin][y_bin] = new TH1F(Form("h_eta_K_minus_lead_MC_p_%i_Q2_%i_y_%i" , pBin, Q2bin, y_bin), Form("h_eta_K_minus_lead_MC_p_%i_Q2_%i_y_%i" , pBin, Q2bin, y_bin), 100, -4, 0);
-              
-        //h_p_K_plus_lead_MC_Q2_y[pBin][Q2bin][y_bin] = new TH1F(Form("h_p_K_plus_lead_MC_p_%i_Q2_%i_y_%i" , pBin, Q2bin, y_bin), Form("h_p_K_plus_lead_MC_p_%i_Q2_%i_y_%i" , pBin, Q2bin, y_bin), 200, 0, 20);
-        h_p_K_minus_lead_MC_Q2_y[pBin][Q2bin][y_bin] = new TH1F(Form("h_p_K_minus_lead_MC_p_%i_Q2_%i_y_%i" , pBin, Q2bin, y_bin), Form("h_p_K_minus_lead_MC_p_%i_Q2_%i_y_%i" , pBin, Q2bin, y_bin), 200, 0, 20);
-             
-        
-        //MC->RC
-        //h_eta_K_plus_lead_MC_RC_pfRICH[pBin][Q2bin][y_bin] = new TH1F(Form("h_eta_K_plus_lead_MC_RC_pfRICH_p_%i_Q2_%i_y_%i" , pBin, Q2bin, y_bin), Form("h_eta_K_plus_lead_MC_RC_pfRICH_p_%i_Q2_%i_y_%i" , pBin, Q2bin, y_bin), 100, -4, 0);
-        h_eta_K_minus_lead_MC_RC_pfRICH[pBin][Q2bin][y_bin] = new TH1F(Form("h_eta_K_minus_lead_MC_RC_pfRICH_p_%i_Q2_%i_y_%i" , pBin, Q2bin, y_bin), Form("h_eta_K_minus_lead_MC_RC_pfRICH_p_%i_Q2_%i_y_%i" , pBin, Q2bin, y_bin), 100, -4, 0);
-        
-          
-        //h_p_K_plus_lead_MC_RC_Q2_y_pfRICH[pBin][Q2bin][y_bin] = new TH1F(Form("h_p_K_plus_lead_MC_RC_pfRICH_p_%i_Q2_%i_y_%i" , pBin, Q2bin, y_bin), Form("h_p_K_plus_lead_MC_RC_pfRICH_p_%i_Q2_%i_y_%i" , pBin, Q2bin, y_bin), 200, 0, 20);    
-        h_p_K_minus_lead_MC_RC_Q2_y_pfRICH[pBin][Q2bin][y_bin] = new TH1F(Form("h_p_K_minus_lead_MC_RC_pfRICH_p_%i_Q2_%i_y_%i" , pBin, Q2bin, y_bin), Form("h_p_K_minus_lead_MC_RC_pfRICH_p_%i_Q2_%i_y_%i" , pBin, Q2bin, y_bin), 200, 0, 20);
-    
 
-        //K eta purity histograms      
-        h_K_minus_lead_purity_pfRICH_MC_RC[pBin][Q2bin][y_bin] = new TH1F(Form("h_K_minus_lead_purity_pfRICH_MC_RC_p_%i_Q2_%i_y_%i" , pBin, Q2bin, y_bin), Form("h_K_minus_lead_purity_pfRICH_MC_RC_p_%i_Q2_%i_y_%i" , pBin, Q2bin, y_bin), 2, 0, 2);
-              
-  /*
-        h_K_plus_lead_purity_pfRICH_MC_RC[pBin][Q2bin][y_bin] = new TH1F(Form("h_K_plus_lead_purity_pfRICH_MC_RC_p_%i_Q2_%i_y_%i" , pBin, Q2bin, y_bin), Form("h_K_plus_lead_purity_pfRICH_MC_RC_p_%i_Q2_%i_y_%i" , pBin, Q2bin, y_bin), 2, 0, 2);      
-  */
-      }
+  for(unsigned int Q2bin = 0; Q2bin < nQ2bins; Q2bin++)
+  {
+    for(unsigned int y_bin = 0; y_bin < nyInelParBins; y_bin++)
+    {
+      //K eta histograms
+      //MC
+      //h_eta_K_plus_lead_MC[Q2bin][y_bin] = new TH1F(Form("h_eta_K_plus_lead_MC_Q2_%i_y_%i" , Q2bin, y_bin), Form("h_eta_K_plus_lead_MC_Q2_%i_y_%i" , Q2bin, y_bin), 100, -4, 0);       
+      h_eta_K_minus_lead_MC[Q2bin][y_bin] = new TH1F(Form("h_eta_K_minus_lead_MC_Q2_%i_y_%i" , Q2bin, y_bin), Form("h_eta_K_minus_lead_MC_Q2_%i_y_%i" , Q2bin, y_bin), 100, -4, 0);
+            
+      //h_p_K_plus_lead_MC_Q2_y[Q2bin][y_bin] = new TH1F(Form("h_p_K_plus_lead_MC_Q2_%i_y_%i" , Q2bin, y_bin), Form("h_p_K_plus_lead_MC_Q2_%i_y_%i" , Q2bin, y_bin), 100, 0, 20);
+      h_p_K_minus_lead_MC_Q2_y[Q2bin][y_bin] = new TH1F(Form("h_p_K_minus_lead_MC_Q2_%i_y_%i" , Q2bin, y_bin), Form("h_p_K_minus_lead_MC_Q2_%i_y_%i" , Q2bin, y_bin), 100, 0, 20);
+      
+      h_p_pi_minus_lead_MC_Q2_y[Q2bin][y_bin] = new TH1F(Form("h_p_pi_minus_lead_MC_Q2_%i_y_%i" , Q2bin, y_bin), Form("h_p_pi_minus_lead_MC_Q2_%i_y_%i" , Q2bin, y_bin), 100, 0, 20);
+      h_p_p_minus_lead_MC_Q2_y[Q2bin][y_bin] = new TH1F(Form("h_p_p_minus_lead_MC_Q2_%i_y_%i" , Q2bin, y_bin), Form("h_p_p_minus_lead_MC_Q2_%i_y_%i" , Q2bin, y_bin), 100, 0, 20);
+      
+      h_p_K_as_K_minus_lead_MC_Q2_y_pfRICH[Q2bin][y_bin] = new TH1F(Form("h_p_K_as_K_minus_lead_MC_pfRICH_Q2_%i_y_%i" , Q2bin, y_bin), Form("h_p_K_as_K_minus_lead_MC_pfRICH_Q2_%i_y_%i" , Q2bin, y_bin), 100, 0, 20);      
+      h_p_pi_as_K_minus_lead_MC_Q2_y_pfRICH[Q2bin][y_bin] = new TH1F(Form("h_p_pi_as_K_minus_lead_MC_pfRICH_Q2_%i_y_%i" , Q2bin, y_bin), Form("h_p_pi_as_K_minus_lead_MC_pfRICH_Q2_%i_y_%i" , Q2bin, y_bin), 100, 0, 20);
+      h_p_p_as_K_minus_lead_MC_Q2_y_pfRICH[Q2bin][y_bin] = new TH1F(Form("h_p_p_as_K_minus_lead_MC_pfRICH_Q2_%i_y_%i" , Q2bin, y_bin), Form("h_p_p_as_K_minus_lead_MC_pfRICH_Q2_%i_y_%i" , Q2bin, y_bin), 100, 0, 20);
+      
+      h_p_K_minus_lead_MC_Q2_y_pfRICH[Q2bin][y_bin] = new TH1F(Form("h_p_K_minus_lead_MC_pfRICH_Q2_%i_y_%i" , Q2bin, y_bin), Form("h_p_K_minus_lead_MC_pfRICH_Q2_%i_y_%i" , Q2bin, y_bin), 100, 0, 20);
+      
+      
+      h_K_minus_lead_purity_pfRICH_MC_tot[Q2bin][y_bin] = new TH1F(Form("h_K_minus_lead_purity_pfRICH_MC_tot_Q2_%i_y_%i" , Q2bin, y_bin), Form("h_K_minus_lead_purity_pfRICH_MC_tot_Q2_%i_y_%i" , Q2bin, y_bin), 2, 0, 2);
+           
+      
+      //MC->RC
+      //h_eta_K_plus_lead_MC_RC_pfRICH[Q2bin][y_bin] = new TH1F(Form("h_eta_K_plus_lead_MC_RC_pfRICH_Q2_%i_y_%i" , Q2bin, y_bin), Form("h_eta_K_plus_lead_MC_RC_pfRICH_Q2_%i_y_%i" , Q2bin, y_bin), 100, -4, 0);
+      //h_eta_K_minus_lead_MC_RC_pfRICH[Q2bin][y_bin] = new TH1F(Form("h_eta_K_minus_lead_MC_RC_pfRICH_Q2_%i_y_%i" , Q2bin, y_bin), Form("h_eta_K_minus_lead_MC_RC_pfRICH_Q2_%i_y_%i" , Q2bin, y_bin), 100, -4, 0);
+      
+        
+      //h_p_K_plus_lead_MC_RC_Q2_y_pfRICH[Q2bin][y_bin] = new TH1F(Form("h_p_K_plus_lead_MC_RC_pfRICH_Q2_%i_y_%i" , Q2bin, y_bin), Form("h_p_K_plus_lead_MC_RC_pfRICH_Q2_%i_y_%i" , Q2bin, y_bin), 100, 0, 20);    
+      //h_p_K_minus_lead_MC_RC_Q2_y_pfRICH[Q2bin][y_bin] = new TH1F(Form("h_p_K_minus_lead_MC_RC_pfRICH_Q2_%i_y_%i" , Q2bin, y_bin), Form("h_p_K_minus_lead_MC_RC_pfRICH_Q2_%i_y_%i" , Q2bin, y_bin), 100, 0, 20);
+  
+
+      //K eta purity histograms      
+      //h_K_minus_lead_purity_pfRICH_MC_RC[Q2bin][y_bin] = new TH1F(Form("h_K_minus_lead_purity_pfRICH_MC_RC_Q2_%i_y_%i" , Q2bin, y_bin), Form("h_K_minus_lead_purity_pfRICH_MC_RC_Q2_%i_y_%i" , Q2bin, y_bin), 2, 0, 2);
+            
+/*
+      h_K_plus_lead_purity_pfRICH_MC_RC[Q2bin][y_bin] = new TH1F(Form("h_K_plus_lead_purity_pfRICH_MC_RC_Q2_%i_y_%i" , Q2bin, y_bin), Form("h_K_plus_lead_purity_pfRICH_MC_RC_Q2_%i_y_%i" , Q2bin, y_bin), 2, 0, 2);      
+*/
     }
   }
+
   
   
 
@@ -192,7 +215,7 @@ int kaonPurity(TString inname="./fileLists/flieList.list", TString outname="test
   			mc_elect_index = imc;
   			scatMC.SetVectM(mctrk,mc_mass_array[imc]);
   		}
-   
+  		
   	} //end MC particles for loop
   	
   	//____________________________________________________________________________________________
@@ -238,10 +261,11 @@ int kaonPurity(TString inname="./fileLists/flieList.list", TString outname="test
     //fill MC eta distributions
     
     //for leading K+/- (in pfRICH acceptance)
-  	TVector3 lead_K_minus_mom_MC(0,0,0);
-  	//int mc_lead_K_minus_index = -1;
-  	double maxP_lead_K_minus_MC = -99.;
-  	int p_bin_lead_K_minus_MC = -1;
+  	//TVector3 lead_K_minus_mom_MC(0,0,0);
+  	//int mc_lead_K_PDG = -999;
+  	//double maxP_lead_K_minus_MC = -99.;
+  	//int p_bin_lead_K_minus_MC = -1;
+  	
   	
 
   	
@@ -259,11 +283,13 @@ int kaonPurity(TString inname="./fileLists/flieList.list", TString outname="test
 
   	  if( mc_generatorStatus_array[imc] != 1 ) continue;
 
-  		TVector3 mc_mom(mc_px_array[imc], mc_py_array[imc], mc_pz_array[imc]);
+  		TLorentzVector mc_4mom;
+  		
+  		mc_4mom.SetXYZM(mc_px_array[imc], mc_py_array[imc], mc_pz_array[imc], mc_mass_array[imc]);
   		 		
   		
       //only par in pfRICH acceptance
-  		if(mc_mom.Eta() < -3.8 && mc_mom.Eta() > -1.5) continue;
+  		//if(mc_4mom.Eta() < -3.8 && mc_4mom.Eta() > -1.5) continue;
 	
   		//determine momentum and eta bin of particles in event     
       
@@ -271,7 +297,7 @@ int kaonPurity(TString inname="./fileLists/flieList.list", TString outname="test
 
       for(int j = 0; j < nMomBins; j++) //loop over pT bins
       {
-        if(mc_mom.Mag() > mom_bins[j] && mc_mom.Mag() <= mom_bins[j+1])
+        if(mc_4mom.Vect().Mag() > mom_bins[j] && mc_4mom.Vect().Mag() <= mom_bins[j+1])
         {
           mom_bin = j;
         }
@@ -279,45 +305,191 @@ int kaonPurity(TString inname="./fileLists/flieList.list", TString outname="test
       }
       //_________________________________________________________________________
       
-      if(mc_pdg_array[imc] == -321 && mc_mom.Mag() > maxP_lead_K_minus_MC)
+      float z_h = get_z_h(e_energy, scatMC.Vect(), p_energy, mc_4mom);
+      
+      h_hadron_zh->Fill(z_h);
+      
+      //if(/*mc_pdg_array[imc] == -321 &&*/ z_h > 0.2 && z_h < 1.0)
+      if(/*mc_pdg_array[imc] == -321 &&*/ z_h > 0.0 && z_h < 1.0)
   		{
+  		  TVector3 lead_K_minus_mom_MC(0,0,0);
   		  lead_K_minus_mom_MC.SetXYZ(mc_px_array[imc], mc_py_array[imc], mc_pz_array[imc]);
   		  
   		  //mc_lead_K_minus_index = imc;
   		  
-  		  p_bin_lead_K_minus_MC = mom_bin;
+  		  //p_bin_lead_K_minus_MC = mom_bin;
   		  
-  		  maxP_lead_K_minus_MC = mc_mom.Mag();  		  
-  		}
+  		  //maxP_lead_K_minus_MC = mc_4mom.Mag(); 
+  		  
+  		  //mc_lead_K_PDG = mc_pdg_array[imc];
+  		  
+  		  
+  		  //get pfRICH matrix
+        double pfRICH_mtx[9];
 
+        int good_pfRICH_mtx = getPIDprob_pfRICH_mtx(mc_4mom.Vect(), pfRICH_mtx, 0);  //pi/K/p matrix    
+        
+        //generate random number for PID in pfRICH
+        double rndm_PID_RC_loop = myRandom->Rndm();
+        
+        
+        int is_pfRICH_kaon_MC = 0;
+      	int is_pfRICH_kaon_MC_pi = 0; //mis-identified pi as K
+      	int is_pfRICH_kaon_MC_p = 0; //mis-identified p as K
+        
+        
+   
+        if(good_pfRICH_mtx == 1)
+        {
+          //find matchig MC track
+          //pi
+          if( fabs(mc_pdg_array[imc]) == 211 )
+          {          
+            //pi mis-identified as K          
+            if( pfRICH_mtx[1] > rndm_PID_RC_loop) is_pfRICH_kaon_MC_pi = 1;      
+
+          }
+
+          //K
+          if( fabs(mc_pdg_array[imc]) == 321 )
+          {          
+            //K identified as K          
+            if( pfRICH_mtx[4] > rndm_PID_RC_loop) is_pfRICH_kaon_MC = 1;
+
+          }
+
+          //p
+          if( fabs(mc_pdg_array[imc]) == 2212 )
+          {          
+            //p identified as K          
+            if( pfRICH_mtx[7] > rndm_PID_RC_loop) is_pfRICH_kaon_MC_p = 1;
+      
+          }
+                  
+        }
+        
+        
+        
+        if(Q2_bin != -1 && y_bin != -1 )
+      	{
+      	  //true MC leading K- histos
+      	  if( mc_pdg_array[imc] == -321)
+      	  {
+      	    
+        	  h_eta_K_minus_lead_MC[Q2_bin][y_bin]->Fill(lead_K_minus_mom_MC.Eta()); //p integrated
+        	  
+        	  //h_eta_K_plus_lead_MC[Q2_bin][y_bin]->Fill(lead_K_plus_mom_MC.Eta()); 	  
+        	  
+        	  
+        	  //fill p distributions in pfRICH eta acceptance
+        	  if( lead_K_minus_mom_MC.Eta() > -3.8 && lead_K_minus_mom_MC.Eta() < -1.5  )
+        	  {
+        	    
+        	    h_p_K_minus_lead_MC_Q2_y[Q2_bin][y_bin]->Fill(lead_K_minus_mom_MC.Mag()); //p integrated
+        	  
+        	  }  	  
+      	  
+      	  }
+      	  
+      	  if( mc_pdg_array[imc] == -211)
+      	  {
+        	  //fill p distributions in pfRICH eta acceptance
+        	  if( lead_K_minus_mom_MC.Eta() > -3.8 && lead_K_minus_mom_MC.Eta() < -1.5  )
+        	  {
+        	    
+        	    h_p_pi_minus_lead_MC_Q2_y[Q2_bin][y_bin]->Fill(lead_K_minus_mom_MC.Mag()); //p integrated
+        	  
+        	  }  	  
+      	  
+      	  }
+      	  
+      	  if( mc_pdg_array[imc] == -2212)
+      	  {
+      	    
+        	  
+        	  //fill p distributions in pfRICH eta acceptance
+        	  if( lead_K_minus_mom_MC.Eta() > -3.8 && lead_K_minus_mom_MC.Eta() < -1.5  )
+        	  {
+        	    
+        	    h_p_p_minus_lead_MC_Q2_y[Q2_bin][y_bin]->Fill(lead_K_minus_mom_MC.Mag()); //p integrated
+        	  
+        	  }  	  
+      	  
+      	  }
+      	  
+      	  //pi identified as K
+      	  if( is_pfRICH_kaon_MC_pi )
+      	  {
+      	    if( lead_K_minus_mom_MC.Eta() > -3.8 && lead_K_minus_mom_MC.Eta() < -1.5  )
+        	  {
+        	    //negative particle
+        	    if(mc_pdg_array[imc] < 0) h_p_pi_as_K_minus_lead_MC_Q2_y_pfRICH[Q2_bin][y_bin]->Fill(lead_K_minus_mom_MC.Mag()); //p integrated
+        	  
+        	  }     	    
+      	  }
+      	  
+      	  if( is_pfRICH_kaon_MC )
+      	  {
+      	    if( lead_K_minus_mom_MC.Eta() > -3.8 && lead_K_minus_mom_MC.Eta() < -1.5  )
+        	  {
+        	    
+        	    //negative particle
+        	    if(mc_pdg_array[imc] < 0) h_p_K_as_K_minus_lead_MC_Q2_y_pfRICH[Q2_bin][y_bin]->Fill(lead_K_minus_mom_MC.Mag()); //p integrated
+        	  
+        	  }
+      	  }
+      	  
+      	  if(is_pfRICH_kaon_MC_p)
+      	  {
+      	    if( lead_K_minus_mom_MC.Eta() > -3.8 && lead_K_minus_mom_MC.Eta() < -1.5  )
+        	  {
+        	    
+        	    //negative particle
+        	    if(mc_pdg_array[imc] < 0) h_p_p_as_K_minus_lead_MC_Q2_y_pfRICH[Q2_bin][y_bin]->Fill(lead_K_minus_mom_MC.Mag()); //p integrated
+        	  
+        	  }
+      	  }
+      	  
+      	  //all accepted hadrons as K
+      	  if( is_pfRICH_kaon_MC_pi || is_pfRICH_kaon_MC || is_pfRICH_kaon_MC_p )
+      	  {
+      	  
+      	    if( lead_K_minus_mom_MC.Eta() > -3.8 && lead_K_minus_mom_MC.Eta() < -1.5  )
+        	  {
+        	    
+        	    //negative particle
+        	    if(mc_pdg_array[imc] < 0) h_p_K_minus_lead_MC_Q2_y_pfRICH[Q2_bin][y_bin]->Fill(lead_K_minus_mom_MC.Mag()); //p integrated
+        	  
+        	  }
+        	  
+        	  if(mc_pdg_array[imc] == -321)
+      	    {  	      
+      	      h_K_minus_lead_purity_pfRICH_MC_tot[Q2_bin][y_bin]->Fill(1.5); //p integrated
+      	    }
+      	    else if( mc_pdg_array[imc] < 0 )
+      	    {
+      	      
+      	      h_K_minus_lead_purity_pfRICH_MC_tot[Q2_bin][y_bin]->Fill(0.5); //p integrated
+      	    }
+      	  
+      	  
+      	  }  	  
+      	}     
+        
+  		  
+  		}//end if z_h
 
   	}//end second MC particle loop
   	//cout<<"MC loop end"<<endl;
   	
-  	//fill leading K+- histos
-  	if(Q2_bin != -1 && y_bin != -1)
-  	{
-  	  if(p_bin_lead_K_minus_MC != -1) h_eta_K_minus_lead_MC[p_bin_lead_K_minus_MC][Q2_bin][y_bin]->Fill(lead_K_minus_mom_MC.Eta());
-  	  h_eta_K_minus_lead_MC[nMomBins][Q2_bin][y_bin]->Fill(lead_K_minus_mom_MC.Eta()); //p integrated
-  	  
-  	  //h_eta_K_plus_lead_MC[Q2_bin][y_bin]->Fill(lead_K_plus_mom_MC.Eta()); 	  
-  	  
-  	  
-  	  //fill p distributions in pfRICH eta acceptance
-  	  if( lead_K_minus_mom_MC.Eta() > -3.8 && lead_K_minus_mom_MC.Eta() < -1.5  )
-  	  {
-  	    if(p_bin_lead_K_minus_MC != -1) h_p_K_minus_lead_MC_Q2_y[p_bin_lead_K_minus_MC][Q2_bin][y_bin]->Fill(lead_K_minus_mom_MC.Mag());
-  	    h_p_K_minus_lead_MC_Q2_y[nMomBins][Q2_bin][y_bin]->Fill(lead_K_minus_mom_MC.Mag()); //p integrated
-  	  
-  	  }
-  	    	  
-  	}
+  	
+  	
   	
   	
 	
   	//___________________________________________________________________________________________________________________________________________________________
 
-
+/*
     //MC -> RC matching
   	//find corresponding recID for scattered e
   	int scat_e_recID = -1;
@@ -376,6 +548,8 @@ int kaonPurity(TString inname="./fileLists/flieList.list", TString outname="test
     }
 
     //__________________________________________________________________________________
+
+
     
     //PID using pfRICH and MC -> RC tracks
     
@@ -388,13 +562,12 @@ int kaonPurity(TString inname="./fileLists/flieList.list", TString outname="test
   	int mom_bin_lead_K_minus_RC_pfRICH = -1;
   	int lead_PDGid_muinus_RC = -99;
   	
-/*  	
+  	
  	
   	TVector3 lead_K_plus_mom_RC_pfRICH(0,0,0);
   	double maxP_lead_K_plus_RC_pfRICH = -99.;
   	int eta_bin_lead_K_plus_RC_pfRICH = -1;
-  	int lead_PDGid_plus_RC = -99;
-*/
+
 
     for(unsigned int iChTrack = 0; iChTrack < reco_px_array.GetSize(); iChTrack++)
     {
@@ -447,7 +620,8 @@ int kaonPurity(TString inname="./fileLists/flieList.list", TString outname="test
         if( fabs(reco_PDG[iChTrack]) == 211 )
         {          
           //pi mis-identified as K          
-          if( pfRICH_mtx[1] > rndm_PID_RC_loop) is_pfRICH_kaon_RC = 1;
+          if( pfRICH_mtx[1] > rndm_PID_RC_loop) is_pfRICH_kaon_RC = 1;      
+
         }
 
         //K
@@ -455,14 +629,17 @@ int kaonPurity(TString inname="./fileLists/flieList.list", TString outname="test
         {          
           //K identified as K          
           if( pfRICH_mtx[4] > rndm_PID_RC_loop) is_pfRICH_kaon_RC = 1;
+
         }
 
         //p
         if( fabs(reco_PDG[iChTrack]) == 2212 )
         {          
-          //K identified as K          
-          if( pfRICH_mtx[7] > rndm_PID_RC_loop) is_pfRICH_kaon_RC = 1;          
+          //p identified as K          
+          if( pfRICH_mtx[7] > rndm_PID_RC_loop) is_pfRICH_kaon_RC = 1;
+    
         }
+                
       }
       //_________________________________________________________________________
       
@@ -489,7 +666,7 @@ int kaonPurity(TString inname="./fileLists/flieList.list", TString outname="test
       		  		  
       		}     
         }
-/*                    
+                  
         //K+ identified using pfRICH (with mis-PID)
         if( reco_PDG[iChTrack] > 0 )
         {
@@ -510,7 +687,7 @@ int kaonPurity(TString inname="./fileLists/flieList.list", TString outname="test
       		}  
                   
         }
-*/         
+        
       } //end if PID and acceptance
         
           
@@ -549,7 +726,7 @@ int kaonPurity(TString inname="./fileLists/flieList.list", TString outname="test
   	  
   	  }
   	  
-/*  	  
+ 	  
   	  if(lead_K_plus_mom_RC_pfRICH.Mag() > 0)
   	  {
   	    h_eta_K_plus_lead_MC_RC_pfRICH[Q2_bin_RC][y_bin_RC]->Fill(lead_K_plus_mom_RC_pfRICH.Eta());
@@ -564,8 +741,10 @@ int kaonPurity(TString inname="./fileLists/flieList.list", TString outname="test
   	    }
   	  
   	  }
-*/  	  
+ 	  
   	}
+  	
+*/  	
 
   }//end while over TTree entries
 

@@ -46,10 +46,11 @@
 #define MASS_AU197    183.45406466643374
 
 //pfRICH info input files
-auto ff = new TFile("./pfRICH-configs/pfRICH-default-Nov8.root");
+//auto ff = new TFile("./pfRICH-configs/pfRICH-default-Nov8.root");
+auto ff = new TFile("./pfRICH-configs/pfRICH_piKP_March122023.root");
 auto dconfig = dynamic_cast<DelphesConfig*>(ff->Get("DelphesConfigRICH"));
 
-auto ff_e_pi = new TFile("./pfRICH-configs/pfRICH_e_pi.root");
+auto ff_e_pi = new TFile("./pfRICH-configs/e_pi_pid_20230310.root");
 auto dconfig_e_pi = dynamic_cast<DelphesConfig*>(ff_e_pi->Get("DelphesConfigRICH"));
 
 
@@ -164,6 +165,23 @@ auto getQ2elec(float electronEnergyInit, const TVector3 elec)
 	double Q2elec = -(ein-scat).Mag2();
 	
 	return Q2elec;
+}
+//___________________________________________________________________________
+
+auto get_z_h(float electronEnergyInit, TVector3 elec, float pEnergyInit, TLorentzVector hadron_4mom)
+{
+	TLorentzVector ein(0,0,-electronEnergyInit, electronEnergyInit);//need to read from file;
+	
+	TLorentzVector scat;
+	scat.SetPtEtaPhiM(elec.Pt(),elec.Eta(),elec.Phi(),MASS_ELECTRON);
+	
+	TLorentzVector q_electron = (ein-scat);
+	
+	TLorentzVector p_4mom(0,0,sqrt(pEnergyInit*pEnergyInit-MASS_PROTON*MASS_PROTON),pEnergyInit);
+	
+	double z_h = (p_4mom*hadron_4mom)/(p_4mom*q_electron);
+	
+	return z_h;
 }
 //___________________________________________________________________________
 
