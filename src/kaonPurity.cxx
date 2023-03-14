@@ -33,8 +33,10 @@ int kaonPurity(TString inname="./fileLists/flieList.list", TString outname="test
   const int nyInelParBins = 4;
   float const y_bins[nyInelParBins+1] = { 0.01,0.05,0.1,0.5,0.95 };
 
-  const int nMomBins = 6;
-  float const mom_bins[nMomBins+1] = { 1.,2.,4.,6.,8.,10.,12. };
+  const int nMomBins = 24;
+  float const mom_bins[nMomBins+1] = {0.,1.0,2.0,2.25,2.5,2.75,3.0,3.25,3.5,3.75,4.0,4.25,4.5,4.75,5.0,5.25,5.5,5.75,6,6.5,7,7.5,8,10,12};
+  
+  
   
   TRandom3 *myRandom = new TRandom3();
   
@@ -44,15 +46,7 @@ int kaonPurity(TString inname="./fileLists/flieList.list", TString outname="test
   float const eta_bins[nEtaBins+1] = { -3.8, -3, -2.5, -2, -1.5};
 
   //____________________________________________________
-  //pi eCAL info
-  //values from Dimitry Kalinkin
 
-  double array_mom_bins[8] = {0.1, 0.2, 0.5, 1., 2., 5., 10., 20.};
-  double array_pi_false_rate_85[8] = {0.6332832672698294, 0.7495818158985306, 0.00930384575910461, 0.001692827694491846, 0.0001898238241173789, 0.00020018016214593134, 0.000536412900269677, 0.0006430092230696459};
-  double array_pi_false_rate_95[8] = {0.8838860654090215, 0.9228366502089709, 0.02228665375203912, 0.0036237053948322794, 0.00048096291971113834, 0.0006523112180272588, 0.0022770026949322946, 0.0018829746368912276};
-
-
- //___________________________________________________
 
 
   //load files to TChain
@@ -321,8 +315,8 @@ int kaonPurity(TString inname="./fileLists/flieList.list", TString outname="test
       
       h_hadron_zh->Fill(z_h);
       
-      //if(/*mc_pdg_array[imc] == -321 &&*/ z_h > 0.2 && z_h < 1.0)
-      if(/*mc_pdg_array[imc] == -321 &&*/ z_h > 0.0 && z_h < 1.0)
+      if(/*mc_pdg_array[imc] == -321 &&*/ z_h > 0.2 && z_h < 1.0)
+      //if(/*mc_pdg_array[imc] == -321 &&*/ z_h > 0.0 && z_h < 1.0)
   		{
   		  TVector3 lead_K_minus_mom_MC(0,0,0);
   		  lead_K_minus_mom_MC.SetXYZ(mc_px_array[imc], mc_py_array[imc], mc_pz_array[imc]);

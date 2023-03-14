@@ -47,10 +47,11 @@
 
 //pfRICH info input files
 //auto ff = new TFile("./pfRICH-configs/pfRICH-default-Nov8.root");
-auto ff = new TFile("./pfRICH-configs/pfRICH_piKP_March122023.root");
+auto ff = new TFile("./pfRICH-configs/pfRICH_piKP_March132023.root");
 auto dconfig = dynamic_cast<DelphesConfig*>(ff->Get("DelphesConfigRICH"));
 
-auto ff_e_pi = new TFile("./pfRICH-configs/e_pi_pid_20230310.root");
+//auto ff_e_pi = new TFile("./pfRICH-configs/e_pi_with_smearing.root");
+auto ff_e_pi = new TFile("./pfRICH-configs/e_pi_without_smearing.root");
 auto dconfig_e_pi = dynamic_cast<DelphesConfig*>(ff_e_pi->Get("DelphesConfigRICH"));
 
 
