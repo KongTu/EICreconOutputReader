@@ -147,7 +147,7 @@ while (tree_reader.Next()) {
 	double y= pq/pbeam.Dot(ebeam);
 	
 	//MC level phase space cut
-	if(Q2<2.||Q2>10.) continue;
+	if(Q2<1.||Q2>10.) continue;
 	if(y<0.01||y>0.85) continue;
 
 	h_Q2_e->Fill(Q2);
@@ -208,7 +208,7 @@ while (tree_reader.Next()) {
 	xClus = xClus/maxHitEnergy;
 	yClus = yClus/maxHitEnergy;
 	double radius=sqrt(xClus*xClus+yClus*yClus);
-	if(radius<150. || radius>550. ) continue; //geometric acceptance cut
+	if( radius>550. ) continue; //geometric acceptance cut
 	//4.4% energy calibration.
 	double clusEnergy=1.044*maxHitEnergy; 
 
@@ -315,7 +315,7 @@ while (tree_reader.Next()) {
 	if( EoverP<0.8||EoverP>1.18 ) continue;		
 
 	//MC level phase space cut
-	if(Q2REC<2.||Q2REC>10.) continue;
+	if(Q2REC<1.||Q2REC>10.) continue;
 	if(yREC<0.01||yREC>0.85) continue;
 
 	//VM rec
