@@ -2,7 +2,7 @@
 
 Contact - Kong Tu (kongtu@bnl.gov)
 
-This is a branch for benchmark scripts to analyze EIC reconstructed data or MC. The input of this reader is the EICrecon Output, as the name suggested. I have two options: i) RDataFrame used previously in the physics benchmarks in ATHENA and ii) the TTree reader. Here, for simplicity, only show ii).
+This is a branch for benchmark scripts to analyze EIC reconstructed data or MC. The input of this reader is the EICrecon Output, as the name suggested. I have two options: i) RDataFrame used previously in the physics benchmarks in ATHENA and ii) the TTree reader. However, for simplicity, here only shows option ii).
 
 This repo will be actively developed and added with more examples as we progress, e.g., how to analyze a DIS physics event or an exclusive physics event. Hopefully, there will be more examples showing up under `src`. Contributions are welcomed. 
 
@@ -31,7 +31,9 @@ Install EICreconOutputReader
 
 Look into getInputFromS3-exclusive.sh to modify accordingly what to grab from S3:
 
-```./getInputFromS3-exclusive.sh``` (its grabing 1000 files on s3 in this example, give it a few mins)
+```./getInputFromS3-exclusive.sh``` (this is grabing 100 files on s3 for an example)
+
+Note that for official compaign simulation, the software simulation or validation team knows better where the generators are. Simply replace `input/rec-batch_5_official_\*.eicrecon.tree.edm4eic.root` to whatever the directory+name will be.
 
 Run with TTreeReader:
 
