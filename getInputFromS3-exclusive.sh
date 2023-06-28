@@ -15,7 +15,6 @@ done
 # for i in {100..999}
 # do
 #     mc cp --insecure S3/eictest/EPIC/RECO/22.11.3/epic_arches/EXCLUSIVE/DIFFRACTIVE_PHI_ABCONV/Sartre/Coherent/sartre_bnonsat_Au_phi_ab_eAu_1.0${i}.eicrecon.tree.edm4eic.root ./input/rec-batch_5_official_0${i}.eicrecon.tree.edm4eic.root
-
 # done
 
 echo "************************************************"
