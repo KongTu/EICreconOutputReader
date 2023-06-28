@@ -31,7 +31,7 @@ Install EICreconOutputReader
 
 Look into getInputFromS3-exclusive.sh to modify accordingly what to grab from S3:
 
-```./getInputFromS3-exclusive.sh``` (this is grabing 100 files on s3 for an example)
+```./getInputFromS3-exclusive.sh``` (this is grabing a few files on s3 for an example)
 
 Note that for official compaign simulation, the software simulation or validation team knows better where the generators are. Simply replace `input/rec-batch_5_official_\*.eicrecon.tree.edm4eic.root` to whatever the directory+name will be.
 
