@@ -1,8 +1,8 @@
 #include "RiceStyle.h"
 using namespace std;
-void plot_diffractive_vm_physics_benchmark(TString filename="phi"){
+void plot_diffractive_vm_physics_benchmark(TString filename="./output/eicrecon-sartre_coherent_phi_output.root"){
 	
-	TFile* file = new TFile("../output/eicrecon-sartre_coherent_"+filename+"_output.root");
+	TFile* file = new TFile(filename);
 	TString vm_label="#phi";
 	TString daug_label="K^{+}K^{-}";
 	if(filename=="jpsi") {vm_label="J/#psi";daug_label="e^{+}e^{-}";}
@@ -109,6 +109,6 @@ void plot_diffractive_vm_physics_benchmark(TString filename="phi"){
 
 	w7->Draw("same");
 
-	c1->Print("../figures/benchmark-phi-dsigmadt.pdf");
+	c1->Print("./figures/benchmark-phi-dsigmadt.pdf");
 
 }

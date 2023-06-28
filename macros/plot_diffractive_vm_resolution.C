@@ -1,8 +1,8 @@
 #include "RiceStyle.h"
 using namespace std;
-void plot_diffractive_vm_resolution(TString filename="phi", int num=0){
+void plot_diffractive_vm_resolution(TString filename="./output/eicrecon-sartre_coherent_phi_output.root", int num=0){
 
-	TFile* file = new TFile("../output/eicrecon-sartre_coherent_"+filename+"_output.root");	TString vm_label="#phi";
+	TFile* file = new TFile(filename);	TString vm_label="#phi";
 	TString daug_label="K^{+}K^{-}";
 	if(filename=="jpsi") {vm_label="J/#psi";daug_label="e^{+}e^{-}";}
 	TH2D* h_t_res = (TH2D*) file->Get("h_t_res");
@@ -98,7 +98,7 @@ void plot_diffractive_vm_resolution(TString filename="phi", int num=0){
 
 	h_res->Draw("colzsame");
 
-	c2->Print("../figures/benchmark-phi-t-resolution.pdf");
+	c2->Print("./figures/benchmark-phi-t-resolution.pdf");
 
 	
 }

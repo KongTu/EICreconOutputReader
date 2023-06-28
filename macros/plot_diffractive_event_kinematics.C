@@ -1,8 +1,8 @@
 #include "RiceStyle.h"
 using namespace std;
-void plot_diffractive_event_kinematics(TString filename="phi", int doLog_=1){
+void plot_diffractive_event_kinematics(TString filename="./output/eicrecon-sartre_coherent_phi_output.root", int doLog_=1){
 
-	TFile* file = new TFile("../output/eicrecon-sartre_coherent_"+filename+"_output.root");
+	TFile* file = new TFile(filename);
 	//DIS kine
 	TH1D* h_Q2_e = (TH1D*) file->Get("h_Q2_e");
     TH1D* h_y_e = (TH1D*) file->Get("h_y_e");  
@@ -156,7 +156,7 @@ void plot_diffractive_event_kinematics(TString filename="phi", int doLog_=1){
 	h_emHits_position_REC->GetYaxis()->SetTitle("y(mm)");
     h_emHits_position_REC->Draw("colzsame");
 
-	c1->Print("../figures/benchmark-phi-DIS-kinematics.pdf");
+	c1->Print("./figures/benchmark-phi-DIS-kinematics.pdf");
 
 
 }

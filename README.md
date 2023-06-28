@@ -37,4 +37,4 @@ Run with TTreeReader:
 
 ```./runDiffractiveVMReader.sh input/rec-batch_5_official_\*.eicrecon.tree.edm4eic.root output/eicrecon-sartre_coherent_phi```
 
-with input files in `input` and output results in `output`
+with input files in `input`, output results in `output`, and benchmark figures in `figures`.
