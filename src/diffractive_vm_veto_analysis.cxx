@@ -61,7 +61,7 @@ TFile* output = new TFile(output_name_dir,"RECREATE");
 TH1D* h_Q2_e = new TH1D("h_Q2_e",";Q^{2}_{e,MC}",100,0,20);
 TH1D* h_y_e = new TH1D("h_y_e",";y_{e,MC}",100,0,1);
 TH1D* h_energy_MC = new TH1D("h_energy_MC",";E_{MC} (GeV)",100,0,20);
-TH1D* h_t_MC = new TH1D("h_t_MC",";t_{MC}; counts",100,0,0.2);
+TH1D* h_t_MC = new TH1D("h_t_MC",";t_{MC}; counts",100,0,2);
 TH1D* h_VM_mass_MC = new TH1D("h_VM_mass_MC",";mass (GeV)",200,0,4);
 
 TH1D* h_Q2REC_e = new TH1D("h_Q2REC_e",";Q^{2}_{e,REC}",100,0,20);
