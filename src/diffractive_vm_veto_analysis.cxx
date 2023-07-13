@@ -1,39 +1,31 @@
 #include "pleaseIncludeMe.h"
 
-// auto giveme_t_method_L(TLorentzVector eIn, 
-// 					   TLorentzVector eOut, 
-// 					   TLorentzVector pIn, 
-// 					   TLorentzVector vmOut)
-// {
-// 	TLorentzVector aInVec(pIn.Px()*197,pIn.Py()*197,pIn.Pz()*197,sqrt(pIn.Px()*197*pIn.Px()*197 + pIn.Py()*197*pIn.Py()*197 + pIn.Pz()*197*pIn.Pz()*197 + MASS_AU197*MASS_AU197) );
-// 	double method_L = 0;
-// 	TLorentzVector a_beam_scattered = aInVec-(vmOut+eOut-eIn);
-// 	double p_Aplus = a_beam_scattered.E()+a_beam_scattered.Pz();
-// 	double p_TAsquared = TMath::Power(a_beam_scattered.Pt(),2);
-// 	double p_Aminus = (MASS_AU197*MASS_AU197 + p_TAsquared) / p_Aplus;
-// 	TLorentzVector a_beam_scattered_corr; 
-// 	a_beam_scattered_corr.SetPxPyPzE(a_beam_scattered.Px(),a_beam_scattered.Py(),(p_Aplus-p_Aminus)/2., (p_Aplus+p_Aminus)/2. );
-// 	method_L = -(a_beam_scattered_corr-aInVec).Mag2();
-
-// 	return method_L;
-// }
-
 auto giveme_t_method_L(TLorentzVector eIn, 
 					   TLorentzVector eOut, 
 					   TLorentzVector pIn, 
 					   TLorentzVector vmOut)
 {
-	TLorentzVector aInVec(pIn.Px()*2,pIn.Py()*2,pIn.Pz()*2,sqrt(pIn.Px()*2*pIn.Px()*2 + pIn.Py()*2*pIn.Py()*2 + pIn.Pz()*2*pIn.Pz()*2 + MASS_DEUT*MASS_DEUT) );
+	TLorentzVector aInVec(pIn.Px()*197,pIn.Py()*197,pIn.Pz()*197,sqrt(pIn.Px()*197*pIn.Px()*197 + pIn.Py()*197*pIn.Py()*197 + pIn.Pz()*197*pIn.Pz()*197 + MASS_AU197*MASS_AU197) );
 	double method_L = 0;
 	TLorentzVector a_beam_scattered = aInVec-(vmOut+eOut-eIn);
 	double p_Aplus = a_beam_scattered.E()+a_beam_scattered.Pz();
 	double p_TAsquared = TMath::Power(a_beam_scattered.Pt(),2);
-	double p_Aminus = (MASS_DEUT*MASS_DEUT + p_TAsquared) / p_Aplus;
+	double p_Aminus = (MASS_AU197*MASS_AU197 + p_TAsquared) / p_Aplus;
 	TLorentzVector a_beam_scattered_corr; 
 	a_beam_scattered_corr.SetPxPyPzE(a_beam_scattered.Px(),a_beam_scattered.Py(),(p_Aplus-p_Aminus)/2., (p_Aplus+p_Aminus)/2. );
 	method_L = -(a_beam_scattered_corr-aInVec).Mag2();
 
 	return method_L;
+}
+
+auto giveme_t_method_E(TLorentzVector eIn, 
+					   TLorentzVector eOut, 
+					   TLorentzVector pIn, 
+					   TLorentzVector vmOut)
+{
+	double method_E;
+	method_E = -(eIn-eOut-vmOut).Mag2();
+	return method_E;
 }
 
 
@@ -345,8 +337,8 @@ while (tree_reader.Next()) {
 	if( fabs(phi_mass-1.02)<0.02
     		&& fabs(vmREC.Rapidity())<3.5 ){
     	//2 versions: track and energy cluster:
-		double t_trk_REC = giveme_t_method_L(ebeam,scatMCmatchREC,pbeam,vmREC);
-    	double t_REC = giveme_t_method_L(ebeam,scatClusEREC,pbeam,vmREC);
+		double t_trk_REC = giveme_t_method_E(ebeam,scatMCmatchREC,pbeam,vmREC);
+    	double t_REC = giveme_t_method_E(ebeam,scatClusEREC,pbeam,vmREC);
     	h_t_trk_REC->Fill( t_trk_REC );
     	h_t_REC->Fill( t_REC );
     	h_t_REC_2D->Fill(t_trk_REC,t_REC);
