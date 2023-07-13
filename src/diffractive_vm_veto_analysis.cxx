@@ -188,8 +188,8 @@ while (tree_reader.Next()) {
 	//rec level
 	//veto FFs
 	if(zdc_ecal_cluster_x.GetSize()>0
-		&&b0_hits_x.GetSize()>0
-			&&reco_RP_px.GetSize()>0) continue;
+		||b0_hits_x.GetSize()>0
+			||reco_RP_px.GetSize()>0) continue;
 
 	//leading cluster
 	double maxEnergy=-99.;
