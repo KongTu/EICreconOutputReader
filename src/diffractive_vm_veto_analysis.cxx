@@ -71,6 +71,11 @@ TTreeReaderArray<float> reco_charge_array = {tree_reader, "ReconstructedChargedP
 TTreeReaderArray<unsigned int> rec_id = {tree_reader, "ReconstructedChargedParticleAssociations.recID"};
 TTreeReaderArray<unsigned int> sim_id = {tree_reader, "ReconstructedChargedParticleAssociations.simID"};
 
+//FF system
+TTreeReaderArray<float> zdc_ecal_cluster_x = {tree_reader, "ZDCEcalClusters.position.x"};
+TTreeReaderArray<float> b0_hits_x = {tree_reader, "B0TrackerRecHits.position.x"};
+TTreeReaderArray<float> reco_RP_px = {tree_reader, "ForwardRomanPotRecParticles.momentum.x"};
+
 TString output_name_dir = outputfile+"_output.root";
 cout << "Output file = " << output_name_dir << endl;
 TFile* output = new TFile(output_name_dir,"RECREATE");
@@ -181,6 +186,11 @@ while (tree_reader.Next()) {
 	}
 
 	//rec level
+	//veto FFs
+	if(zdc_ecal_cluster_x.GetSize()>0
+		&&b0_hits_x.GetSize()>0
+			&&reco_RP_px.GetSize()>0) continue;
+
 	//leading cluster
 	double maxEnergy=-99.;
 	double xpos=-999.;
