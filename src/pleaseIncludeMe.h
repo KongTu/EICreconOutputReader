@@ -32,6 +32,7 @@
 #define MASS_PROTON   0.93827
 #define MASS_PION     0.13957
 #define MASS_KAON     0.493667
+#define MASS_DEUT     1.8756
 #define MASS_AU197    183.45406466643374
 
 auto getNtrk(const std::vector<edm4eic::ReconstructedParticleData>& parts)
