@@ -37,7 +37,7 @@ auto giveme_t_method_A(TLorentzVector eIn,
 	return method_A;
 }
 
-int diffractive_vm_veto_analysis(TString rec_file, TString outputfile)
+int diffractive_vm_veto_analysis(TString rec_file, TString outputfile, bool veto_)
 {	
 // read our configuration	
 TString name_of_input = (TString) rec_file;
@@ -75,6 +75,7 @@ TTreeReaderArray<unsigned int> sim_id = {tree_reader, "ReconstructedChargedParti
 TTreeReaderArray<float> zdc_ecal_cluster_x = {tree_reader, "ZDCEcalClusters.position.x"};
 TTreeReaderArray<float> b0_hits_x = {tree_reader, "B0TrackerRecHits.position.x"};
 TTreeReaderArray<float> reco_RP_px = {tree_reader, "ForwardRomanPotRecParticles.momentum.x"};
+TTreeReaderArray<float> reco_OM_px = {tree_reader, "ForwardOffMRecParticles.momentum.x"};
 
 TString output_name_dir = outputfile+"_output.root";
 cout << "Output file = " << output_name_dir << endl;
@@ -187,9 +188,13 @@ while (tree_reader.Next()) {
 
 	//rec level
 	//veto FFs
-	if(zdc_ecal_cluster_x.GetSize()>0
+	if(veto_) 
+	{
+		if(zdc_ecal_cluster_x.GetSize()>0
 		||b0_hits_x.GetSize()>0
-			||reco_RP_px.GetSize()>0) continue;
+			||reco_RP_px.GetSize()>0
+				||reco_OM_px.GetSize()>0) continue;
+	}
 
 	//leading cluster
 	double maxEnergy=-99.;
