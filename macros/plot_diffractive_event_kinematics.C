@@ -156,7 +156,9 @@ void plot_diffractive_event_kinematics(TString filename="./output/eicrecon-sartr
 	h_emHits_position_REC->GetYaxis()->SetTitle("y(mm)");
     h_emHits_position_REC->Draw("colzsame");
 
-	c1->Print("./figures/benchmark-phi-DIS-kinematics.pdf");
+    TString outputfilename = filename;
+	outputfilename.ReplaceAll("output/","");
+	c1->Print("./figures/benchmark-phi-DIS-kinematics-from-"+outputfilename+".pdf");
 
 
 }

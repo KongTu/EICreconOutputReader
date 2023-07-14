@@ -108,7 +108,8 @@ void plot_diffractive_vm_physics_benchmark(TString filename="./output/eicrecon-s
 	
 
 	w7->Draw("same");
-
-	c1->Print("./figures/benchmark-phi-dsigmadt.pdf");
+	TString outputfilename = filename;
+	outputfilename.ReplaceAll("output/","");
+	c1->Print("./figures/benchmark-phi-dsigmadt-from-"+outputfilename+".pdf");
 
 }
