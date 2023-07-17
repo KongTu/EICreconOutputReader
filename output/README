@@ -2,6 +2,6 @@
 
 One can use this README to document what output has been generated.
 
-1. pi-10GeV-backward-output.root, based on 22.10.0 Brycecanyon, single particle of pi- at 10 GeV in backward angle.
-
+0. first results with wrong magnet setting but with 
+1. starting July 17 output, magnet setting was scaled 220./275
 2. ...
