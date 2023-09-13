@@ -73,9 +73,17 @@ TTreeReaderArray<unsigned int> sim_id = {tree_reader, "ReconstructedChargedParti
 
 //FF system
 TTreeReaderArray<float> zdc_ecal_cluster_x = {tree_reader, "ZDCEcalClusters.position.x"};
+	
 TTreeReaderArray<float> b0_hits_x = {tree_reader, "B0TrackerRecHits.position.x"};
+TTreeReaderArray<float> b0_hits_z = {tree_reader, "B0TrackerRecHits.position.z"};
+	
 TTreeReaderArray<float> reco_RP_px = {tree_reader, "ForwardRomanPotRecParticles.momentum.x"};
+TTreeReaderArray<float> reco_RP_py = {tree_reader, "ForwardRomanPotRecParticles.momentum.y"};
+TTreeReaderArray<float> reco_RP_pz = {tree_reader, "ForwardRomanPotRecParticles.momentum.z"};
+	
 TTreeReaderArray<float> reco_OM_px = {tree_reader, "ForwardOffMRecParticles.momentum.x"};
+TTreeReaderArray<float> reco_OM_py = {tree_reader, "ForwardOffMRecParticles.momentum.y"};
+TTreeReaderArray<float> reco_OM_pz = {tree_reader, "ForwardOffMRecParticles.momentum.z"};
 
 TString output_name_dir = outputfile+"_output.root";
 cout << "Output file = " << output_name_dir << endl;
@@ -190,10 +198,16 @@ while (tree_reader.Next()) {
 	//veto FFs
 	if(veto_) 
 	{
-		if(zdc_ecal_cluster_x.GetSize()>0
-		||b0_hits_x.GetSize()>0
-			||reco_RP_px.GetSize()>0
-				||reco_OM_px.GetSize()>0) continue;
+		if(zdc_ecal_cluster_x.GetSize()>0) continue;
+		int b0hits[4]={0,0,0,0};
+		for(int ihit=0;ihit<b0_hits_z.GetSize();ihit++){
+			if(b0_hits_z[ihit]>5700 && b0_hits_z[ihit]<5900) b0hits[0]++;
+			if(b0_hits_z[ihit]>6100 && b0_hits_z[ihit]<6200) b0hits[1]++;
+			if(b0_hits_z[ihit]>6400 && b0_hits_z[ihit]<6500) b0hits[2]++;
+			if(b0_hits_z[ihit]>6700 && b0_hits_z[ihit]<6750) b0hits[3]++;
+		}
+		if(b0hits[0]>0&&b0hits[1]>0&&b0hits[2]>0&&b0hits[3]>0) continue;
+		if(reco_RP_px.GetSize()>0||reco_OM_px.GetSize()>0) continue;
 	}
 
 	//leading cluster
