@@ -198,7 +198,9 @@ while (tree_reader.Next()) {
 	//veto FFs
 	if(veto_) 
 	{
+		//ZDC
 		if(zdc_ecal_cluster_x.GetSize()>0) continue;
+		//B0
 		int b0hits[4]={0,0,0,0};
 		for(int ihit=0;ihit<b0_hits_z.GetSize();ihit++){
 			if(b0_hits_z[ihit]>5700 && b0_hits_z[ihit]<5900) b0hits[0]++;
@@ -207,7 +209,20 @@ while (tree_reader.Next()) {
 			if(b0_hits_z[ihit]>6700 && b0_hits_z[ihit]<6750) b0hits[3]++;
 		}
 		if(b0hits[0]>0&&b0hits[1]>0&&b0hits[2]>0&&b0hits[3]>0) continue;
-		if(reco_RP_px.GetSize()>0||reco_OM_px.GetSize()>0) continue;
+		//RP
+		int num_RP_tracks=0;
+		for(int irp=0;irp<reco_RP_px.GetSize();irp++){
+			TVector3 prec_rp(reco_RP_px[irp], reco_RP_py[irp], reco_RP_pz[irp]);
+			if(prec_rp.Mag()>55) num_RP_tracks++;
+		}
+		if(num_RP_tracks>0) continue;
+		//OMD
+		int num_OMD_tracks=0;
+		for(int iomd=0;iomd<reco_OM_px.GetSize();iomd++){
+			TVector3 prec_omd(reco_OM_px[iomd], reco_OM_py[iomd], reco_OM_pz[iomd]);
+			if(prec_omd.Mag()>55) num_OMD_tracks++;
+		}
+		if(num_OMD_tracks>0) continue;
 	}
 
 	//leading cluster
