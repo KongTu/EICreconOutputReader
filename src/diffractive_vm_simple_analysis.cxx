@@ -147,7 +147,7 @@ while (tree_reader.Next()) {
 	double y= pq/pbeam.Dot(ebeam);
 	
 	//MC level phase space cut
-	if(Q2<2.||Q2>10.) continue;
+	if(Q2<1.||Q2>10.) continue;
 	if(y<0.01||y>0.85) continue;
 
 	h_Q2_e->Fill(Q2);
@@ -315,7 +315,7 @@ while (tree_reader.Next()) {
 	if( EoverP<0.8||EoverP>1.18 ) continue;		
 
 	//MC level phase space cut
-	if(Q2REC<2.||Q2REC>10.) continue;
+	if(Q2REC<1.||Q2REC>10.) continue;
 	if(yREC<0.01||yREC>0.85) continue;
 
 	//VM rec
