@@ -208,7 +208,7 @@ while (tree_reader.Next()) {
 	xClus = xClus/maxHitEnergy;
 	yClus = yClus/maxHitEnergy;
 	double radius=sqrt(xClus*xClus+yClus*yClus);
-	if(radius<150. || radius>550. ) continue; //geometric acceptance cut
+	if( radius>550. ) continue; //geometric acceptance cut
 	//4.4% energy calibration.
 	double clusEnergy=1.044*maxHitEnergy; 
 
