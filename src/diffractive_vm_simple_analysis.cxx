@@ -147,8 +147,8 @@ while (tree_reader.Next()) {
 	double y= pq/pbeam.Dot(ebeam);
 	
 	//MC level phase space cut
-	// if(Q2<1.||Q2>10.) continue;
-	// if(y<0.01||y>0.85) continue;
+	if(Q2<1.||Q2>10.) continue;
+	if(y<0.01||y>0.85) continue;
 
 	h_Q2_e->Fill(Q2);
 	h_y_e->Fill(y);
