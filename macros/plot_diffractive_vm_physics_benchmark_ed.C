@@ -1,6 +1,6 @@
 #include "RiceStyle.h"
 using namespace std;
-void plot_diffractive_vm_physics_benchmark(TString filename="./output/eicrecon-sartre_coherent_phi_output.root"){
+void plot_diffractive_vm_physics_benchmark_ed(TString filename="./output/eicrecon-sartre_coherent_phi_output.root"){
 	
 	TFile* file = new TFile(filename);
 	TString vm_label="#phi";
@@ -18,7 +18,7 @@ void plot_diffractive_vm_physics_benchmark(TString filename="./output/eicrecon-s
 	gPad->SetLeftMargin(0.15);
 	gPad->SetBottomMargin(0.15);
 	gPad->SetRightMargin(0.01);
-	TH1D* base1 = makeHist("base1", "", "|#it{t} | (GeV^{2})", "dN/d|#it{t} | (GeV^{-2}) ", 100,0,0.18,kBlack);
+	TH1D* base1 = makeHist("base1", "", "|#it{t} | (GeV^{2})", "dN/d|#it{t} | (GeV^{-2}) ", 100,0,1.8,kBlack);
 	base1->GetYaxis()->SetRangeUser(8e-2, 8e5);
 	base1->GetXaxis()->SetTitleColor(kBlack);
 	fixedFontHist1D(base1,1.,1.2);
@@ -47,7 +47,7 @@ void plot_diffractive_vm_physics_benchmark(TString filename="./output/eicrecon-s
 	h_t_combo_REC->SetMarkerColor(kRed);
 	// h_t_combo_REC->Draw("PE3same");
 
-	TLatex* r42 = new TLatex(0.18, 0.91, "eAu 18x110 GeV");
+	TLatex* r42 = new TLatex(0.18, 0.91, "eD 18x110 GeV");
 	r42->SetNDC();
 	r42->SetTextSize(22);
 	r42->SetTextFont(43);
@@ -87,29 +87,29 @@ void plot_diffractive_vm_physics_benchmark(TString filename="./output/eicrecon-s
 	w7->SetTextFont(45);
 	if(filename=="MCclusterEnergy")
 	{
-		w7->AddEntry(h_t_MC, "Sartre "+vm_label+" MC ", "L");
-		w7->AddEntry(h_t_REC, "Sartre "+vm_label+" RECO w. true EEMC E ", "P");
-		w7->AddEntry(h_t_trk_REC, "Sartre "+vm_label+" RECO track only ", "P");
+		w7->AddEntry(h_t_MC, "BeAGLE "+vm_label+" MC ", "L");
+		w7->AddEntry(h_t_REC, "BeAGLE "+vm_label+" RECO w. true EEMC E ", "P");
+		w7->AddEntry(h_t_trk_REC, "BeAGLE "+vm_label+" RECO track only ", "P");
 
 	}
 	else if(filename=="MCvmAndelectron")
 	{
-		w7->AddEntry(h_t_MC, "Sartre "+vm_label+" MC ", "L");
-		w7->AddEntry(h_t_REC, "Sartre "+vm_label+" RECO w. true e' ", "P");
-		w7->AddEntry(h_t_trk_REC, "Sartre "+vm_label+" MC w. RECO e' ", "P");
+		w7->AddEntry(h_t_MC, "BeAGLE "+vm_label+" MC ", "L");
+		w7->AddEntry(h_t_REC, "BeAGLE "+vm_label+" RECO w. true e' ", "P");
+		w7->AddEntry(h_t_trk_REC, "BeAGLE "+vm_label+" MC w. RECO e' ", "P");
 	}
 	else{
-		w7->AddEntry(h_t_MC, "Sartre "+vm_label+" MC ", "L");
-		w7->AddEntry(h_t_REC, "Sartre "+vm_label+" RECO w. EEMC ", "P");
-		// w7->AddEntry(h_t_trk_REC, "Sartre "+vm_label+" RECO track only", "P");
-	    // w7->AddEntry(h_t_combo_REC, "Sartre "+vm_label+" RECO best", "P");
+		w7->AddEntry(h_t_MC, "BeAGLE "+vm_label+" MC ", "L");
+		w7->AddEntry(h_t_REC, "BeAGLE "+vm_label+" RECO w. EEMC ", "P");
+		// w7->AddEntry(h_t_trk_REC, "BeAGLE "+vm_label+" RECO track only", "P");
+	    // w7->AddEntry(h_t_combo_REC, "BeAGLE "+vm_label+" RECO best", "P");
 
 	}
 	
 
 	w7->Draw("same");
-	TString outputfilename = filename;
-	outputfilename.ReplaceAll("output/","");
-	c1->Print("./figures/benchmark-phi-dsigmadt-from-"+outputfilename+".pdf");
+	// TString outputfilename = filename;
+	// outputfilename.ReplaceAll("output/","");
+	// c1->Print("./figures/benchmark-phi-dsigmadt-from-"+outputfilename+".pdf");
 
 }
