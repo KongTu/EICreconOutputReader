@@ -1,3 +1,5 @@
 # How to get input files?
 
 run EICrecoOutputReader/getInputFromS3.sh to get input files
+
+test for merge
