@@ -78,5 +78,3 @@ the 1st and 2nd arguments are energy configuration of DIS.
 Run the singleParticleReader:
 
 ```./runSingleParticleReader.sh input/INPUT_NAME.root OUTPUT_NAME```
-
-SSS
