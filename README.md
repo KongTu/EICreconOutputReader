@@ -41,6 +41,6 @@ Now, it is much easier to use xrootd. So replace the 1st argument with
 
 Run with TTreeReader:
 
-```./runDiffractiveVMReader.sh input/rec-batch_5_official_\*.eicrecon.tree.edm4eic.root output/eicrecon-sartre_coherent_phi```
+```./runDiffractiveVMReader.sh root://dtn-eic.jlab.org//work/eic2/EPIC/RECO/23.12.0/epic_craterlake/EXCLUSIVE/DIFFRACTIVE_PHI_ABCONV/Sartre/Coherent/sartre_bnonsat_Au_phi_ab_eAu_1.0000.eicrecon.tree.edm4eic.root output/eicrecon-sartre_coherent_phi```
 
 with input files in `input`, output results in `output`, and benchmark figures in `figures`.
