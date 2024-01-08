@@ -29,11 +29,15 @@ Install EICreconOutputReader
 
 ## Running diffractive VM (e.g., phi) samples:
 
+Previously, we access the files via S3.
 Look into getInputFromS3-exclusive.sh to modify accordingly what to grab from S3:
 
 ```./getInputFromS3-exclusive.sh``` (this is grabing a few files on s3 for an example)
 
 Note that for official compaign simulation, the software simulation or validation team knows better where the generators are. Simply replace `input/rec-batch_5_official_\*.eicrecon.tree.edm4eic.root` to whatever the directory+name will be.
+
+Now, it is much easier to use xrootd. So replace the 1st argument with 
+```root://dtn-eic.jlab.org//work/eic2/EPIC/RECO/23.12.0/epic_craterlake/EXCLUSIVE/DIFFRACTIVE_PHI_ABCONV/Sartre/Coherent/sartre_bnonsat_Au_phi_ab_eAu_1.0000.eicrecon.tree.edm4eic.root```, where one can change the file name or directory. Wildcard * is supported.
 
 Run with TTreeReader:
 
