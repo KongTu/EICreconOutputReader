@@ -79,7 +79,7 @@ TTreeReaderArray<unsigned int> rec_id = {tree_reader, "ReconstructedChargedParti
 TTreeReaderArray<unsigned int> sim_id = {tree_reader, "ReconstructedChargedParticleAssociations.simID"};
 
 //FF system
-TTreeReaderArray<float> zdc_ecal_cluster_x = {tree_reader, "ZDCEcalClusters.position.x"};
+TTreeReaderArray<float> zdc_ecal_cluster_x = {tree_reader, "EcalFarForwardZDCClusters.position.x"};
 	
 TTreeReaderArray<float> b0_hits_x = {tree_reader, "B0TrackerRecHits.position.x"};
 TTreeReaderArray<float> b0_hits_z = {tree_reader, "B0TrackerRecHits.position.z"};
