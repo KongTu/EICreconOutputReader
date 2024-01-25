@@ -97,7 +97,7 @@ cout << "Output file = " << output_name_dir << endl;
 TFile* output = new TFile(output_name_dir,"RECREATE");
 
 //events
-TH1D* h_Q2_e = new TH1D("h_Q2_e",";Q^{2}_{e,MC}",100,0,20);
+TH1D* h_Q2_e = new TH1D("h_Q2_e",";Q^{2}_{e,MC}",1000,0.001,0.1);
 TH1D* h_y_e = new TH1D("h_y_e",";y_{e,MC}",100,0,1);
 TH1D* h_energy_MC = new TH1D("h_energy_MC",";E_{MC} (GeV)",100,0,20);
 TH1D* h_t_MC = new TH1D("h_t_MC",";t_{MC}; counts",100,0,2);
@@ -120,21 +120,8 @@ TH1D* h_VM_mass_REC = new TH1D("h_VM_mass_REC",";mass (GeV)",200,0,4);
 TH1D* h_VM_pt_REC = new TH1D("h_VM_pt_REC",";p_{T} (GeV/c)",200,0,2);
 TH2D* h_VM_res = new TH2D("h_VM_res",";p_{T,MC} (GeV); p_{T,MC}-E_{T,REC}/p_{T,MC}",100,0,2,1000,-1,1);
 TH1D* h_t_REC = new TH1D("h_t_REC",";t_{REC} (GeV^{2}); counts",100,0,2);
-TH1D* h_t_trk_REC = new TH1D("h_t_trk_REC",";t_{REC}(GeV^{2}) track-base; counts",100,0,2);
-TH1D* h_t_combo_REC = new TH1D("h_t_combo_REC",";t_{combo,REC}(GeV^{2}); counts",100,0,2);
 TH2D* h_t_res = new TH2D("h_t_res",";t_{MC} (GeV^{2}); t_{MC}-t_{REC}/t_{MC}",100,0,2,1000,-10,10);
-TH2D* h_trk_t_res = new TH2D("h_trk_t_res",";t_{MC} (GeV^{2}); t_{MC}-t_{REC}/t_{MC} track-base",100,0,2,1000,-10,10);
 TH2D* h_t_2D = new TH2D("h_t_2D",";t_{MC} (GeV^{2}); t_{REC} (GeV^{2}) track-base",100,0,2,100,0,2);
-TH2D* h_t_REC_2D = new TH2D("h_t_REC_2D",";t_{trk,REC} (GeV^{2}); t_{EEMC,REC} (GeV^{2})",100,0,2,100,0,2);
-TH2D* h_t_RECMC_2D = new TH2D("h_t_RECMC_2D",";t_{MC} (GeV^{2}); t_{trk,REC} / t_{EEMC,REC} ",100,0,2,200,-10,10);
-
-//energy clus
-TH2D* h_emClus_position_REC = new TH2D("h_emClus_position_REC",";x (mm);y (mm)",80,-800,800,80,-800,800);
-TH2D* h_emHits_position_REC = new TH2D("h_emHits_position_REC",";x (mm);y (mm)",80,-800,800,80,-800,800);
-TH2D* h_energy_res = new TH2D("h_energy_res",";E_{MC} (GeV); E_{MC}-E_{REC}/E_{MC} emcal",100,0,20,1000,-1,1);
-TH1D* h_energy_calibration_REC = new TH1D("h_energy_calibration_REC",";E (GeV)",200,0,2);
-TH1D* h_EoverP_REC = new TH1D("h_EoverP_REC",";E/p",200,0,2);
-TH1D* h_ClusOverHit_REC = new TH1D("h_ClusOverHit_REC",";cluster energy / new cluster energy",200,0,2);
 
 tree_reader.SetEntriesRange(0, tree->GetEntries());
 while (tree_reader.Next()) {
@@ -232,99 +219,12 @@ while (tree_reader.Next()) {
 		if(num_OMD_tracks>0) continue;
 	}
 
-	// //leading cluster
-	// double maxEnergy=-99.;
-	// double xpos=-999.;
-	// double ypos=-999.;
-	// for(int iclus=0;iclus<em_energy_array.GetSize();iclus++){
-	// 	if(em_energy_array[iclus]>maxEnergy){
-	// 		maxEnergy=em_energy_array[iclus];
-	// 		xpos=em_x_array[iclus];
-	// 		ypos=em_y_array[iclus];
-	// 	}
-	// }
-	// //leading hit energy
-	// double maxHitEnergy=0.01;//threshold 10 MeV
-	// double xhitpos=-999.;
-	// double yhitpos=-999.;
-	// int hit_index=-1;
-	// for(int ihit=0;ihit<emhits_energy_array.GetSize();ihit++){	
-	// 	if(emhits_energy_array[ihit]>maxHitEnergy){
-	// 		maxHitEnergy=emhits_energy_array[ihit];
-	// 		        xhitpos=emhits_x_array[ihit];
-	// 		        yhitpos=emhits_y_array[ihit];
-	// 		        hit_index=ihit;
-	// 	}
-	// }
-	// //sum over all 3x3 towers around the leading tower
-	// double xClus=xhitpos*maxHitEnergy;
-	// double yClus=yhitpos*maxHitEnergy;
-	// for(int ihit=0;ihit<emhits_energy_array.GetSize();ihit++){
-	// 	double hitenergy=emhits_energy_array[ihit];
-	// 	double x=emhits_x_array[ihit];
-	// 	double y=emhits_y_array[ihit];
-	// 	double d=sqrt( (x-xhitpos)*(x-xhitpos) + (y-yhitpos)*(y-yhitpos));
-	// 	if(d<70. && ihit!=hit_index && hitenergy>0.01)  {
-	// 		maxHitEnergy+=hitenergy;//clustering around leading tower 3 crystal = 60mm.
-	// 		xClus+=x*hitenergy;
-	// 		yClus+=y*hitenergy;
-	// 	}
-	// }
-	
-	// h_ClusOverHit_REC->Fill( maxEnergy / maxHitEnergy );
-	// //weighted average cluster position.
-	// xClus = xClus/maxHitEnergy;
-	// yClus = yClus/maxHitEnergy;
-	// double radius=sqrt(xClus*xClus+yClus*yClus);
-	// if( radius>550. ) continue; //geometric acceptance cut
-	// //4.4% energy calibration.
-	// double clusEnergy=1.044*maxHitEnergy; 
-
-	// h_energy_REC->Fill(clusEnergy);
-	// //ratio of reco / truth Energy
-	// h_energy_calibration_REC->Fill( clusEnergy / scatMC.E() );
-	// //energy resolution
-	// double res= (scatMC.E()-clusEnergy)/scatMC.E();
-	// h_energy_res->Fill(scatMC.E(), res);
-	// h_emClus_position_REC->Fill(xpos,ypos);//default clustering position
-	// h_emHits_position_REC->Fill(xClus,yClus); //self clustering position
-	
-	//association of rec level scat' e
-	// int rec_elect_index=-1;
-	// for(int i=0;i<sim_id.GetSize();i++){
-	// 	if(sim_id[i]==mc_elect_index){
-	// 		//find the rec_id
-	// 		rec_elect_index = rec_id[i];
-	// 	}
-	// }
-    
     TLorentzVector hfs(0,0,0,0);
     TLorentzVector particle(0,0,0,0);
     TLorentzVector kplusREC(0,0,0,0);
     TLorentzVector kminusREC(0,0,0,0);
     TLorentzVector vmREC(0,0,0,0);
 
-    // double maxP=-1.;
-    // //track loop
-	// for(int itrk=0;itrk<reco_pz_array.GetSize();itrk++){
-	// 	TVector3 trk(reco_px_array[itrk],reco_py_array[itrk],reco_pz_array[itrk]);
-	// 	if(rec_elect_index!=-1
-	// 		&& itrk==rec_elect_index){
-	// 		scatMCmatchREC.SetVectM(trk,MASS_ELECTRON);//Reserved to calculate t.
-	// 	}
-	// 	if(trk.Mag()>maxP){
-	// 		//track-base 4 vector
-	// 		maxP=trk.Mag();
-	// 		scatREC.SetVectM(trk,MASS_ELECTRON);
-
-	// 		//use emcal energy to define 4 vector
-	// 		double p = sqrt(clusEnergy*clusEnergy- MASS_ELECTRON*MASS_ELECTRON );
-	// 		double eta=scatREC.Eta();
-	// 		double phi=scatREC.Phi();
-	// 		double pt = TMath::Sin(scatREC.Theta())*p;
-	// 		scatClusEREC.SetPtEtaPhiM(pt,eta,phi,MASS_ELECTRON);
-	// 	}
-	// }
 	//loop over track again;
 	for(int itrk=0;itrk<reco_pz_array.GetSize();itrk++){
 		TVector3 trk(reco_px_array[itrk],reco_py_array[itrk],reco_pz_array[itrk]);
@@ -343,29 +243,6 @@ while (tree_reader.Next()) {
 	if(kplusREC.E()!=0. && kminusREC.E()!=0.){
 		vmREC=kplusREC+kminusREC;
 	}
-
-	// //track-base e' energy REC;
-	// h_trk_energy_REC->Fill(scatMCmatchREC.E());
-	
-	// //track-base e' energy resolution;
-	// res= (scatMC.E()-scatMCmatchREC.E())/scatMC.E();
-	// h_trk_energy_res->Fill(scatMC.E(), res);
-	
-	// //track-base e' pt resolution;
-	// res= (scatMC.Pt()-scatMCmatchREC.Pt())/scatMC.Pt();
-	// h_trk_Pt_res->Fill(scatMC.Pt(), res);
-
-	// //track-base Epz scat' e
-	// double EpzREC= (scatMCmatchREC+hfs).E() - (scatMCmatchREC+hfs).Pz();
-	// h_trk_Epz_REC->Fill( EpzREC );
-
-	// //EEMC cluster Epz scat' e
-	// EpzREC= (scatClusEREC+hfs).E() - (scatClusEREC+hfs).Pz();
-	// h_Epz_REC->Fill( EpzREC );
-
-	// //E over p
-	// double EoverP=scatClusEREC.E() / scatMCmatchREC.P();
-	// h_EoverP_REC->Fill( EoverP );
 
 	//cluster-base DIS kine;
 	// TLorentzVector qbeamREC=ebeam-scatClusEREC;
