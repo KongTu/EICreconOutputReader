@@ -329,15 +329,15 @@ while (tree_reader.Next()) {
 	for(int itrk=0;itrk<reco_pz_array.GetSize();itrk++){
 		TVector3 trk(reco_px_array[itrk],reco_py_array[itrk],reco_pz_array[itrk]);
 		particle.SetVectM(trk,MASS_PION);//assume pions;
-		if(itrk!=rec_elect_index) {
-    		hfs += particle; //hfs 4vector sum.
-    		//selecting phi->kk daughters;
-    		h_eta->Fill(trk.Eta());
-    		if(fabs(trk.Eta())<3.0){
-    			if(reco_charge_array[itrk]>0) kplusREC.SetVectM(trk,MASS_KAON);
-    			if(reco_charge_array[itrk]<0) kminusREC.SetVectM(trk,MASS_KAON);
-    		}
+
+		hfs += particle; //hfs 4vector sum.
+		//selecting phi->kk daughters;
+		h_eta->Fill(trk.Eta());
+		if(fabs(trk.Eta())<3.0){
+			if(reco_charge_array[itrk]>0) kplusREC.SetVectM(trk,MASS_KAON);
+			if(reco_charge_array[itrk]<0) kminusREC.SetVectM(trk,MASS_KAON);
 		}
+		
 	}
 	//4vector of VM;
 	if(kplusREC.E()!=0. && kminusREC.E()!=0.){
@@ -397,7 +397,7 @@ while (tree_reader.Next()) {
     	h_t_REC->Fill( t_REC );
 
 		//t resolution;
-		res= (t_MC-t_REC)/t_MC;
+		double res= (t_MC-t_REC)/t_MC;
 		h_t_res->Fill(t_MC, res);
 		
 		//2D t
