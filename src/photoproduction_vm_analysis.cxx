@@ -100,7 +100,7 @@ TFile* output = new TFile(output_name_dir,"RECREATE");
 TH1D* h_Q2_e = new TH1D("h_Q2_e",";Q^{2}_{e,MC}",1000,0.001,0.1);
 TH1D* h_y_e = new TH1D("h_y_e",";y_{e,MC}",100,0,1);
 TH1D* h_energy_MC = new TH1D("h_energy_MC",";E_{MC} (GeV)",100,0,20);
-TH1D* h_t_MC = new TH1D("h_t_MC",";t_{MC}; counts",100,0,2);
+TH1D* h_t_MC = new TH1D("h_t_MC",";t_{MC}; counts",100,0,0.2);
 TH1D* h_VM_mass_MC = new TH1D("h_VM_mass_MC",";mass (GeV)",200,0,4);
 
 TH1D* h_Q2REC_e = new TH1D("h_Q2REC_e",";Q^{2}_{e,REC}",100,0,20);
@@ -113,9 +113,9 @@ TH1D* h_eta = new TH1D("h_eta",";#eta",100,-5,5);
 TH1D* h_VM_mass_REC = new TH1D("h_VM_mass_REC",";mass (GeV)",200,0,4);
 TH1D* h_VM_pt_REC = new TH1D("h_VM_pt_REC",";p_{T} (GeV/c)",200,0,2);
 TH2D* h_VM_res = new TH2D("h_VM_res",";p_{T,MC} (GeV); p_{T,MC}-E_{T,REC}/p_{T,MC}",100,0,2,1000,-1,1);
-TH1D* h_t_REC = new TH1D("h_t_REC",";t_{REC} (GeV^{2}); counts",100,0,2);
-TH2D* h_t_res = new TH2D("h_t_res",";t_{MC} (GeV^{2}); t_{MC}-t_{REC}/t_{MC}",100,0,2,1000,-10,10);
-TH2D* h_t_2D = new TH2D("h_t_2D",";t_{MC} (GeV^{2}); t_{REC} (GeV^{2}) track-base",100,0,2,100,0,2);
+TH1D* h_t_REC = new TH1D("h_t_REC",";t_{REC} (GeV^{2}); counts",100,0,0.2);
+TH2D* h_t_res = new TH2D("h_t_res",";t_{MC} (GeV^{2}); t_{MC}-t_{REC}/t_{MC}",100,0,0.2,1000,-10,10);
+TH2D* h_t_2D = new TH2D("h_t_2D",";t_{MC} (GeV^{2}); t_{REC} (GeV^{2}) track-base",100,0,0.2,100,0,0.2);
 
 tree_reader.SetEntriesRange(0, tree->GetEntries());
 while (tree_reader.Next()) {
@@ -138,7 +138,7 @@ while (tree_reader.Next()) {
 		TVector3 mctrk(mc_px_array[imc],mc_py_array[imc],mc_pz_array[imc]);	
 		if(mc_genStatus_array[imc]==4){//4 is Sartre.
 			if(mc_pdg_array[imc]==11) ebeam.SetVectM(mctrk, MASS_ELECTRON);
-				if(mc_pdg_array[imc]==2212) pbeam.SetVectM(mctrk, MASS_PROTON);
+				if(mc_pdg_array[imc]==1000791970) pbeam.SetVectM(mctrk, MASS_PROTON);
 		}
 		if(mc_genStatus_array[imc]!=1) continue;
 		if(mc_pdg_array[imc]==11 	
@@ -166,7 +166,7 @@ while (tree_reader.Next()) {
 	
 	//MC level phase space cut
 	if(Q2>1.) continue;
-	if(y<0.01||y>0.95) continue;
+	// if(y<0.01||y>0.95) continue;
 
 	h_Q2_e->Fill(Q2);
 	h_y_e->Fill(y);
