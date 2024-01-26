@@ -178,7 +178,7 @@ while (tree_reader.Next()) {
 	{	
 		h_VM_mass_MC->Fill( vmMC.M() );
 		if(fabs(vmMC.M()-1.02)<0.02){
-			double method_E = giveme_t_method_E(ebeam, scatMC, pbeam, vmMC);
+			double method_E = giveme_t_method_L(ebeam, scatMC, pbeam, vmMC);
 			t_MC=method_E;
 			h_t_MC->Fill( method_E );
 		}	
