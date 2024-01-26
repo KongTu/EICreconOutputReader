@@ -175,11 +175,13 @@ while (tree_reader.Next()) {
 	double t_MC=0.;
 	if(vmMC.E()!=0 
 		&& fabs(vmMC.Rapidity())<3.5)
-	{
-		double method_E = -(qbeam-vmMC).Mag2();
-		t_MC=method_E;
-		h_t_MC->Fill( method_E );
+	{	
 		h_VM_mass_MC->Fill( vmMC.M() );
+		if(fabs(vmMC.M()-1.02)<0.02){
+			double method_E = giveme_t_method_E(ebeam, scatMC, pbeam, vmMC);
+			t_MC=method_E;
+			h_t_MC->Fill( method_E );
+		}	
 	}
 
 	//rec level
