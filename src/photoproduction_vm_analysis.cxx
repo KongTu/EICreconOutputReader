@@ -183,8 +183,6 @@ while (tree_reader.Next()) {
 	h_energy_conservation->Fill(E_total.E());
 	h_momentum_conservation->Fill(E_total.P());
 
-	h_Kaon_pt_MC->Fill(kplusMC.Pt());
-
 	double t_MC=0.;
 	if(vmMC.E()!=0 
 		&& fabs(vmMC.Rapidity())<3.5)
@@ -194,6 +192,7 @@ while (tree_reader.Next()) {
 			double method_E = giveme_t_method_L(ebeam, scatMC, pbeam, vmMC);
 			t_MC=method_E;
 			h_t_MC->Fill( method_E );
+			h_Kaon_pt_MC->Fill(kplusMC.Pt());
 		}	
 	}
 
@@ -251,7 +250,7 @@ while (tree_reader.Next()) {
 	//4vector of VM;
 	if(kplusREC.E()!=0. && kminusREC.E()!=0.){
 		vmREC=kplusREC+kminusREC;
-		h_Kaon_pt_REC->Fill(kplusREC.Pt());
+		
 	}
 
 	//cluster-base DIS kine;
@@ -279,6 +278,9 @@ while (tree_reader.Next()) {
 	//select phi mass and rapidity window 
 	if( fabs(phi_mass-1.02)<0.02
     		&& fabs(vmREC.Rapidity())<3.5 ){
+		//kaon pt
+		h_Kaon_pt_REC->Fill(kplusREC.Pt());
+	
     	//2 versions: track and energy cluster:
     	double t_REC = giveme_pt2(vmREC);
     	h_t_REC->Fill( t_REC );
