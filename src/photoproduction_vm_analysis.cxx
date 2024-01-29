@@ -106,6 +106,9 @@ TH1D* h_VM_mass_MC = new TH1D("h_VM_mass_MC",";mass (GeV)",200,0,4);
 TH1D* h_Q2REC_e = new TH1D("h_Q2REC_e",";Q^{2}_{e,REC}",100,0,20);
 TH1D* h_yREC_e = new TH1D("h_yREC_e",";y_{e,REC}",100,0,1);
 
+TH1D* h_energy_conservation = new TH1D("h_energy_conservation",";#Delta E",100,-0.1,0.1);
+TH1D* h_momentum_conservation = new TH1D("h_momentum_conservation",";#Delta E",100,-0.1,0.1);
+
 //track
 TH1D* h_eta = new TH1D("h_eta",";#eta",100,-5,5);
 
@@ -125,6 +128,7 @@ while (tree_reader.Next()) {
 	*/
 	TLorentzVector ebeam(0,0,0,0);
 	TLorentzVector pbeam(0,0,0,0);
+	TLorentzVector pbeamOut(0,0,0,0);
 
 	TLorentzVector vmMC(0,0,0,0);
 	TLorentzVector kplusMC(0,0,0,0);
@@ -152,6 +156,7 @@ while (tree_reader.Next()) {
 		if(mc_pdg_array[imc]==-321
 			&& mc_genStatus_array[imc]==1) kminusMC.SetVectM(mctrk,MASS_KAON);
 
+		if(mc_pdg_array[imc]==1000791970) pbeamOut.SetVectM(mctrk, MASS_PROTON);
 	}
 	vmMC=kplusMC+kminusMC;
 	//protection.
@@ -171,6 +176,10 @@ while (tree_reader.Next()) {
 	h_Q2_e->Fill(Q2);
 	h_y_e->Fill(y);
 	h_energy_MC->Fill(scatMC.E());
+
+	TLorentzVector E_total = (ebeam+pbeam-scatMC-vmMC-pbeamOut);
+	h_energy_conservation->Fill(E_total.E());
+	h_momentum_conservation->Fill(E_total.P());
 
 	double t_MC=0.;
 	if(vmMC.E()!=0 
