@@ -102,6 +102,7 @@ TH1D* h_y_e = new TH1D("h_y_e",";y_{e,MC}",100,0,1);
 TH1D* h_energy_MC = new TH1D("h_energy_MC",";E_{MC} (GeV)",100,0,20);
 TH1D* h_t_MC = new TH1D("h_t_MC",";t_{MC}; counts",100,0,0.2);
 TH1D* h_VM_mass_MC = new TH1D("h_VM_mass_MC",";mass (GeV)",200,0,4);
+TH1D* h_Kaon_pt_MC = new TH1D("h_Kaon_pt_MC",";p_{T} (GeV/c)",200,0,2);
 
 TH1D* h_Q2REC_e = new TH1D("h_Q2REC_e",";Q^{2}_{e,REC}",100,0,20);
 TH1D* h_yREC_e = new TH1D("h_yREC_e",";y_{e,REC}",100,0,1);
@@ -115,6 +116,7 @@ TH1D* h_eta = new TH1D("h_eta",";#eta",100,-5,5);
 //VM & t
 TH1D* h_VM_mass_REC = new TH1D("h_VM_mass_REC",";mass (GeV)",200,0,4);
 TH1D* h_VM_pt_REC = new TH1D("h_VM_pt_REC",";p_{T} (GeV/c)",200,0,2);
+TH1D* h_Kaon_pt_REC = new TH1D("h_Kaon_pt_REC",";p_{T} (GeV/c)",200,0,2);
 TH2D* h_VM_res = new TH2D("h_VM_res",";p_{T,MC} (GeV); p_{T,MC}-E_{T,REC}/p_{T,MC}",100,0,2,1000,-1,1);
 TH1D* h_t_REC = new TH1D("h_t_REC",";t_{REC} (GeV^{2}); counts",100,0,0.2);
 TH2D* h_t_res = new TH2D("h_t_res",";t_{MC} (GeV^{2}); t_{MC}-t_{REC}/t_{MC}",100,0,0.2,1000,-10,10);
@@ -180,6 +182,8 @@ while (tree_reader.Next()) {
 	TLorentzVector E_total = (ebeam+pbeam-scatMC-vmMC-pbeamOut);
 	h_energy_conservation->Fill(E_total.E());
 	h_momentum_conservation->Fill(E_total.P());
+
+	h_Kaon_pt_MC->Fill(kplusMC.Pt());
 
 	double t_MC=0.;
 	if(vmMC.E()!=0 
@@ -247,6 +251,7 @@ while (tree_reader.Next()) {
 	//4vector of VM;
 	if(kplusREC.E()!=0. && kminusREC.E()!=0.){
 		vmREC=kplusREC+kminusREC;
+		h_Kaon_pt_REC->Fill(kplusREC.Pt());
 	}
 
 	//cluster-base DIS kine;
