@@ -242,7 +242,7 @@ while (tree_reader.Next()) {
 		hfs += particle; //hfs 4vector sum.
 		//selecting phi->kk daughters;
 		h_eta->Fill(trk.Eta());
-		if(fabs(trk.Eta())<1.0){
+		if(fabs(trk.Eta())<3.0){
 			if(reco_charge_array[itrk]>0) kplusREC.SetVectM(trk,MASS_KAON);
 			if(reco_charge_array[itrk]<0) kminusREC.SetVectM(trk,MASS_KAON);
 		}
