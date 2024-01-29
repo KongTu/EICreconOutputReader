@@ -241,7 +241,7 @@ while (tree_reader.Next()) {
 		hfs += particle; //hfs 4vector sum.
 		//selecting phi->kk daughters;
 		h_eta->Fill(trk.Eta());
-		if(fabs(trk.Eta())<3.0){
+		if(fabs(trk.Eta())<3.0 && trk.Pt()>0.17){
 			if(reco_charge_array[itrk]>0) kplusREC.SetVectM(trk,MASS_KAON);
 			if(reco_charge_array[itrk]<0) kminusREC.SetVectM(trk,MASS_KAON);
 		}
@@ -280,7 +280,7 @@ while (tree_reader.Next()) {
     		&& fabs(vmREC.Rapidity())<3.5 ){
 		//kaon pt
 		h_Kaon_pt_REC->Fill(kplusREC.Pt());
-	
+
     	//2 versions: track and energy cluster:
     	double t_REC = giveme_pt2(vmREC);
     	h_t_REC->Fill( t_REC );
