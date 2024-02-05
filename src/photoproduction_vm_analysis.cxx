@@ -139,7 +139,7 @@ while (tree_reader.Next()) {
 	//MC level
 	TLorentzVector scatMC(0,0,0,0);
 	int mc_elect_index=-1;
-	double maxPt=-99.;
+	double minEta=99.;
 	for(int imc=0;imc<mc_px_array.GetSize();imc++){
 		TVector3 mctrk(mc_px_array[imc],mc_py_array[imc],mc_pz_array[imc]);	
 		if(mc_genStatus_array[imc]==4){//4 is Sartre.
@@ -148,15 +148,15 @@ while (tree_reader.Next()) {
 		}
 		if(mc_genStatus_array[imc]!=1) continue;
 		if(mc_pdg_array[imc]==11 	
-			&& mctrk.Perp()>maxPt){
-			maxPt=mctrk.Perp();
+			&& mctrk.Eta()<minEta){
+			minEta=mctrk.Eta();
 			mc_elect_index=imc;
 			scatMC.SetVectM(mctrk,mc_mass_array[imc]);
 		}
-		if(mc_pdg_array[imc]==321
-			&& mc_genStatus_array[imc]==1) kplusMC.SetVectM(mctrk,MASS_KAON);
-		if(mc_pdg_array[imc]==-321
-			&& mc_genStatus_array[imc]==1) kminusMC.SetVectM(mctrk,MASS_KAON);
+		if(mc_pdg_array[imc]==11
+			&& mc_genStatus_array[imc]==1) kplusMC.SetVectM(mctrk,MASS_ELECTRON);
+		if(mc_pdg_array[imc]==-11
+			&& mc_genStatus_array[imc]==1) kminusMC.SetVectM(mctrk,MASS_ELECTRON);
 
 		if(mc_pdg_array[imc]==1000791970) pbeamOut.SetVectM(mctrk, MASS_PROTON);
 	}
@@ -188,8 +188,8 @@ while (tree_reader.Next()) {
 		&& fabs(vmMC.Rapidity())<3.5)
 	{	
 		h_VM_mass_MC->Fill( vmMC.M() );
-		if(fabs(vmMC.M()-1.02)<0.02){
-			double method_E = giveme_t_method_L(ebeam, scatMC, pbeam, vmMC);
+		if(fabs(vmMC.M()-3.09)<0.04){
+			double method_E = giveme_t_method_E(ebeam, scatMC, pbeam, vmMC);
 			t_MC=method_E;
 			h_t_MC->Fill( method_E );
 			h_Kaon_pt_MC->Fill(kplusMC.Pt());
@@ -242,8 +242,8 @@ while (tree_reader.Next()) {
 		//selecting phi->kk daughters;
 		h_eta->Fill(trk.Eta());
 		if(fabs(trk.Eta())<3.0 && trk.Pt()>0.17){
-			if(reco_charge_array[itrk]>0) kplusREC.SetVectM(trk,MASS_KAON);
-			if(reco_charge_array[itrk]<0) kminusREC.SetVectM(trk,MASS_KAON);
+			if(reco_charge_array[itrk]>0) kplusREC.SetVectM(trk,MASS_ELECTRON);
+			if(reco_charge_array[itrk]<0) kminusREC.SetVectM(trk,MASS_ELECTRON);
 		}
 		
 	}
@@ -276,7 +276,7 @@ while (tree_reader.Next()) {
 	h_VM_pt_REC->Fill(vmREC.Pt());
 
 	//select phi mass and rapidity window 
-	if( fabs(phi_mass-1.02)<0.02
+	if( fabs(phi_mass-3.09)<0.04
     		&& fabs(vmREC.Rapidity())<3.5 ){
 		//kaon pt
 		h_Kaon_pt_REC->Fill(kplusREC.Pt());
