@@ -44,7 +44,7 @@ auto giveme_pt2(TLorentzVector vmOut)
 	return method_pt2;
 }
 
-int photoproduction_vm_analysis(TString rec_file, TString outputfile, bool veto_)
+int photoproduction_phi_analysis(TString rec_file, TString outputfile, bool veto_)
 {	
 // read our configuration	
 TString name_of_input = (TString) rec_file;
