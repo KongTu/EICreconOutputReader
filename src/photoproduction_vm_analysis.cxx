@@ -188,7 +188,7 @@ while (tree_reader.Next()) {
 		&& fabs(vmMC.Rapidity())<3.5)
 	{	
 		h_VM_mass_MC->Fill( vmMC.M() );
-		if(fabs(vmMC.M()-3.09)<0.04){
+		if(fabs(vmMC.M()-3.09)<0.4){
 			double method_E = giveme_t_method_E(ebeam, scatMC, pbeam, vmMC);
 			t_MC=method_E;
 			h_t_MC->Fill( method_E );
@@ -276,7 +276,7 @@ while (tree_reader.Next()) {
 	h_VM_pt_REC->Fill(vmREC.Pt());
 
 	//select phi mass and rapidity window 
-	if( fabs(phi_mass-3.09)<0.04
+	if( fabs(phi_mass-3.09)<0.4
     		&& fabs(vmREC.Rapidity())<3.5 ){
 		//kaon pt
 		h_Kaon_pt_REC->Fill(kplusREC.Pt());
